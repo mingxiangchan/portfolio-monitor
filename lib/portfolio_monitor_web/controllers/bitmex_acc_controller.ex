@@ -4,6 +4,11 @@ defmodule PortfolioMonitorWeb.BitmexAccController do
   alias PortfolioMonitor.Account
   alias PortfolioMonitor.Account.BitmexAcc
 
+  def index(conn, _params) do
+    bitmex_accs = Account.list_bitmex_accs()
+    render(conn, "index.json", bitmex_accs: bitmex_accs)
+  end
+
   def new(conn, _params) do
     changeset = Account.change_bitmex_acc(%BitmexAcc{})
     render(conn, "new.html", changeset: changeset)
