@@ -27,6 +27,7 @@ defmodule PortfolioMonitorWeb.Router do
     get "/positions", PositionController, :index
     get "/margins", MarginController, :index
     get "/orders", OrderDetailController, :index
+    resources "/experiments", ExperimentController, only: [:index, :create, :update]
   end
 
   # Other scopes may use custom stacks.

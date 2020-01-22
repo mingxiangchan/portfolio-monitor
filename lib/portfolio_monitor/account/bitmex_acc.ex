@@ -3,7 +3,7 @@ defmodule PortfolioMonitor.Account.BitmexAcc do
   import Ecto.Changeset
   alias PortfolioMonitor.CustomFields.Encrypted
 
-  alias PortfolioMonitor.Portfolio.{Margin, Position, OrderDetail}
+  alias PortfolioMonitor.Portfolio.{Margin, Position, OrderDetail, Experiment}
 
   schema "bitmex_accs" do
     field :api_key, Encrypted
@@ -11,6 +11,7 @@ defmodule PortfolioMonitor.Account.BitmexAcc do
     has_many :margins, Margin
     has_many :positions, Position
     has_many :order_details, OrderDetail
+    has_many :experiments, Experiment
     timestamps()
   end
 
