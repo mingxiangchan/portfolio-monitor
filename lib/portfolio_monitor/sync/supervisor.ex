@@ -21,13 +21,18 @@ defmodule PortfolioMonitor.Sync.Supervisor do
 
   def start_child(bitmex_acc) do
     auth_config = Map.take(bitmex_acc, [:api_key, :api_secret])
-    child_spec = {Worker, %{acc_id: bitmex_acc.id}}
 
-    {:ok, pid} = DynamicSupervisor.start_child(__MODULE__, child_spec)
-    Worker.authenticate(pid, auth_config)
-    Worker.subscribe(pid, ["order", "margin", "position"])
+    child_spec = {
+      Worker,
+      %{
+        acc_id: bitmex_acc.id,
+        auth_subscribe: ["order", "margin", "position"],
+        config: auth_config,
+        name: String.to_atom("BitMexAccWorker.#{bitmex_acc.id}")
+      }
+    }
 
-    {:ok, pid}
+    DynamicSupervisor.start_child(__MODULE__, child_spec)
   end
 
   defp initialize_workers do

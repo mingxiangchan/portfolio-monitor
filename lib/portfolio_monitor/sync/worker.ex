@@ -1,7 +1,7 @@
 defmodule PortfolioMonitor.Sync.Worker do
-  use ExBitmex.WebSocket
   alias PortfolioMonitor.Portfolio
   alias PortfolioMonitorWeb.Endpoint
+  use ExBitmex.WebSocket
 
   def handle_response(json, state) do
     # spawn async, no-link process to perform db insert
@@ -11,7 +11,7 @@ defmodule PortfolioMonitor.Sync.Worker do
     end)
   end
 
-  def persist_response(%{"action" => "partial"}, _), do: nil
+  def persist_response(%{"action" => "partial"}, _), do: Logger.warn("ignoring partial")
 
   def persist_response(%{"table" => table, "data" => data}, acc_id) do
     Endpoint.broadcast("bitmex_acc:#{acc_id}", table, %{"data" => data})
