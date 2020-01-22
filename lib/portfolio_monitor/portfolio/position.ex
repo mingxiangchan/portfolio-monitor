@@ -3,7 +3,7 @@ defmodule PortfolioMonitor.Portfolio.Position do
   import Ecto.Changeset
 
   schema "positions" do
-    field :data, :map
+    field :data, {:array, :map}
 
     timestamps()
   end

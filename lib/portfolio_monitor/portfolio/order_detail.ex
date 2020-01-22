@@ -3,7 +3,7 @@ defmodule PortfolioMonitor.Portfolio.OrderDetail do
   import Ecto.Changeset
 
   schema "order_details" do
-    field :data, :map
+    field :data, {:array, :map}
 
     timestamps()
   end

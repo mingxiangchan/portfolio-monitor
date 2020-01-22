@@ -3,7 +3,7 @@ defmodule PortfolioMonitor.Portfolio.Margin do
   import Ecto.Changeset
 
   schema "margins" do
-    field :data, :map
+    field :data, {:array, :map}
 
     timestamps()
   end
