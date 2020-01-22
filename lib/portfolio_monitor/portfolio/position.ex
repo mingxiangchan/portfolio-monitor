@@ -4,6 +4,7 @@ defmodule PortfolioMonitor.Portfolio.Position do
 
   schema "positions" do
     field :data, {:array, :map}
+    belongs_to :bitmex_acc, PortfolioMonitor.Account.BitmexAcc
 
     timestamps()
   end
@@ -11,7 +12,7 @@ defmodule PortfolioMonitor.Portfolio.Position do
   @doc false
   def changeset(position, attrs) do
     position
-    |> cast(attrs, [:data])
-    |> validate_required([:data])
+    |> cast(attrs, [:data, :bitmex_acc_id])
+    |> validate_required([:data, :bitmex_acc_id])
   end
 end

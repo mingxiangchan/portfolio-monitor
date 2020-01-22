@@ -4,6 +4,7 @@ defmodule PortfolioMonitor.Portfolio.OrderDetail do
 
   schema "order_details" do
     field :data, {:array, :map}
+    belongs_to :bitmex_acc, PortfolioMonitor.Account.BitmexAcc
 
     timestamps()
   end
@@ -11,7 +12,7 @@ defmodule PortfolioMonitor.Portfolio.OrderDetail do
   @doc false
   def changeset(order_detail, attrs) do
     order_detail
-    |> cast(attrs, [:data])
-    |> validate_required([:data])
+    |> cast(attrs, [:data, :bitmex_acc_id])
+    |> validate_required([:data, :bitmex_acc_id])
   end
 end
