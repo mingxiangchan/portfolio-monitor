@@ -19,6 +19,14 @@ defmodule PortfolioMonitorWeb.Router do
     get "/", PageController, :index
   end
 
+  scope "/api", PortfolioMonitorWeb do
+    pipe_through :api
+
+    get "/positions", PositionController, :index
+    get "/margins", MarginController, :index
+    get "/orders", OrderDetailController, :index
+  end
+
   # Other scopes may use custom stacks.
   # scope "/api", PortfolioMonitorWeb do
   #   pipe_through :api
