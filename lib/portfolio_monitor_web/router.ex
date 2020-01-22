@@ -16,6 +16,8 @@ defmodule PortfolioMonitorWeb.Router do
   scope "/", PortfolioMonitorWeb do
     pipe_through :browser
 
+    get "/bitmex_accs/new", BitmexAccController, :new
+    post "/bitmex_accs", BitmexAccController, :create
     get "/", PageController, :index
   end
 
