@@ -14,7 +14,7 @@ defmodule PortfolioMonitor.Sync.Worker do
   def persist_response(%{"action" => "partial"}, _), do: nil
 
   def persist_response(%{"table" => table, "data" => data}, acc_id) do
-    Endpoint.broadcast("bitmex_acc" <> acc_id, table, data)
+    Endpoint.broadcast("bitmex_acc:#{acc_id}", table, %{"data" => data})
 
     changes = %{data: data, bitmex_acc_id: acc_id}
 
@@ -24,4 +24,6 @@ defmodule PortfolioMonitor.Sync.Worker do
       "order" -> Portfolio.create_order_detail(changes)
     end
   end
+
+  def persist_response(_, _), do: nil
 end
