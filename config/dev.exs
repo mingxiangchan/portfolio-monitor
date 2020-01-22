@@ -77,3 +77,6 @@ config :phoenix, :plug_init_mode, :runtime
 
 config :ex_bitmex, test_mode: true
 
+
+config :portfolio_monitor, :aes_key, "M4__0myz68RiGgag2XpzPF5A4oPfO6f1H5XChHhxvwo="
+config :portfolio_monitor, :secret_key_base, "ttEwRdRVyM2mAgp0Mq2gXYSASyRW257T72QvqjFD/FsOp67Sagf+DZq1mRWjHaKo"
