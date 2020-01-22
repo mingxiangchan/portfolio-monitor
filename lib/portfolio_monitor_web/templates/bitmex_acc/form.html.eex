@@ -1,0 +1,19 @@
+<%= form_for @changeset, @action, fn f -> %>
+  <%= if @changeset.action do %>
+    <div class="alert alert-danger">
+      <p>Oops, something went wrong! Please check the errors below.</p>
+    </div>
+  <% end %>
+
+  <%= label f, :api_key %>
+  <%= textarea f, :api_key %>
+  <%= error_tag f, :api_key %>
+
+  <%= label f, :api_secret %>
+  <%= textarea f, :api_secret %>
+  <%= error_tag f, :api_secret %>
+
+  <div>
+    <%= submit "Save" %>
+  </div>
+<% end %>

@@ -11,9 +11,10 @@ defmodule PortfolioMonitor.Application do
       # Start the Ecto repository
       PortfolioMonitor.Repo,
       # Start the endpoint when the application starts
-      PortfolioMonitorWeb.Endpoint
+      PortfolioMonitorWeb.Endpoint,
       # Starts a worker by calling: PortfolioMonitor.Worker.start_link(arg)
       # {PortfolioMonitor.Worker, arg},
+      PortfolioMonitor.Sync.Supervisor
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
