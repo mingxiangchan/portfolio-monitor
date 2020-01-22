@@ -22,21 +22,21 @@ defmodule PortfolioMonitor.Portfolio do
     Repo.all(OrderDetail)
   end
 
-  def create_position(data) do
+  def create_position(changes) do
     %Position{}
-    |> Position.changeset(%{data: data})
+    |> Position.changeset(changes)
     |> Repo.insert!()
   end
 
-  def create_margin(data) do
+  def create_margin(changes) do
     %Margin{}
-    |> Margin.changeset(%{data: data})
+    |> Margin.changeset(changes)
     |> Repo.insert!()
   end
 
-  def create_order_detail(data) do
+  def create_order_detail(changes) do
     %OrderDetail{}
-    |> OrderDetail.changeset(%{data: data})
+    |> OrderDetail.changeset(changes)
     |> Repo.insert!()
   end
 end

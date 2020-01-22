@@ -4,6 +4,7 @@ defmodule PortfolioMonitor.Portfolio.Margin do
 
   schema "margins" do
     field :data, {:array, :map}
+    belongs_to :bitmex_acc, PortfolioMonitor.Account.BitmexAcc
 
     timestamps()
   end
@@ -11,7 +12,7 @@ defmodule PortfolioMonitor.Portfolio.Margin do
   @doc false
   def changeset(margin, attrs) do
     margin
-    |> cast(attrs, [:data])
-    |> validate_required([:data])
+    |> cast(attrs, [:data, :bitmex_acc_id])
+    |> validate_required([:data, :bitmex_acc_id])
   end
 end
