@@ -19,7 +19,8 @@ defmodule PortfolioMonitor.Sync.Supervisor do
     {:ok, pid}
   end
 
-  def start_child(auth_config) do
+  def start_child(bitmex_acc) do
+    auth_config = Map.take(bitmex_acc, [:api_key, :api_secret])
     {:ok, pid} = DynamicSupervisor.start_child(__MODULE__, {Worker, %{}})
     Worker.authenticate(pid, auth_config)
     Worker.subscribe(pid, ["order", "margin", "position"])
@@ -28,7 +29,6 @@ defmodule PortfolioMonitor.Sync.Supervisor do
 
   defp initialize_workers do
     Account.list_bitmex_accs()
-    |> Enum.map(&Map.take(&1, [:api_key, :api_secret]))
     |> Enum.each(&start_child/1)
   end
 end
