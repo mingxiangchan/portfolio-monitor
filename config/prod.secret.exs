@@ -36,3 +36,7 @@ config :portfolio_monitor, PortfolioMonitorWeb.Endpoint,
 #
 # Then you can assemble a release by calling `mix release`.
 # See `mix help release` for more information.
+
+
+config :portfolio_monitor, :aes_key, "M4__0myz68RiGgag2XpzPF5A4oPfO6f1H5XChHhxvwo="
+config :portfolio_monitor, :secret_key_base, "ttEwRdRVyM2mAgp0Mq2gXYSASyRW257T72QvqjFD/FsOp67Sagf+DZq1mRWjHaKo"

@@ -43,7 +43,8 @@ defmodule PortfolioMonitor.MixProject do
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:ex_bitmex, "~> 0.4"},
-      {:plug_cowboy, "~> 2.0"}
+      {:plug_cowboy, "~> 2.0"},
+      {:ex_crypto, "~> 0.10"}
     ]
   end
 
