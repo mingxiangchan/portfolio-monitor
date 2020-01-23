@@ -5,6 +5,10 @@
     </div>
   <% end %>
 
+  <%= label f, :name %>
+  <%= textarea f, :name %>
+  <%= error_tag f, :name %>
+
   <%= label f, :api_key %>
   <%= textarea f, :api_key %>
   <%= error_tag f, :api_key %>

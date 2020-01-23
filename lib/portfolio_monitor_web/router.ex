@@ -27,6 +27,7 @@ defmodule PortfolioMonitorWeb.Router do
     get "/positions", PositionController, :index
     get "/margins", MarginController, :index
     get "/orders", OrderDetailController, :index
+    get "/bitmex_accs", BitmexAccController, :index
     resources "/experiments", ExperimentController, only: [:index, :create, :update]
   end
 
