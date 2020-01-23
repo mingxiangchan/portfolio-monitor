@@ -42,5 +42,7 @@ defmodule PortfolioMonitorWeb.Endpoint do
     key: "_portfolio_monitor_key",
     signing_salt: "Zyvl07zf"
 
+  plug Pow.Plug.Session, otp_app: :portfolio_monitor
+
   plug PortfolioMonitorWeb.Router
 end

@@ -21,6 +21,7 @@ defmodule PortfolioMonitor.MixProject do
     [
       mod: {PortfolioMonitor.Application, []},
       extra_applications: [:logger, :runtime_tools]
+      
     ]
   end
 
@@ -44,7 +45,8 @@ defmodule PortfolioMonitor.MixProject do
       {:jason, "~> 1.0"},
       {:ex_bitmex, "~> 0.4"},
       {:plug_cowboy, "~> 2.0"},
-      {:ex_crypto, "~> 0.10"}
+      {:ex_crypto, "~> 0.10"},
+      {:pow, "~> 1.0.16"}
     ]
   end
 
