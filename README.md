@@ -14,3 +14,11 @@ iex -S mix
 
 >> Account.create_bitmex_acc(%{api_key: api_key, api_secret: api_secret})
 ```
+
+## Generating AES Key
+
+```
+iex -S mix
+
+>> ExCrypto.generate_aes_key(:aes_256, :base_64) 
+```
