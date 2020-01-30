@@ -13,13 +13,14 @@ defmodule PortfolioMonitor.Account.BitmexAcc do
     has_many :positions, Position
     has_many :order_details, OrderDetail
     has_many :experiments, Experiment
+    belongs_to :user, PortfolioMonitor.Users.User
     timestamps()
   end
 
   @doc false
   def changeset(bitmex_acc, attrs) do
     bitmex_acc
-    |> cast(attrs, [:api_key, :api_secret, :name])
-    |> validate_required([:api_key, :api_secret, :name])
+    |> cast(attrs, [:api_key, :api_secret, :name, :user_id])
+    |> validate_required([:api_key, :api_secret, :name, :user_id])
   end
 end
