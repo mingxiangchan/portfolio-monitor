@@ -11,11 +11,6 @@ database_url =
     For example: ecto://USER:PASS@HOST/DATABASE
     """
 
-config :portfolio_monitor, PortfolioMonitor.Repo,
-  # ssl: true,
-  url: database_url,
-  pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10")
-
 secret_key_base =
   System.get_env("SECRET_KEY_BASE") ||
     raise """
@@ -23,20 +18,24 @@ secret_key_base =
     You can generate one by calling: mix phx.gen.secret
     """
 
+aes_key =
+  System.get_env("AES_KEY") ||
+    raise """
+    environment variable AES_KEY is missing.
+    """
+
+config :portfolio_monitor, PortfolioMonitor.Repo,
+  ssl: true,
+  url: database_url,
+  # free tier has 4 connections, running mix will require 2 each
+  pool_size: 2
+
 config :portfolio_monitor, PortfolioMonitorWeb.Endpoint,
   http: [:inet6, port: String.to_integer(System.get_env("PORT") || "4000")],
-  secret_key_base: secret_key_base
+  secret_key_base: secret_key_base,
+  url: [host: System.get_env("APP_NAME") <> ".gigalixirapp.com", port: 80]
 
-# ## Using releases (Elixir v1.9+)
-#
-# If you are doing OTP releases, you need to instruct Phoenix
-# to start each relevant endpoint:
-#
-#     config :portfolio_monitor, PortfolioMonitorWeb.Endpoint, server: true
-#
-# Then you can assemble a release by calling `mix release`.
-# See `mix help release` for more information.
+# temp
+config :portfolio_monitor, :aes_key, aes_key
 
-
-config :portfolio_monitor, :aes_key, "M4__0myz68RiGgag2XpzPF5A4oPfO6f1H5XChHhxvwo="
-config :portfolio_monitor, :secret_key_base, "ttEwRdRVyM2mAgp0Mq2gXYSASyRW257T72QvqjFD/FsOp67Sagf+DZq1mRWjHaKo"
+config :portfolio_monitor, :secret_key_base, secret_key_base
