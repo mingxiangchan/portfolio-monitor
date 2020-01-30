@@ -5,8 +5,8 @@ defmodule PortfolioMonitorWeb.BitmexAccController do
   alias PortfolioMonitor.Account.BitmexAcc
 
   def index(conn, _params) do
-    bitmex_accs = Account.list_bitmex_accs()
-    render(conn, "index.json", bitmex_accs: bitmex_accs)
+    current_user = Account.current_user_with_accs(conn)
+    render(conn, "index.json", bitmex_accs: current_user.bitmex_accs)
   end
 
   def new(conn, _params) do

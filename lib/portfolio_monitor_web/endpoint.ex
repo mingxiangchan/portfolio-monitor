@@ -2,8 +2,14 @@ defmodule PortfolioMonitorWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :portfolio_monitor
 
   socket "/socket", PortfolioMonitorWeb.UserSocket,
-    websocket: true,
-    longpoll: false
+    longpoll: false,
+    websocket: [
+      connect_info: [:peer_data, :x_headers, :uri, session: [
+        key: "_portfolio_monitor_key",
+        signing_salt: "Zyvl07zf",
+        store: :cookie, 
+      ]]
+    ]
 
   # Serve at "/" the static files from "priv/static" directory.
   #

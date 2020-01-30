@@ -8,6 +8,7 @@ defmodule PortfolioMonitorWeb.Router do
     plug :fetch_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug :put_csrf_token
   end
 
   pipeline :protected do
@@ -51,4 +52,13 @@ defmodule PortfolioMonitorWeb.Router do
   # scope "/api", PortfolioMonitorWeb do
   #   pipe_through :api
   # end
+
+  defp put_csrf_token(conn, _) do
+    if conn.assigns[:current_user] do
+      token = URI.encode_www_form(Plug.CSRFProtection.get_csrf_token())
+      assign(conn, :csrf_token, token)
+    else
+      conn
+    end
+  end
 end

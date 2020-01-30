@@ -4,6 +4,7 @@ defmodule PortfolioMonitor.Account do
 
   alias PortfolioMonitor.Account.BitmexAcc
   alias PortfolioMonitor.Sync
+  alias PortfolioMonitor.Users.User
 
   def list_bitmex_accs do
     Repo.all(BitmexAcc)
@@ -25,5 +26,10 @@ defmodule PortfolioMonitor.Account do
 
   def change_bitmex_acc(bitmex_acc) do
     BitmexAcc.changeset(bitmex_acc, %{})
+  end
+
+  def current_user_with_accs(conn) do
+    user = Pow.Plug.current_user(conn)
+    Repo.one(from(u in User, preload: [:bitmex_accs]), user.id)
   end
 end
