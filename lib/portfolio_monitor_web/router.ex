@@ -15,7 +15,7 @@ defmodule PortfolioMonitorWeb.Router do
     plug Pow.Plug.RequireAuthenticated,
       error_handler: Pow.Phoenix.PlugErrorHandler
   end
-  
+
   pipeline :api_protected do
     plug Pow.Plug.RequireAuthenticated, error_handler: PortfolioMonitorWeb.APIAuthErrorHandler
   end
@@ -41,9 +41,6 @@ defmodule PortfolioMonitorWeb.Router do
   scope "/api", PortfolioMonitorWeb do
     pipe_through [:api, :api_protected]
 
-    get "/positions", PositionController, :index
-    get "/margins", MarginController, :index
-    get "/orders", OrderDetailController, :index
     get "/bitmex_accs", BitmexAccController, :index
     resources "/experiments", ExperimentController, only: [:index, :create, :update]
   end

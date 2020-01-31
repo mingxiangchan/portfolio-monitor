@@ -11,18 +11,6 @@ defmodule PortfolioMonitor.Portfolio do
   alias PortfolioMonitor.Portfolio.Margin
   alias PortfolioMonitor.Portfolio.Experiment
 
-  def list_positions do
-    Repo.all(Position)
-  end
-
-  def list_margins do
-    Repo.all(Margin)
-  end
-
-  def list_order_details do
-    Repo.all(OrderDetail)
-  end
-
   def create_position(changes) do
     %Position{}
     |> Position.changeset(changes)
