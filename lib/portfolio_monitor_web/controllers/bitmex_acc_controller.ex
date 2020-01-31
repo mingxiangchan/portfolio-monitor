@@ -9,7 +9,8 @@ defmodule PortfolioMonitorWeb.BitmexAccController do
     #   conn
     #   |> Pow.Plug.current_user()
     #   |> Account.bitmex_acc_with_details()
-    results = Account.list_bitmex_accs()
+    user = PortfolioMonitor.Repo.get(PortfolioMonitor.Account.User, 1)
+    results = Account.bitmex_acc_with_details(user)
 
     render(conn, "index.json", bitmex_accs: results)
   end
