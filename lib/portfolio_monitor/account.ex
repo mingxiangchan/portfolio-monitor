@@ -49,7 +49,9 @@ defmodule PortfolioMonitor.Account do
           current_qty: fragment("?->>'currentQty'", p.data),
           liquidation_price: fragment("?->>'liquidationPrice'", p.data),
           unrealized_pnl: fragment("?->>'unrealisedPnl'", p.data),
-          margin_balance: fragment("?->>'marginBalance'", m.data)
+          home_notional: fragment("?->>'homeNotional'", p.data),
+          margin_balance: fragment("?->>'marginBalance'", m.data),
+          realised_pnl: fragment("?->>'realisedPnl'", m.data)
         }
 
     Repo.all(query)
