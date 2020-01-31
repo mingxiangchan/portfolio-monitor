@@ -13,10 +13,10 @@ defmodule PortfolioMonitorWeb.BitmexAccView do
       current_qty: bitmex_acc.current_qty,
       margin_balance: bitmex_acc.margin_balance,
       liquidation_price: bitmex_acc.liquidation_price,
-      unrealized_pnl: bitmex_acc.unrealized_pnl,
+      unrealised_pnl: bitmex_acc.unrealised_pnl,
       available_margin: bitmex_acc.available_margin,
       wallet_balance: bitmex_acc.wallet_balance,
-      realized_pnl: bitmex_acc.realized_pnl,
+      realised_pnl: bitmex_acc.realised_pnl,
       home_notional: bitmex_acc.home_notional
     }
   end

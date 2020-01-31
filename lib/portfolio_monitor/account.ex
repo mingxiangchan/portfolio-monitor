@@ -48,7 +48,7 @@ defmodule PortfolioMonitor.Account do
           # will return strings, which is fine because may be a float
           current_qty: fragment("?->>'currentQty'", p.data),
           liquidation_price: fragment("?->>'liquidationPrice'", p.data),
-          unrealized_pnl: fragment("?->>'unrealisedPnl'", p.data),
+          unrealised_pnl: fragment("?->>'unrealisedPnl'", p.data),
           home_notional: fragment("?->>'homeNotional'", p.data),
           margin_balance: fragment("?->>'marginBalance'", m.data),
           realised_pnl: fragment("?->>'realisedPnl'", m.data)
