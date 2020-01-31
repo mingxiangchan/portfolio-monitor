@@ -15,11 +15,13 @@ defmodule PortfolioMonitorWeb.UserSocket do
   #
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
+  @spec connect(any, any, any) :: {:error, %{reason: <<_::96>>}} | {:ok, any}
   def connect(_params, socket, connect_info) do
-    case authorized?(connect_info) do
-      :ok -> {:ok, socket}  
-      :not_found -> {:error, %{reason: "unauthorized"}}
-    end
+    {:ok, socket} 
+    # case authorized?(connect_info) do
+    #   :ok -> {:ok, socket}  
+    #   :not_found -> {:error, %{reason: "unauthorized"}}
+    # end
   end
 
   # Socket id's are topics that allow you to identify all sockets for a given user:
