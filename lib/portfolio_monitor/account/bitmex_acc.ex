@@ -13,7 +13,7 @@ defmodule PortfolioMonitor.Account.BitmexAcc do
     has_many :positions, Position
     has_many :order_details, OrderDetail
     has_many :experiments, Experiment
-    belongs_to :user, PortfolioMonitor.Users.User
+    belongs_to :user, PortfolioMonitor.Account.User
     timestamps()
   end
 

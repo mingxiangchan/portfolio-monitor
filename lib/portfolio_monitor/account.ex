@@ -4,7 +4,7 @@ defmodule PortfolioMonitor.Account do
 
   alias PortfolioMonitor.Account.BitmexAcc
   alias PortfolioMonitor.Sync
-  alias PortfolioMonitor.Users.User
+  alias PortfolioMonitor.Account.User
 
   def list_bitmex_accs do
     Repo.all(BitmexAcc)
