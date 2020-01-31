@@ -7,8 +7,15 @@ defmodule PortfolioMonitorWeb.BitmexAccView do
   end
 
   def render("bitmex_acc.json", %{bitmex_acc: bitmex_acc}) do
-    %{id: bitmex_acc.id,
-      name: bitmex_acc.name
+    %{
+      id: bitmex_acc.id,
+      name: bitmex_acc.name,
+      current_qty: bitmex_acc.current_qty,
+      margin_balance: bitmex_acc.margin_balance,
+      liquidation_price: bitmex_acc.liquidation_price,
+      unrealized_pnl: bitmex_acc.unrealized_pnl,
+      available_margin: bitmex_acc.available_margin,
+      wallet_balance: bitmex_acc.wallet_balance
     }
   end
 end

@@ -3,7 +3,7 @@ defmodule PortfolioMonitor.Portfolio.OrderDetail do
   import Ecto.Changeset
 
   schema "order_details" do
-    field :data, {:array, :map}
+    field :data, :map
     belongs_to :bitmex_acc, PortfolioMonitor.Account.BitmexAcc
 
     timestamps()

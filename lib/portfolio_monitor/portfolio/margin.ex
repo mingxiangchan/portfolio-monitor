@@ -3,7 +3,7 @@ defmodule PortfolioMonitor.Portfolio.Margin do
   import Ecto.Changeset
 
   schema "margins" do
-    field :data, {:array, :map}
+    field :data, :map
     belongs_to :bitmex_acc, PortfolioMonitor.Account.BitmexAcc
 
     timestamps()

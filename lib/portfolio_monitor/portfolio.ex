@@ -5,23 +5,12 @@ defmodule PortfolioMonitor.Portfolio do
 
   import Ecto.Query, warn: false
   alias PortfolioMonitor.Repo
+  alias PortfolioMonitor.Account
 
   alias PortfolioMonitor.Portfolio.Position
   alias PortfolioMonitor.Portfolio.OrderDetail
   alias PortfolioMonitor.Portfolio.Margin
   alias PortfolioMonitor.Portfolio.Experiment
-
-  def list_positions do
-    Repo.all(Position)
-  end
-
-  def list_margins do
-    Repo.all(Margin)
-  end
-
-  def list_order_details do
-    Repo.all(OrderDetail)
-  end
 
   def create_position(changes) do
     %Position{}
@@ -30,6 +19,8 @@ defmodule PortfolioMonitor.Portfolio do
   end
 
   def create_margin(changes) do
+    cache_bitmex_acc_details(changes)
+
     %Margin{}
     |> Margin.changeset(changes)
     |> Repo.insert!()
@@ -66,5 +57,24 @@ defmodule PortfolioMonitor.Portfolio do
 
   def change_experiment(%Experiment{} = experiment) do
     Experiment.changeset(experiment, %{})
+  end
+
+  defp cache_bitmex_acc_details(%{data: data, bitmex_acc_id: id}) do
+    case data do
+      %{"availableMargin" => available_margin} ->
+        Account.BitmexAcc
+        |> Repo.get(id)
+        |> Account.change_bitmex_acc(%{available_margin: available_margin})
+        |> Repo.update()
+
+      %{"walletBalance" => wallet_balance} ->
+        Account.BitmexAcc
+        |> Repo.get(id)
+        |> Account.change_bitmex_acc(%{wallet_balance: wallet_balance})
+        |> Repo.update()
+
+      _ ->
+        nil
+    end
   end
 end

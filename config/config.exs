@@ -29,7 +29,6 @@ config :phoenix, :json_library, Jason
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env()}.exs"
 
-
 config :portfolio_monitor, :pow,
-  user: PortfolioMonitor.Users.User,
+  user: PortfolioMonitor.Account.User,
   repo: PortfolioMonitor.Repo

@@ -1,4 +1,4 @@
-defmodule PortfolioMonitor.Users.User do
+defmodule PortfolioMonitor.Account.User do
   use Ecto.Schema
   use Pow.Ecto.Schema
   alias PortfolioMonitor.Account.BitmexAcc
