@@ -60,21 +60,22 @@ defmodule PortfolioMonitor.Portfolio do
   end
 
   defp cache_bitmex_acc_details(%{data: data, bitmex_acc_id: id}) do
-    case data do
-      %{"availableMargin" => available_margin} ->
-        Account.BitmexAcc
-        |> Repo.get(id)
-        |> Account.change_bitmex_acc(%{available_margin: available_margin})
-        |> Repo.update()
+    changes =
+      data
+      |> Map.take(["walletBalance", "availableMargin"])
+      |> Enum.reduce(%{}, fn {k, v}, acc ->
+        case k do
+          "walletBalance" -> Map.put(acc, :wallet_balance, v)
+          "availableMargin" -> Map.put(acc, :available_margin, v)
+          _ -> Map.put(acc, k, v)
+        end
+      end)
 
-      %{"walletBalance" => wallet_balance} ->
-        Account.BitmexAcc
-        |> Repo.get(id)
-        |> Account.change_bitmex_acc(%{wallet_balance: wallet_balance})
-        |> Repo.update()
-
-      _ ->
-        nil
+    if map_size(changes) > 0 do
+      Account.BitmexAcc
+      |> Repo.get(id)
+      |> Account.change_bitmex_acc(changes)
+      |> Repo.update()
     end
   end
 end
