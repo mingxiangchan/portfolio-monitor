@@ -10,12 +10,12 @@ defmodule PortfolioMonitorWeb.BitmexAccView do
     %{
       id: bitmex_acc.id,
       name: bitmex_acc.name,
-      current_qty: 123,
-      margin_balance: 123,
-      liquidation_price: 123,
-      unrealized_pnl: 123,
-      available_margin: 123,
-      wallet_balance: 123
+      current_qty: bitmex_acc.current_qty,
+      margin_balance: bitmex_acc.margin_balance,
+      liquidation_price: bitmex_acc.liquidation_price,
+      unrealized_pnl: bitmex_acc.unrealized_pnl,
+      available_margin: bitmex_acc.available_margin,
+      wallet_balance: bitmex_acc.wallet_balance
     }
   end
 end

@@ -5,8 +5,12 @@ defmodule PortfolioMonitorWeb.BitmexAccController do
   alias PortfolioMonitor.Account.BitmexAcc
 
   def index(conn, _params) do
-    user = Pow.Plug.current_user(conn)
-    render(conn, "index.json", bitmex_accs: [])
+    results =
+      conn
+      |> Pow.Plug.current_user()
+      |> Account.bitmex_acc_with_details()
+
+    render(conn, "index.json", bitmex_accs: results)
   end
 
   def new(conn, _params) do
