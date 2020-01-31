@@ -10,8 +10,9 @@ defmodule PortfolioMonitor.Account do
     Repo.all(BitmexAcc)
   end
 
-  def create_bitmex_acc(attrs \\ %{}) do
-    %BitmexAcc{}
+  def create_bitmex_acc(user \\ %User{}, attrs \\ %{}) do
+    user
+    |> Ecto.build_assoc(:bitmex_accs, %{})
     |> BitmexAcc.changeset(attrs)
     |> Repo.insert()
     |> case do
@@ -30,6 +31,7 @@ defmodule PortfolioMonitor.Account do
 
   def current_user_with_accs(conn) do
     user = Pow.Plug.current_user(conn)
-    Repo.one(from(u in User, preload: [:bitmex_accs]), user.id)
+    query = from u in User, where: u.id == ^user.id, preload: [:bitmex_accs]
+    Repo.one(query)
   end
 end

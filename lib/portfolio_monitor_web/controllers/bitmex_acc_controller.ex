@@ -15,7 +15,9 @@ defmodule PortfolioMonitorWeb.BitmexAccController do
   end
 
   def create(conn, %{"bitmex_acc" => bitmex_acc_params}) do
-    case Account.create_bitmex_acc(bitmex_acc_params) do
+    user = Pow.Plug.current_user(conn)
+
+    case Account.create_bitmex_acc(user, bitmex_acc_params) do
       {:ok, _bitmex_acc} ->
         conn
         |> put_flash(:info, "Bitmex acc created successfully.")
