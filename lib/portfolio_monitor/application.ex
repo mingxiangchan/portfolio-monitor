@@ -6,6 +6,8 @@ defmodule PortfolioMonitor.Application do
   use Application
 
   def start(_type, _args) do
+    render_service_path = "#{File.cwd!()}/assets"
+    pool_size = 4
     # List all child processes to be supervised
     children = [
       # Start the Ecto repository
@@ -14,7 +16,8 @@ defmodule PortfolioMonitor.Application do
       PortfolioMonitorWeb.Endpoint,
       # Starts a worker by calling: PortfolioMonitor.Worker.start_link(arg)
       # {PortfolioMonitor.Worker, arg},
-      PortfolioMonitor.Sync.Supervisor
+      PortfolioMonitor.Sync.Supervisor,
+      {ReactRender, [render_service_path: render_service_path, pool_size: pool_size]}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

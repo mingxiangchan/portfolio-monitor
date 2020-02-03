@@ -46,7 +46,8 @@ defmodule PortfolioMonitor.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:ex_crypto, "~> 0.10"},
       {:pow, "~> 1.0.16"},
-      {:cors_plug, "~> 2.0"}
+      {:cors_plug, "~> 2.0"},
+      {:react_render, "~> 3.0.0"}
     ]
   end
 
