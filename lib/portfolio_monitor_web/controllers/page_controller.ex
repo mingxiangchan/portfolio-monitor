@@ -2,7 +2,7 @@ defmodule PortfolioMonitorWeb.PageController do
   use PortfolioMonitorWeb, :controller
 
   def index(conn, _params) do
-    component_path = "#{File.cwd!()}/assets/js/components/App.js"
+    component_path = "#{File.cwd!()}/assets/js/components/App.jsx"
     props = %{name: "Testing"}
 
     {:safe, appComponent} = ReactRender.render(component_path, props)

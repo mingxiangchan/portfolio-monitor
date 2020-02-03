@@ -1,4 +1,6 @@
+import antdcss from 'antd/dist/antd.css'
 import css from "../css/app.css"
+
 import "phoenix_html"
 import socket from "./socket"
 import {hydrateClient} from 'react_render/priv/client'
