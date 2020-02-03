@@ -22,11 +22,3 @@ iex -S mix
 
 >> ExCrypto.generate_aes_key(:aes_256, :base_64) 
 ```
-
-## DEV: Seed a single user
-```
-iex -S mix
-
->> user =  %PortfolioMonitor.Account.User{email: "test@test.com", password: "test123123"}  
->> user |> Repo.insert
-```
