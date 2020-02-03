@@ -1,5 +1,6 @@
 import React from 'react'
 import {Layout, Menu, Row, Col} from 'antd';
+import AccCreateForm from './AccCreateForm'
 
 const {Header, Footer, Sider, Content} = Layout;
 
@@ -38,7 +39,7 @@ const App = () => (
           <Layout style={{marginLeft: 200}}>
             <Content style={{margin: '24px 16px 0', overflow: 'initial'}}>
               <div style={{padding: 24, background: '#fff', textAlign: 'center', minHeight: '85vh'}}>
-                Content
+                <AccCreateForm />
               </div>
             </Content>
           </Layout>
