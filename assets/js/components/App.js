@@ -8,7 +8,7 @@ const App = () => (
   <Row>
     <Col span={24}>
       <Layout>
-        <Header>
+        <Header style={{ position: 'fixed', zIndex: 1, width: '100%' }}>
           <Menu
             theme="dark"
             mode="horizontal"
@@ -16,7 +16,7 @@ const App = () => (
             <Menu.Item key="1">Home</Menu.Item>
           </Menu>
         </Header>
-        <Layout>
+        <Layout style={{ marginTop: 64 }}>
           <Sider
             width={200}
             style={{
