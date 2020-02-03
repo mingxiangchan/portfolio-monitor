@@ -1,16 +1,14 @@
 import React from 'react'
-import { Form, Input, Switch, Button, Typography } from 'antd'
-
-const { Title } = Typography
+import { Form, Input, Switch, Button, Modal } from 'antd'
 
 const {TextArea} = Input
 
-const AccCreateForm = ({form}) => {
+const AccCreateForm = ({form, visible, setVisible}) => {
   const { getFieldDecorator } = form
 
   const formItemlayout = {
     labelCol: {span: 6},
-    wrapperCol: {span: 12},
+    wrapperCol: {span: 16},
   }
 
   const handleSubmit = e => {
@@ -22,15 +20,27 @@ const AccCreateForm = ({form}) => {
       // submit data to backend here
 
       form.resetFields();
+      setVisible(false);
     });
   }
 
+  const handleCancel = () => {
+    form.resetFields();
+    setVisible(false);
+  };
+
   return (
-    <>
-      <Title>Create BitMex Account</Title>
+    <Modal
+      title="Add New BitMex Account"
+      visible={visible}
+      okText="Submit"
+      onOk={handleSubmit}
+      onCancel={handleCancel}
+      width={720}
+    >
       <Form onSubmit={handleSubmit} {...formItemlayout}>
 
-        <Form.Item label="Name this Account">
+        <Form.Item label="Account Name">
           {getFieldDecorator('name', {
             rules: [{ required: true, message: 'Please input the account name' }],
           })(<Input />)}
@@ -75,7 +85,7 @@ const AccCreateForm = ({form}) => {
           </Button>
         </Form.Item>
       </Form>
-    </>
+    </Modal>
   )
 }
 
