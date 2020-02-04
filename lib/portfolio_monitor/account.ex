@@ -27,6 +27,16 @@ defmodule PortfolioMonitor.Account do
     |> BitmexAcc.changeset(changes)
   end
 
+  def update_bitmex_acc(%BitmexAcc{} = bitmex_acc, attrs) do
+    bitmex_acc
+    |> BitmexAcc.changeset(attrs)
+    |> Repo.update()
+  end
+
+  def delete_bitmex_acc(%BitmexAcc{} = bitmex_acc) do
+    Repo.delete(bitmex_acc)
+  end
+
   def bitmex_acc_with_details(user) do
     query =
       from b in BitmexAcc,
