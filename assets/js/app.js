@@ -1,17 +1,11 @@
 import antdcss from 'antd/dist/antd.css'
 import css from "../css/app.css"
+import React from "react"
+import ReactDOM from 'react-dom'
 
 import "phoenix_html"
 import socket from "./socket"
-import {hydrateClient} from 'react_render/priv/client'
 import App from "./components/App"
 
-const COMPONENTS = {
-  App,
-}
+ReactDOM.render(<App />, document.querySelector("#react-app-root"))
 
-function getComponentFromStringName(name) {
-  return COMPONENTS[name] || null
-}
-
-hydrateClient(getComponentFromStringName)

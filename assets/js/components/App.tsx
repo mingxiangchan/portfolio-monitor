@@ -1,6 +1,5 @@
 import React from 'react'
 import {Layout, Row, Col} from 'antd';
-import AccCreateForm from './AccCreateForm'
 import TopNav from './TopNav'
 import SideNav from './SideNav'
 
@@ -11,7 +10,7 @@ const App = () => (
     <Col span={24}>
       <Layout>
         <TopNav />
-        <Layout style={{ marginTop: 64 }}>
+        <Layout style={{marginTop: 64}}>
           <SideNav />
           <Layout style={{marginLeft: 200}}>
             <Content style={{margin: '24px 16px 0', overflow: 'initial'}}>

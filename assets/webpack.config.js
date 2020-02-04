@@ -16,18 +16,39 @@ function minimizers() {
 }
 
 module.exports = (env, options) => ({
+  devtool: 'source-map',
   optimization: {
     minimizer: minimizers(),
   },
   entry: {
-    './js/app.js': glob.sync('./vendor/**/*.js').concat(['./js/app.js'])
+    app: [
+      'core-js/stable',
+      'regenerator-runtime/runtime',
+      'phoenix_html',
+      './css/app.css',
+      './js/app.js',
+    ],
   },
   output: {
-    filename: 'app.js',
-    path: path.resolve(__dirname, '../priv/static/js')
+    path: path.resolve(__dirname, '..', 'priv', 'static'),
+    filename: 'js/[name].js',
+    chunkFilename: 'js/[name].js',
+    publicPath: '/',
   },
   module: {
     rules: [
+      {
+        test: /\.tsx?$/,
+        use: [
+          {
+            loader: 'babel-loader',
+          },
+          {
+            loader: 'ts-loader',
+          },
+        ],
+        exclude: /node_modules/,
+      },
       {
         test: /\.js$/,
         exclude: /node_modules/,
@@ -39,13 +60,23 @@ module.exports = (env, options) => ({
         test: /\.css$/,
         use: [MiniCssExtractPlugin.loader, 'css-loader']
       }
+
     ]
   },
   plugins: [
-    new MiniCssExtractPlugin({ filename: '../css/app.css' }),
-    new CopyWebpackPlugin([{ from: 'static/', to: '../' }])
+    new CopyWebpackPlugin([
+      {
+        from: path.resolve(__dirname, 'static'),
+        to: path.resolve(__dirname, '..', 'priv', 'static'),
+      },
+    ]),
+    new MiniCssExtractPlugin({
+      filename: 'css/[name].css',
+      chunkFilename: '[id].css',
+    }),
   ],
   resolve: {
+    extensions: ['.tsx', '.ts', '.js'],
     symlinks: false
   }
 });
