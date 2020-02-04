@@ -1,5 +1,6 @@
 defmodule PortfolioMonitor.Sync.Supervisor do
   alias PortfolioMonitor.Sync.Worker
+  alias PortfolioMonitor.Sync.GeneralBtcInfoWorker
   alias PortfolioMonitor.Account
 
   use DynamicSupervisor
@@ -13,7 +14,8 @@ defmodule PortfolioMonitor.Sync.Supervisor do
     {:ok, pid} = DynamicSupervisor.init(strategy: :one_for_one)
 
     Task.start(fn ->
-      #initialize_workers()
+      start_general_btc_info_worker()
+      # initialize_workers()
     end)
 
     {:ok, pid}
@@ -38,5 +40,11 @@ defmodule PortfolioMonitor.Sync.Supervisor do
   defp initialize_workers do
     Account.list_bitmex_accs()
     |> Enum.each(&start_child/1)
+  end
+
+  def start_general_btc_info_worker do
+    child_spec = {GeneralBtcInfoWorker, %{subscribe: ["trade:XBTUSD"]}}
+
+    DynamicSupervisor.start_child(__MODULE__, child_spec)
   end
 end

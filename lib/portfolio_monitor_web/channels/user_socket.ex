@@ -3,6 +3,7 @@ defmodule PortfolioMonitorWeb.UserSocket do
 
   ## Channels
   channel "bitmex_acc:*", PortfolioMonitorWeb.BitmexAccChannel
+  channel "general_btc_info", PortfolioMonitorWeb.GeneralBtcInfoChannel
 
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After
@@ -17,7 +18,7 @@ defmodule PortfolioMonitorWeb.UserSocket do
   # performing token verification on connect.
   def connect(_params, socket, connect_info) do
     case authorized?(connect_info) do
-      :ok -> {:ok, socket}  
+      :ok -> {:ok, socket}
       :not_found -> {:error, %{reason: "unauthorized"}}
     end
   end
@@ -35,21 +36,27 @@ defmodule PortfolioMonitorWeb.UserSocket do
   def id(_socket), do: nil
 
   defp authorized?(connect_info) do
-    case  connect_info do
-      %{session: nil} -> :not_found
-      %{session: %{"portfolio_monitor_auth" => session_key}} ->
-        backend = Keyword.merge(
-          Application.get_env(:portfolio_monitor, :pow, []), 
-          [backend:  Pow.Store.Backend.EtsCache] 
-        )
-        case Pow.Store.CredentialsCache.get(backend, session_key) do
-          {_, _} -> 
-            :ok
-          :not_found -> 
-            :not_found
-        end  
-      _ -> :not_found       
-    end
+    case connect_info do
+      %{session: nil} ->
+        :not_found
 
+      %{session: %{"portfolio_monitor_auth" => session_key}} ->
+        backend =
+          Keyword.merge(
+            Application.get_env(:portfolio_monitor, :pow, []),
+            backend: Pow.Store.Backend.EtsCache
+          )
+
+        case Pow.Store.CredentialsCache.get(backend, session_key) do
+          {_, _} ->
+            :ok
+
+          :not_found ->
+            :not_found
+        end
+
+      _ ->
+        :not_found
+    end
   end
 end
