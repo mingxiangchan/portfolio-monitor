@@ -11,6 +11,10 @@ defmodule PortfolioMonitor.Account do
     Repo.all(BitmexAcc)
   end
 
+  def get_bitmex_acc(id) do
+    Repo.get(BitmexAcc, id)
+  end
+
   def create_bitmex_acc(user \\ %User{}, attrs \\ %{}) do
     user
     |> Ecto.build_assoc(:bitmex_accs, %{})
@@ -18,9 +22,7 @@ defmodule PortfolioMonitor.Account do
     |> Repo.insert()
     |> case do
       {:ok, bitmex_acc} ->
-        Sync.Supervisor.start_child(bitmex_acc)
         {:ok, bitmex_acc}
-
       error ->
         error
     end

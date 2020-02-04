@@ -10,13 +10,7 @@ defmodule PortfolioMonitor.Sync.Supervisor do
 
   @impl true
   def init(_init_arg) do
-    {:ok, pid} = DynamicSupervisor.init(strategy: :one_for_one)
-
-    Task.start(fn ->
-      #initialize_workers()
-    end)
-
-    {:ok, pid}
+    DynamicSupervisor.init(strategy: :one_for_one)
   end
 
   def start_child(bitmex_acc) do
@@ -26,7 +20,7 @@ defmodule PortfolioMonitor.Sync.Supervisor do
       Worker,
       %{
         acc_id: bitmex_acc.id,
-        auth_subscribe: ["order", "margin", "position"],
+        auth_subscribe: ["order", "margin", "position", "trade"],
         config: auth_config,
         name: String.to_atom("BitMexAccWorker.#{bitmex_acc.id}")
       }
