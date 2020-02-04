@@ -63,5 +63,6 @@ channel.on("position", resp => console.log("position", resp))
 channel.on("margin", resp => console.log("margin", resp))
 channel.on("order", resp => console.log("order", resp))
 channel.on("trade", resp => console.log("trade", resp))
+channel.on("historical", resp => console.log("historical", resp))
 
 export default socket

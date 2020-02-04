@@ -15,4 +15,15 @@ defmodule PortfolioMonitorWeb.BitmexAccView do
       notes: bitmex_acc.notes
     }
   end
+
+  def render("error.json", %{message: message}) do
+    %{message: message}
+  end
+
+  def render("success.json", %{action: action}) do
+    %{
+      message: "Success",
+      action: action
+    }
+  end
 end

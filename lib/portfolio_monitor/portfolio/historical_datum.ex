@@ -5,6 +5,7 @@ defmodule PortfolioMonitor.Portfolio.HistoricalDatum do
   schema "historical_data" do
     field :btc_price, :integer
     field :wallet_balance, :integer
+    belongs_to :bitmex_acc, PortfolioMonitor.Account.BitmexAcc
 
     timestamps()
   end

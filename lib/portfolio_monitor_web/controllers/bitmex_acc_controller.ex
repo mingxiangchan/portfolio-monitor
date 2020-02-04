@@ -13,22 +13,32 @@ defmodule PortfolioMonitorWeb.BitmexAccController do
     render(conn, "index.json", bitmex_accs: results)
   end
 
-  def new(conn, _params) do
-    changeset = Account.change_bitmex_acc(%BitmexAcc{})
-    render(conn, "new.html", changeset: changeset)
-  end
-
   def create(conn, %{"bitmex_acc" => bitmex_acc_params}) do
     user = Pow.Plug.current_user(conn)
 
     case Account.create_bitmex_acc(user, bitmex_acc_params) do
-      {:ok, _bitmex_acc} ->
-        conn
-        |> put_flash(:info, "Bitmex acc created successfully.")
-        |> redirect(to: "/")
-
+      {:ok, bitmex_acc} ->
+        render(conn, "bitmex_acc.json", bitmex_acc: bitmex_acc)
       {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "new.html", changeset: changeset)
+        render(conn, "error.json", message: "Error")
     end
   end
+  
+  def update(conn, %{"id" => id, "bitmex_acc" => bitmex_acc_params}) do
+    bitmex_acc = Account.get_bitmex_acc(id)
+
+    case Account.update_bitmex_acc(bitmex_acc, bitmex_acc_params) do
+      {:ok, bitmex_acc} ->
+        render(conn, "bitmex_acc.json", bitmex_acc: bitmex_acc)
+      {:error, %Ecto.Changeset{} = changeset} ->
+        render(conn, "error.json", message: "Error")
+    end
+  end
+
+  def delete(conn, %{"id" => id}) do
+    bitmex_acc = Account.get_bitmex_acc(id)
+    {:ok, _bitmex_acc} = Account.delete_bitmex_acc(bitmex_acc)
+    render(conn, "success.json", action: "Delete")
+  end
+
 end
