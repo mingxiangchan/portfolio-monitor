@@ -63,7 +63,5 @@ generalChannel.join()
 //   .receive("error", resp => { console.log("Unable to join", resp) })
 
 // channel.on("position", resp => console.log("position", resp))
-// channel.on("margin", resp => console.log("margin", resp))
-// channel.on("order", resp => console.log("order", resp))
 
 export default socket

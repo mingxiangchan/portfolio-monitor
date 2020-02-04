@@ -14,7 +14,8 @@ defmodule PortfolioMonitor.Sync.Supervisor do
     {:ok, pid} = DynamicSupervisor.init(strategy: :one_for_one)
 
     Task.start(fn ->
-      #start_general_btc_info_worker()
+      nil
+      # start_general_btc_info_worker()
       # initialize_workers()
     end)
 
@@ -28,7 +29,7 @@ defmodule PortfolioMonitor.Sync.Supervisor do
       Worker,
       %{
         acc_id: bitmex_acc.id,
-        auth_subscribe: ["order", "margin", "position"],
+        auth_subscribe: ["order", "margin", "position", "trade"],
         config: auth_config,
         name: String.to_atom("BitMexAccWorker.#{bitmex_acc.id}")
       }
