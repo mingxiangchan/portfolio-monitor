@@ -2,7 +2,8 @@ import React, {useState, useEffect} from 'react'
 import {Layout, Menu, Typography, Button, Spin} from 'antd'
 import moment from 'moment'
 import {generalChannel} from "../socket"
-import axios from 'axios'
+
+const url = "https://testnet.bitmex.com/api/v1/trade/bucketed?binSize=1d&partial=false&symbol=XBTUSD&count=1&reverse=true"
 
 const {Title} = Typography;
 const {Sider} = Layout
@@ -12,6 +13,10 @@ const SideNav = () => {
   const [price, changePrice] = useState(0)
   const [loaded, changeLoaded] = useState(false)
   const [openPrice, changeOpenPrice] = useState(1)
+
+  generalChannel.on("openingPrice", resp => {
+    console.log(resp)
+  })
 
   // @ts-ignore
   generalChannel.on("price", resp => {
