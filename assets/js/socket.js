@@ -53,14 +53,18 @@ let socket = new Socket("/socket", {params: {_csrf_token: window.csrfToken}})
 // Finally, connect to the socket:
 socket.connect()
 
-// Now that you are connected, you can join channels with a topic:
-let channel = socket.channel("bitmex_acc:2", {})
-channel.join()
-  .receive("ok", resp => { console.log("Joined successfully", resp) })
-  .receive("error", resp => { console.log("Unable to join", resp) })
+const generalChannel = socket.channel("general_btc_info", {})
+generalChannel.join()
+export generalChannel
 
-channel.on("position", resp => console.log("position", resp))
-channel.on("margin", resp => console.log("margin", resp))
-channel.on("order", resp => console.log("order", resp))
+// Now that you are connected, you can join channels with a topic:
+// let channel = socket.channel("bitmex_acc:2", {})
+// channel.join()
+//   .receive("ok", resp => { console.log("Joined successfully", resp) })
+//   .receive("error", resp => { console.log("Unable to join", resp) })
+
+// channel.on("position", resp => console.log("position", resp))
+// channel.on("margin", resp => console.log("margin", resp))
+// channel.on("order", resp => console.log("order", resp))
 
 export default socket
