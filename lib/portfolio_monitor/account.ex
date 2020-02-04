@@ -26,24 +26,13 @@ defmodule PortfolioMonitor.Account do
   def bitmex_acc_with_details(user) do
     query =
       from b in BitmexAcc,
-        join: p in assoc(b, :positions),
-        join: m in assoc(b, :margins),
         where: b.user_id == ^user.id,
-        order_by: [desc: [p.inserted_at, m.inserted_at]],
-        # handle only return 1st row of each bitmex_acc_id
-        distinct: b.id,
         select: %{
           id: b.id,
           name: b.name,
-          available_margin: b.available_margin,
-          wallet_balance: b.wallet_balance,
-          # will return strings, which is fine because may be a float
-          current_qty: fragment("?->>'currentQty'", p.data),
-          liquidation_price: fragment("?->>'liquidationPrice'", p.data),
-          unrealised_pnl: fragment("?->>'unrealisedPnl'", p.data),
-          home_notional: fragment("?->>'homeNotional'", p.data),
-          margin_balance: fragment("?->>'marginBalance'", m.data),
-          realised_pnl: fragment("?->>'realisedPnl'", m.data)
+          deposit_usd: b.deposit_usd,
+          deposit_btc: b.deposit_btc,
+          notes: b.notes
         }
 
     Repo.all(query)

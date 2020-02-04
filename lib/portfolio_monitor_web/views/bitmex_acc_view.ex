@@ -14,8 +14,8 @@ defmodule PortfolioMonitorWeb.BitmexAccView do
     %{
       id: bitmex_acc.id,
       name: bitmex_acc.name,
-      depositUsd: bitmex_acc.deposit_btc,
-      depositBtc: bitmex_acc.deposit_btc,
+      deposit_usd: bitmex_acc.deposit_usd,
+      deposit_btc: bitmex_acc.deposit_btc,
       notes: bitmex_acc.notes
     }
   end

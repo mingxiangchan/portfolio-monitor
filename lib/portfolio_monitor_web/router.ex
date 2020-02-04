@@ -40,7 +40,6 @@ defmodule PortfolioMonitorWeb.Router do
 
     get "/bitmex_accs", BitmexAccController, :index
     post "/bitmex_accs", BitmexAccController, :create
-    resources "/experiments", ExperimentController, only: [:index, :create, :update]
   end
 
   # Other scopes may use custom stacks.

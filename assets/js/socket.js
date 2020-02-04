@@ -6,8 +6,8 @@
 //
 // Pass the token on params as below. Or remove it
 // from the params if you are not using authentication.
-import {Socket} from "phoenix"
-let socket = new Socket("/socket", {params: {_csrf_token: window.csrfToken}})
+import { Socket } from "phoenix"
+let socket = new Socket("/socket", { params: { _csrf_token: window.csrfToken } })
 
 // When you connect, you'll often need to authenticate the client.
 // For example, imagine you have an authentication plug, `MyAuth`,
