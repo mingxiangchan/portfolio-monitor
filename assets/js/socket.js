@@ -54,7 +54,7 @@ let socket = new Socket("/socket", {params: {_csrf_token: window.csrfToken}})
 socket.connect()
 
 // Now that you are connected, you can join channels with a topic:
-let channel = socket.channel("bitmex_acc:2", {})
+let channel = socket.channel("bitmex_acc:1", {})
 channel.join()
   .receive("ok", resp => { console.log("Joined successfully", resp) })
   .receive("error", resp => { console.log("Unable to join", resp) })

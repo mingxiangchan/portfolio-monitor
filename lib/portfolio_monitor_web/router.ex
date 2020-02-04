@@ -42,7 +42,6 @@ defmodule PortfolioMonitorWeb.Router do
     pipe_through [:api, :api_protected]
 
     get "/bitmex_accs", BitmexAccController, :index
-    resources "/experiments", ExperimentController, only: [:index, :create, :update]
   end
 
   # Other scopes may use custom stacks.
