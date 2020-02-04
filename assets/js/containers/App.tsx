@@ -9,9 +9,9 @@ const {Content} = Layout;
 const App = () => (
   <Row>
     <Col span={24}>
-      <Layout>
+      <Layout style={{height: '100vh'}}>
         <TopNav />
-        <Layout style={{marginTop: 64}}>
+        <Layout style={{marginTop: 64, backgroundColor: 'black'}}>
           <SideNav />
           <MainDashboard />
         </Layout>
