@@ -53,9 +53,8 @@ let socket = new Socket("/socket", {params: {_csrf_token: window.csrfToken}})
 // Finally, connect to the socket:
 socket.connect()
 
-const generalChannel = socket.channel("general_btc_info", {})
+export const generalChannel = socket.channel("general_btc_info", {})
 generalChannel.join()
-export generalChannel
 
 // Now that you are connected, you can join channels with a topic:
 // let channel = socket.channel("bitmex_acc:2", {})
