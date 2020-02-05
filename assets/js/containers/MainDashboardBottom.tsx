@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
-import Chart from '../../components/Chart'
-import Cards from '../../components/Cards'
+import Chart from './Chart'
+import Cards from './Cards'
 import {List, Row} from 'antd'
 
 const data = {

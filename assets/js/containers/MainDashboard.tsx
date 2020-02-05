@@ -1,7 +1,7 @@
 import React from 'react'
 import {Layout} from 'antd';
-import Top from './Top'
-import Bottom from './Bottom'
+import Top from './MainDashboardTop'
+import Bottom from './MainDashboardBottom'
 
 const {Content} = Layout;
 

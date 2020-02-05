@@ -50,7 +50,7 @@ const SideNav = () => {
       <Title level={3} style={{color: 'white'}}>{time.format("h:mm:ss A")}</Title>
       <Title level={3} style={{color: 'white', marginBottom: '20px'}}>{time.format("MMM DD, YYYY")}</Title>
       <p style={{color: 'white'}}>65.1 (0.67%)</p>
-      <Title level={3} style={{color: 'white'}}>{loaded ? price : <Spin />}</Title>
+      <Title level={3} style={{color: 'white'}}>{loaded ? price.toFixed(1) : <Spin />}</Title>
       <Button type="danger">Log Out</Button>
     </Sider>
   )
