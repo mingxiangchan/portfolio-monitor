@@ -25,7 +25,17 @@ defmodule PortfolioMonitor.Account.BitmexAcc do
   @doc false
   def changeset(bitmex_acc, attrs) do
     bitmex_acc
-    |> cast(attrs, [:api_key, :api_secret, :name, :user_id, :available_margin, :wallet_balance, :deposit_usd, :deposit_btc, :notes])
+    |> cast(attrs, [
+      :api_key,
+      :api_secret,
+      :name,
+      :user_id,
+      :available_margin,
+      :wallet_balance,
+      :deposit_usd,
+      :deposit_btc,
+      :notes
+    ])
     |> validate_required([:api_key, :api_secret, :name, :user_id, :deposit_usd, :deposit_btc])
   end
 end

@@ -4,6 +4,8 @@ defmodule PortfolioMonitorWeb.BitmexAccController do
   alias PortfolioMonitor.Account
   alias PortfolioMonitor.Account.BitmexAcc
 
+  action_fallback PortfolioMonitorWeb.FallbackController
+
   def index(conn, _params) do
     results =
       conn
@@ -13,22 +15,14 @@ defmodule PortfolioMonitorWeb.BitmexAccController do
     render(conn, "index.json", bitmex_accs: results)
   end
 
-  def new(conn, _params) do
-    changeset = Account.change_bitmex_acc(%BitmexAcc{})
-    render(conn, "new.html", changeset: changeset)
-  end
-
   def create(conn, %{"bitmex_acc" => bitmex_acc_params}) do
     user = Pow.Plug.current_user(conn)
+    result = Account.create_bitmex_acc(user, bitmex_acc_params)
 
-    case Account.create_bitmex_acc(user, bitmex_acc_params) do
-      {:ok, _bitmex_acc} ->
-        conn
-        |> put_flash(:info, "Bitmex acc created successfully.")
-        |> redirect(to: "/")
-
-      {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "new.html", changeset: changeset)
+    with {:ok, %BitmexAcc{} = bitmex_acc} <- result do
+      conn
+      |> put_status(:created)
+      |> render("show.json", bitmex_acc: bitmex_acc)
     end
   end
 end

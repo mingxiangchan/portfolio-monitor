@@ -16,14 +16,6 @@ defmodule PortfolioMonitor.Account do
     |> Ecto.build_assoc(:bitmex_accs, %{})
     |> BitmexAcc.changeset(attrs)
     |> Repo.insert()
-    |> case do
-      {:ok, bitmex_acc} ->
-        Sync.Supervisor.start_child(bitmex_acc)
-        {:ok, bitmex_acc}
-
-      error ->
-        error
-    end
   end
 
   def change_bitmex_acc(bitmex_acc, changes \\ %{}) do

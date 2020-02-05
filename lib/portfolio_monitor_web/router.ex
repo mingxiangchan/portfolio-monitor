@@ -26,9 +26,6 @@ defmodule PortfolioMonitorWeb.Router do
 
   scope "/", PortfolioMonitorWeb do
     pipe_through [:browser, :protected]
-
-    get "/bitmex_accs/new", BitmexAccController, :new
-    post "/bitmex_accs", BitmexAccController, :create
     get "/", PageController, :index
   end
 
@@ -42,6 +39,7 @@ defmodule PortfolioMonitorWeb.Router do
     pipe_through [:api, :api_protected]
 
     get "/bitmex_accs", BitmexAccController, :index
+    post "/bitmex_accs", BitmexAccController, :create
     resources "/experiments", ExperimentController, only: [:index, :create, :update]
   end
 

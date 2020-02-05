@@ -6,18 +6,17 @@ defmodule PortfolioMonitorWeb.BitmexAccView do
     %{data: render_many(bitmex_accs, BitmexAccView, "bitmex_acc.json")}
   end
 
+  def render("show.json", %{bitmex_acc: bitmex_acc}) do
+    %{data: render_one(bitmex_acc, BitmexAccView, "bitmex_acc.json")}
+  end
+
   def render("bitmex_acc.json", %{bitmex_acc: bitmex_acc}) do
     %{
       id: bitmex_acc.id,
       name: bitmex_acc.name,
-      current_qty: bitmex_acc.current_qty,
-      margin_balance: bitmex_acc.margin_balance,
-      liquidation_price: bitmex_acc.liquidation_price,
-      unrealised_pnl: bitmex_acc.unrealised_pnl,
-      available_margin: bitmex_acc.available_margin,
-      wallet_balance: bitmex_acc.wallet_balance,
-      realised_pnl: bitmex_acc.realised_pnl,
-      home_notional: bitmex_acc.home_notional
+      depositUsd: bitmex_acc.deposit_btc,
+      depositBtc: bitmex_acc.deposit_btc,
+      notes: bitmex_acc.notes
     }
   end
 end
