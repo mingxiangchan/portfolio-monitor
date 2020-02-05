@@ -1,5 +1,5 @@
 import React from 'react'
-import {Card} from 'antd'
+import {Card, Descriptions} from 'antd'
 import Chart from './Chart'
 
 const opt = {
@@ -20,24 +20,26 @@ const opt = {
   tooltips: {
     mode: 'index',
     intersect: false
-  },
-  maintainAspectRatio: false
+  }
 }
 
 export default ({title, data, style}) => {
 
   return (
     <Card title={title} style={{...style}}>
-      <p>Return since inception</p>
-      <p>Earned this month</p>
-      <p>Earned past 7-days</p>
-      <p>Earned past 24-hours</p>
-      <p>Paper gains</p>
-      <p>Current leverage</p>
-      <p>Open position</p>
-      <p>Liquidation price</p>
-      <p>Ave. entry price</p>
-      <p>Balance</p>
+      <Descriptions>
+        <Descriptions.Item span={24} label="Return since inception"></Descriptions.Item>
+        <Descriptions.Item span={24} label="Earned this month"></Descriptions.Item>
+        <Descriptions.Item span={24} label="Earned past 7-days"></Descriptions.Item>
+        <Descriptions.Item span={24} label="Earned past 24-hours"></Descriptions.Item>
+        <Descriptions.Item span={24} label="Paper gains"></Descriptions.Item>
+        <Descriptions.Item span={24} label="Current leverage"></Descriptions.Item>
+        <Descriptions.Item span={24} label="Open position"></Descriptions.Item>
+        <Descriptions.Item span={24} label="Liquidation price"></Descriptions.Item>
+        <Descriptions.Item span={24} label="Ave. entry price"></Descriptions.Item>
+        <Descriptions.Item span={24} label="Balance"></Descriptions.Item>
+        <Descriptions.Item span={24} label="Note"></Descriptions.Item>
+      </Descriptions>
       <Chart height="50%" options={opt} data={data} />
     </Card>
   )

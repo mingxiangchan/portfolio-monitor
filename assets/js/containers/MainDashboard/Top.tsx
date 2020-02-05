@@ -1,6 +1,6 @@
 import React from 'react'
 import Chart from '../../components/Chart'
-import {Card} from 'antd'
+import {Card, Descriptions, Row, Col} from 'antd'
 
 const data = {
   labels: ['1', '2', '3', '4', '5'],
@@ -42,26 +42,31 @@ const opt = {
   tooltips: {
     mode: 'index',
     intersect: false
-  },
-  maintainAspectRatio: false
+  }
 }
 
 export default () => {
 	return (
-    <div style={{width: "100%", borderBottom: "1px solid #383838", display: 'flex'}}>
-      <Chart width="50%" data={data} options={opt}/>
-      <Card title="Cummulative" style={{flexGrow: 1, marginLeft: '10px'}}>
-        <p>Return since inception</p>
-        <p>Earned this month</p>
-        <p>Earned past 7-days</p>
-        <p>Earned past 24-hours</p>
-        <p>Paper gains</p>
-        <p>Current leverage</p>
-        <p>Open position</p>
-        <p>Liquidation price</p>
-        <p>Ave. entry price</p>
-        <p>Balance</p>
-      </Card>
-    </div>
+    <Row type="flex" style={{width: "100%", borderBottom: "1px solid #383838", paddingBottom: '5px', marginBottom: '5px'}}>
+      <Col span={11}>
+        <Chart data={data} options={opt}/>
+      </Col>
+      <Col span={13}>
+        <Card title="Cummulative" style={{flexGrow: 1, marginLeft: '10px', backgroundColor: '#e6e6e6'}}>
+          <Descriptions column={{md: 1, lg: 2}}>
+            <Descriptions.Item label="Return since inception"></Descriptions.Item>
+            <Descriptions.Item label="Earned this month"></Descriptions.Item>
+            <Descriptions.Item label="Earned past 7-days"></Descriptions.Item>
+            <Descriptions.Item label="Earned past 24-hours"></Descriptions.Item>
+            <Descriptions.Item label="Paper gains"></Descriptions.Item>
+            <Descriptions.Item label="Current leverage"></Descriptions.Item>
+            <Descriptions.Item label="Open position"></Descriptions.Item>
+            <Descriptions.Item label="Liquidation price"></Descriptions.Item>
+            <Descriptions.Item label="Ave. entry price"></Descriptions.Item>
+            <Descriptions.Item label="Balance"></Descriptions.Item>
+          </Descriptions>
+        </Card>
+      </Col>
+    </Row>
   )
 }
