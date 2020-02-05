@@ -48,9 +48,9 @@ const opt = {
 
 export default () => {
 	return (
-    <div style={{height: "45%", width: "100%", borderBottom: "1px solid #383838", display: 'flex'}}>
+    <div style={{width: "100%", borderBottom: "1px solid #383838", display: 'flex'}}>
       <Chart width="50%" data={data} options={opt}/>
-      <Card title="Cummulative" style={{flexGrow: 1, marginLeft: '10px', overflow: "scroll"}}>
+      <Card title="Cummulative" style={{flexGrow: 1, marginLeft: '10px'}}>
         <p>Return since inception</p>
         <p>Earned this month</p>
         <p>Earned past 7-days</p>

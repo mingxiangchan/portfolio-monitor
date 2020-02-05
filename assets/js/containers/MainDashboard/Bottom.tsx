@@ -42,7 +42,7 @@ export default () => {
 	}
 
 	return (
-		<div style={{height: "55%", width: "100%"}}>
+		<div style={{width: "100%"}}>
 			<List itemLayout="horizontal" size="large" pagination={{pageSize: 1}} dataSource={genCardGroup()} renderItem={(item) => (
 				<Row type="flex" justify="space-around">{item}</Row>
 			)} />
