@@ -24,6 +24,15 @@ defmodule PortfolioMonitor.Portfolio do
     Repo.all(query)
   end
 
+  def get_last_bitmex_history do
+    query =
+      from h in BitmexHistory,
+        order_by: [desc: h.inserted_at],
+        limit: 1
+
+    Repo.one(query)
+  end
+
   def create_historical_datum(%Account.BitmexAcc{} = acc, attrs \\ %{}) do
     acc
     |> Ecto.build_assoc(:historical_data, %{})

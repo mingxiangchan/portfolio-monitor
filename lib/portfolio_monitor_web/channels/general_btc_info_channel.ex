@@ -2,26 +2,22 @@ defmodule PortfolioMonitorWeb.GeneralBtcInfoChannel do
   use PortfolioMonitorWeb, :channel
   require Logger
 
+  alias PortfolioMonitorWeb.Endpoint
+
   def join("general_btc_info", _payload, socket) do
-    # query_for_general_info(socket)
+    Task.start(fn ->
+      :timer.sleep(2)
+      broadcast_opening_price()
+    end)
+
     {:ok, socket}
   end
 
-  def query_for_general_info(socket) do
-    Task.start(fn ->
-      case HTTPoison.get(general_info_url()) do
-        {:ok, %{body: body}} ->
-          broadcast(socket, "opening_price", body)
+  def broadcast_opening_price do
+    history = PortfolioMonitor.Portfolio.get_last_bitmex_history()
 
-        {:error, _} ->
-          Logger.warn("unable to query general info")
-      end
-    end)
-  end
-
-  def general_info_url do
-    """
-    https://testnet.bitmex.com/api/v1/trade/bucketed?binSize=1d&partial=false&symbol=XBTUSD&count=1&reverse=true
-    """
+    Endpoint.broadcast("general_btc_info", "opening_price", %{
+      openingPrice: history.btc_price
+    })
   end
 end
