@@ -7,75 +7,60 @@ defmodule PortfolioMonitor.Portfolio do
   alias PortfolioMonitor.Repo
   alias PortfolioMonitor.Account
 
-  alias PortfolioMonitor.Portfolio.Position
-  alias PortfolioMonitor.Portfolio.OrderDetail
-  alias PortfolioMonitor.Portfolio.Margin
-  alias PortfolioMonitor.Portfolio.Experiment
+  alias PortfolioMonitor.Portfolio.HistoricalDatum
+  alias PortfolioMonitor.Portfolio.BitmexHistory
+  alias ExBitmex.Rest.User.Wallet
 
-  def create_position(changes) do
-    %Position{}
-    |> Position.changeset(changes)
-    |> Repo.insert!()
+  def list_historical_data do
+    Repo.all(HistoricalDatum)
   end
 
-  def create_margin(changes) do
-    cache_bitmex_acc_details(changes)
+  def bitmex_acc_historical_data(bitmex_acc) do
+    query =
+      from h in HistoricalDatum,
+        where: h.bitmex_acc_id == ^bitmex_acc.id,
+        order_by: h.inserted_at
 
-    %Margin{}
-    |> Margin.changeset(changes)
-    |> Repo.insert!()
+    Repo.all(query)
   end
 
-  def create_order_detail(changes) do
-    %OrderDetail{}
-    |> OrderDetail.changeset(changes)
-    |> Repo.insert!()
-  end
-
-  def list_experiments do
-    Repo.all(Experiment)
-  end
-
-  def get_experiment!(id), do: Repo.get!(Experiment, id)
-
-  def create_experiment(params) do
-    changes = %{
-      bitmex_acc_id: params["bitmex_acc_id"],
-      start: DateTime.utc_now()
-    }
-
-    %Experiment{}
-    |> Experiment.changeset(changes)
+  def create_historical_datum(%Account.BitmexAcc{} = acc, attrs \\ %{}) do
+    acc
+    |> Ecto.build_assoc(:historical_data, %{})
+    |> HistoricalDatum.changeset(attrs)
     |> Repo.insert()
   end
 
-  def update_experiment(%Experiment{} = experiment, attrs) do
-    experiment
-    |> Experiment.changeset(attrs)
-    |> Repo.update()
+  def record_current_btc_price do
+    params = %{symbol: "XBTUSD", count: 1, reverse: true}
+
+    with {:ok, trades, _rate_limit} <- ExBitmex.Rest.Trade.Index.get(params) do
+      %{price: price} = hd(trades)
+      create_bitmex_history(%{btc_price: price})
+    end
   end
 
-  def change_experiment(%Experiment{} = experiment) do
-    Experiment.changeset(experiment, %{})
+  def create_bitmex_history(changes) do
+    %BitmexHistory{}
+    |> BitmexHistory.changeset(changes)
+    |> Repo.insert()
   end
 
-  defp cache_bitmex_acc_details(%{data: data, bitmex_acc_id: id}) do
-    changes =
-      data
-      |> Map.take(["walletBalance", "availableMargin"])
-      |> Enum.reduce(%{}, fn {k, v}, acc ->
-        case k do
-          "walletBalance" -> Map.put(acc, :wallet_balance, v)
-          "availableMargin" -> Map.put(acc, :available_margin, v)
-          _ -> Map.put(acc, k, v)
-        end
-      end)
+  def record_wallet_balances do
+    Account.list_bitmex_accs()
+    |> Enum.each(&record_wallet_balance/1)
+  end
 
-    if map_size(changes) > 0 do
-      Account.BitmexAcc
-      |> Repo.get(id)
-      |> Account.change_bitmex_acc(changes)
-      |> Repo.update()
+  def record_wallet_balance(%Account.BitmexAcc{} = acc) do
+    credentials = %ExBitmex.Credentials{
+      api_key: acc.api_key,
+      api_secret: acc.api_secret
+    }
+
+    params = %{currency: "XBt"}
+
+    with {:ok, resp, _} <- Wallet.get(credentials, params) do
+      create_historical_datum(acc, %{wallet_balance: resp.amount})
     end
   end
 end

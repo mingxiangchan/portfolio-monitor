@@ -6,8 +6,8 @@
 //
 // Pass the token on params as below. Or remove it
 // from the params if you are not using authentication.
-import {Socket} from "phoenix"
-let socket = new Socket("/socket", {params: {_csrf_token: window.csrfToken}})
+import { Socket } from "phoenix"
+let socket = new Socket("/socket", { params: { _csrf_token: window.csrfToken } })
 
 // When you connect, you'll often need to authenticate the client.
 // For example, imagine you have an authentication plug, `MyAuth`,
@@ -62,8 +62,6 @@ generalChannel.join()
 //   .receive("ok", resp => { console.log("Joined successfully", resp) })
 //   .receive("error", resp => { console.log("Unable to join", resp) })
 
-// channel.on("position", resp => console.log("position", resp))
-// channel.on("margin", resp => console.log("margin", resp))
-// channel.on("order", resp => console.log("order", resp))
+//channel.on("historical", resp => console.log("historical", resp))
 
 export default socket

@@ -24,7 +24,14 @@ const AccCreateForm = Form.create<ModalFormProps>(formOpts)(
           message.error("Fix the form errors before submitting please.")
           return
         }
-        doPost("/api/bitmex_accs", {bitmex_acc: values}, resp => {
+
+        const updatedData = {
+          ...values,
+          deposit_usd: Math.floor(values.deposit_usd * 100),
+          deposit_btc: Math.floor(values.deposit_btc * 100000000),
+        }
+
+        doPost("/api/bitmex_accs", {bitmex_acc: updatedData}, _resp => {
           message.success(`Added New Bitmex Acc: ${values.name}`)
           form.resetFields();
           setVisible(false);
