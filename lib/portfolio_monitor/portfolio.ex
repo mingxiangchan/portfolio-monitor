@@ -9,7 +9,7 @@ defmodule PortfolioMonitor.Portfolio do
 
   alias PortfolioMonitor.Portfolio.HistoricalDatum
   alias PortfolioMonitor.Portfolio.BitmexHistory
-  alias ExBitmex.Rest.User.Wallet
+  alias ExBitmex.Rest.User.Margin
 
   def list_historical_data do
     Repo.all(HistoricalDatum)
@@ -68,8 +68,8 @@ defmodule PortfolioMonitor.Portfolio do
 
     params = %{currency: "XBt"}
 
-    with {:ok, resp, _} <- Wallet.get(credentials, params) do
-      create_historical_datum(acc, %{wallet_balance: resp.amount})
+    with {:ok, resp, _} <- Margin.get(credentials, params) do
+      create_historical_datum(acc, Map.take(resp, [:wallet_balance, :margin_balance]))
     end
   end
 end
