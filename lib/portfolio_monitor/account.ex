@@ -13,7 +13,7 @@ defmodule PortfolioMonitor.Account do
     Repo.get(BitmexAcc, id)
   end
 
-  def create_bitmex_acc(user \\ %User{}, attrs \\ %{}) do
+  def create_bitmex_acc(%User{} = user, attrs \\ %{}) do
     user
     |> Ecto.build_assoc(:bitmex_accs, %{})
     |> BitmexAcc.changeset(attrs)

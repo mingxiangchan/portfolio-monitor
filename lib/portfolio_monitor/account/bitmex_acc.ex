@@ -11,7 +11,7 @@ defmodule PortfolioMonitor.Account.BitmexAcc do
     field :deposit_btc, :integer
     field :notes, :string
     belongs_to :user, PortfolioMonitor.Account.User
-    has_many :historical_datum, PortfolioMonitor.Portfolio.HistoricalDatum
+    has_many :historical_data, PortfolioMonitor.Portfolio.HistoricalDatum
     timestamps()
   end
 

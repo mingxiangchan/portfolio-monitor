@@ -36,5 +36,7 @@ config :portfolio_monitor, :pow,
 config :portfolio_monitor, PortfolioMonitor.Scheduler,
   jobs: [
     # Record current btc price every 1 hr
-    {"0 * * * *", {PortfolioMonitor.Portfolio, :record_current_btc_price, []}}
+    {"0 * * * *", {PortfolioMonitor.Portfolio, :record_current_btc_price, []}},
+    # Record each bitmex acc's balance every 1 hr
+    {"0 * * * *", {PortfolioMonitor.Portfolio, :record_wallet_balances, []}}
   ]
