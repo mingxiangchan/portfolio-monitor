@@ -47,7 +47,9 @@ defmodule PortfolioMonitor.MixProject do
       {:ex_crypto, "~> 0.10"},
       {:pow, "~> 1.0.16"},
       {:httpoison, "~> 1.6"},
-      {:cors_plug, "~> 2.0"}
+      {:cors_plug, "~> 2.0"},
+      {:quantum, "~> 2.3"},
+      {:timex, "~> 3.0"}
     ]
   end
 

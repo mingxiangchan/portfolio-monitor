@@ -62,6 +62,6 @@ generalChannel.join()
 //   .receive("ok", resp => { console.log("Joined successfully", resp) })
 //   .receive("error", resp => { console.log("Unable to join", resp) })
 
-channel.on("historical", resp => console.log("historical", resp))
+//channel.on("historical", resp => console.log("historical", resp))
 
 export default socket

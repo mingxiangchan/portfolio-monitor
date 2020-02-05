@@ -14,7 +14,8 @@ defmodule PortfolioMonitor.Application do
       PortfolioMonitorWeb.Endpoint,
       # Starts a worker by calling: PortfolioMonitor.Worker.start_link(arg)
       # {PortfolioMonitor.Worker, arg},
-      PortfolioMonitor.Sync.Supervisor
+      PortfolioMonitor.Sync.Supervisor,
+      PortfolioMonitor.Scheduler
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

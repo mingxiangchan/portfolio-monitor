@@ -32,3 +32,9 @@ import_config "#{Mix.env()}.exs"
 config :portfolio_monitor, :pow,
   user: PortfolioMonitor.Account.User,
   repo: PortfolioMonitor.Repo
+
+config :portfolio_monitor, PortfolioMonitor.Scheduler,
+  jobs: [
+    # Record current btc price every 1 hr
+    {"0 * * * *", {PortfolioMonitor.Portfolio, :record_current_btc_price, []}}
+  ]

@@ -3,7 +3,7 @@ defmodule PortfolioMonitor.Portfolio.BitmexHistory do
   import Ecto.Changeset
 
   schema "bitmex_history" do
-    field :btc_price, :float
+    field :btc_price, :decimal
 
     timestamps()
   end
