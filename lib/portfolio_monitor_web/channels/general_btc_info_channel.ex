@@ -3,7 +3,7 @@ defmodule PortfolioMonitorWeb.GeneralBtcInfoChannel do
   require Logger
 
   def join("general_btc_info", _payload, socket) do
-    query_for_general_info(socket)
+    # query_for_general_info(socket)
     {:ok, socket}
   end
 
