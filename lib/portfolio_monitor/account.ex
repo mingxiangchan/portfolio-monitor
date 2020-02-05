@@ -3,9 +3,7 @@ defmodule PortfolioMonitor.Account do
   alias PortfolioMonitor.Repo
 
   alias PortfolioMonitor.Account.BitmexAcc
-  alias PortfolioMonitor.Sync
   alias PortfolioMonitor.Account.User
-  alias PortfolioMonitor.Portfolio
 
   def list_bitmex_accs do
     Repo.all(BitmexAcc)
@@ -38,17 +36,7 @@ defmodule PortfolioMonitor.Account do
   end
 
   def bitmex_acc_with_details(user) do
-    query =
-      from b in BitmexAcc,
-        where: b.user_id == ^user.id,
-        select: %{
-          id: b.id,
-          name: b.name,
-          deposit_usd: b.deposit_usd,
-          deposit_btc: b.deposit_btc,
-          notes: b.notes
-        }
-
+    query = from b in BitmexAcc, where: b.user_id == ^user.id
     Repo.all(query)
   end
 end

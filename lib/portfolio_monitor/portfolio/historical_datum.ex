@@ -3,7 +3,6 @@ defmodule PortfolioMonitor.Portfolio.HistoricalDatum do
   import Ecto.Changeset
 
   schema "historical_data" do
-    field :btc_price, :integer
     field :wallet_balance, :integer
     belongs_to :bitmex_acc, PortfolioMonitor.Account.BitmexAcc
 
@@ -13,7 +12,7 @@ defmodule PortfolioMonitor.Portfolio.HistoricalDatum do
   @doc false
   def changeset(historical_datum, attrs) do
     historical_datum
-    |> cast(attrs, [:wallet_balance, :btc_price])
-    |> validate_required([:wallet_balance, :btc_price])
+    |> cast(attrs, [:wallet_balance])
+    |> validate_required([:wallet_balance])
   end
 end

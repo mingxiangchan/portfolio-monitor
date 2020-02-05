@@ -27,5 +27,4 @@ defmodule PortfolioMonitor.Portfolio do
     |> HistoricalDatum.changeset(attrs)
     |> Repo.insert()
   end
-
 end
