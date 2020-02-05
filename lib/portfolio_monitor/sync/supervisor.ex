@@ -14,7 +14,7 @@ defmodule PortfolioMonitor.Sync.Supervisor do
     {:ok, pid} = DynamicSupervisor.init(strategy: :one_for_one)
 
     Task.start(fn ->
-      start_general_btc_info_worker()
+      #start_general_btc_info_worker()
       # initialize_workers()
     end)
 

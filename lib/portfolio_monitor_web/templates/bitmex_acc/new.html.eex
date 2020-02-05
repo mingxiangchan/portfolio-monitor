@@ -1,4 +1,0 @@
-<h1>New Bitmex acc</h1>
-
-<%= render "form.html", Map.put(assigns, :action, Routes.bitmex_acc_path(@conn, :create)) %>
-
