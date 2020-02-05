@@ -14,22 +14,25 @@ const SideNav = () => {
     const [loaded, changeLoaded] = useState(false)
     const [openPrice, changeOpenPrice] = useState(1)
 
-    generalChannel.on("opening_price", resp => {
-        console.log(resp)
-    })
+    const priceDiffAbs = price - openPrice
+    const priceDiffPer = (priceDiffAbs / openPrice).toFixed(2)
 
-    // @ts-ignore
-    generalChannel.on("price", resp => {
-        loaded ? null : changeLoaded(true)
-        const newPrice: number = resp.data.data[0].price
-        changePrice(newPrice)
-    })
 
     useEffect(() => {
+        generalChannel.push("get_opening_price").receive("ok", resp => {
+            changeOpenPrice(resp.opening_price)
+        })
+
+        generalChannel.on("price", resp => {
+            loaded ? null : changeLoaded(true)
+            const newPrice: number = resp.data.data[0].price
+            changePrice(newPrice)
+        })
 
         const int = setInterval(() => {
             changeTime(moment())
         }, 1000)
+
         return () => {
             clearInterval(int)
         }
@@ -50,7 +53,7 @@ const SideNav = () => {
             <Title level={2} style={{ color: 'white' }}>Hi Josh</Title>
             <Title level={3} style={{ color: 'white' }}>{time.format("h:mm:ss A")}</Title>
             <Title level={3} style={{ color: 'white', marginBottom: '20px' }}>{time.format("MMM DD, YYYY")}</Title>
-            <p style={{ color: 'white' }}>65.1 (0.67%)</p>
+            <p style={{ color: 'white' }}>{priceDiffAbs} ({priceDiffPer}%)</p>
             <Title level={3} style={{ color: 'white' }}>{loaded ? price.toFixed(1) : <Spin />}</Title>
             <Button type="danger">Log Out</Button>
         </Sider>

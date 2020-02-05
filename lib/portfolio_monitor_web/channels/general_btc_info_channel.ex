@@ -5,19 +5,11 @@ defmodule PortfolioMonitorWeb.GeneralBtcInfoChannel do
   alias PortfolioMonitorWeb.Endpoint
 
   def join("general_btc_info", _payload, socket) do
-    Task.start(fn ->
-      :timer.sleep(2)
-      broadcast_opening_price()
-    end)
-
     {:ok, socket}
   end
 
-  def broadcast_opening_price do
+  def handle_in("get_opening_price", _, socket) do
     history = PortfolioMonitor.Portfolio.get_last_bitmex_history()
-
-    Endpoint.broadcast("general_btc_info", "opening_price", %{
-      openingPrice: history.btc_price
-    })
+    {:reply, {:ok, %{opening_price: history.btc_price}}, socket}
   end
 end
