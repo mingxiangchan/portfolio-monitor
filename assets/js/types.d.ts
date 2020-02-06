@@ -16,28 +16,27 @@ export interface AccCreateFormData {
 }
 
 export interface HistoricalData {
-  walletBalanceBtc: number;
-  walletBalanceUsd: number;
-  btcPrice: number;
-  date: string;
+  wallet_balance_btc: number;
+  wallet_balance_usd: number;
+  btc_price: number;
+  inserted_at: string;
 }
 
 export interface BitmexAcc {
   id: number;
   name: string;
-  depositBtc: number;
-  depositUsd: number;
+  deposit_btc: number;
+  deposit_usd: number;
   notes: string;
-  marginBalance: number
-  walletBalanceNow: number;
-  walletBalance24Hrs: number;
-  walletBalance7Days: number;
-  walletBalance30Days: number;
-  historicalData: HistoricalData[];
-  unrealisedPnl?: number;
-  currentQty?: number;
-  liquidationPrice?: number;
-  avgEntryPrice?: number;
+  margin_balance: number
+  historical_data: HistoricalData[];
+  wallet_balance_24_hrs?: number;
+  wallet_balance_7_days?: number;
+  wallet_balance_30_days?: number;
+  unrealised_pnl?: number;
+  current_qty?: number;
+  liquidation_price?: number;
+  avg_entry_price?: number;
 }
 
 export interface BitmexAccsState {

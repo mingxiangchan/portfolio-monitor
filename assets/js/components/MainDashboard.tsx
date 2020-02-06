@@ -10,11 +10,6 @@ const {Content} = Layout;
 export default () => {
   const [accs, setAccs] = useState<BitmexAccsState>({})
 
-  const updateAcc = (acc: BitmexAcc) => {
-    const updatedAcc = {...accs[acc.id], ...acc}
-    setAccs({...accs, [acc.id]: updatedAcc})
-  }
-
   useEffect(() => {
     // @ts-ignore
     afterJoinedAccChannel(accChannel => {
@@ -23,10 +18,10 @@ export default () => {
       })
 
       accChannel!.on("acc_update", ({acc}: {acc: BitmexAcc}) => {
-        updateAcc(acc)
+        const updatedAcc = {...accs[acc.id], ...acc}
+        setAccs({...accs, [acc.id]: updatedAcc})
       })
     })
-
 
     //userChannel.on("wsUpdate", resp => {
     //const bitMexAccId = resp.accId
