@@ -38,7 +38,6 @@ defmodule PortfolioMonitorWeb.Router do
   scope "/api", PortfolioMonitorWeb do
     pipe_through [:api, :api_protected]
 
-    get "/bitmex_accs", BitmexAccController, :index
     post "/bitmex_accs", BitmexAccController, :create
     put "/bitmex_accs/:id", BitmexAccController, :update
     delete "/bitmex_accs/:id", BitmexAccController, :delete
