@@ -1,6 +1,8 @@
 defmodule PortfolioMonitorWeb.Router do
   use PortfolioMonitorWeb, :router
   use Pow.Phoenix.Router
+  use Pow.Extension.Phoenix.Router,
+    extensions: [PowPersistentSession]
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -33,6 +35,7 @@ defmodule PortfolioMonitorWeb.Router do
     pipe_through :browser
 
     pow_routes()
+    pow_extension_routes()
   end
 
   scope "/api", PortfolioMonitorWeb do

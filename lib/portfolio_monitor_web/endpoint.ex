@@ -55,6 +55,7 @@ defmodule PortfolioMonitorWeb.Endpoint do
     signing_salt: "Zyvl07zf"
 
   plug Pow.Plug.Session, otp_app: :portfolio_monitor
+  plug PowPersistentSession.Plug.Cookie
 
   plug CORSPlug
   plug PortfolioMonitorWeb.Router
