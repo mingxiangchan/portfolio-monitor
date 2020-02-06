@@ -5,6 +5,7 @@ defmodule PortfolioMonitor.Account do
   alias PortfolioMonitor.Account.BitmexAcc
   alias PortfolioMonitor.Account.User
   alias PortfolioMonitorWeb.Endpoint
+  alias PortfolioMonitor.Portfolio
 
   def list_bitmex_accs do
     Repo.all(BitmexAcc)
@@ -12,7 +13,6 @@ defmodule PortfolioMonitor.Account do
 
   def list_bitmex_accs(%User{} = user, :with_details) do
     bitmex_acc_with_latest_historical_data_query()
-    |> with_details_select_query
     |> where([a], a.user_id == ^user.id)
     |> Repo.all()
   end
@@ -42,7 +42,6 @@ defmodule PortfolioMonitor.Account do
   def broadcast_acc_update(%BitmexAcc{} = acc) do
     acc_data =
       bitmex_acc_with_latest_historical_data_query()
-      |> with_details_select_query
       |> where([a], a.id == ^acc.id)
       |> Repo.one()
 
@@ -64,22 +63,19 @@ defmodule PortfolioMonitor.Account do
     Repo.delete(bitmex_acc)
   end
 
+  def ordered_historical_data_query do
+    from h in Portfolio.HistoricalDatum, order_by: [desc: h.inserted_at]
+  end
+
   def bitmex_acc_with_latest_historical_data_query do
     from a in BitmexAcc,
       left_join: h in assoc(a, :historical_data),
       order_by: [desc: h.inserted_at],
-      distinct: [a.id]
-  end
-
-  def with_details_select_query(query) do
-    select(query, [a, h], %{
-      id: a.id,
-      name: a.name,
-      notes: a.notes,
-      depositBtc: a.deposit_btc,
-      depositUsd: a.deposit_usd,
-      marginBalance: h.margin_balance,
-      walletBalanceNow: h.wallet_balance
-    })
+      preload: [historical_data: ^ordered_historical_data_query()],
+      distinct: [a.id],
+      select_merge: %{
+        margin_balance: h.margin_balance,
+        wallet_balance_now: h.wallet_balance
+      }
   end
 end

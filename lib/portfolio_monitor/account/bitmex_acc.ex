@@ -3,6 +3,17 @@ defmodule PortfolioMonitor.Account.BitmexAcc do
   import Ecto.Changeset
   alias PortfolioMonitor.CustomFields.Encrypted
 
+  @derive {Jason.Encoder,
+           only: [
+             :id,
+             :name,
+             :notes,
+             :deposit_usd,
+             :deposit_btc,
+             :margin_balance,
+             :wallet_balance_now,
+             :historical_data
+           ]}
   schema "bitmex_accs" do
     field :api_key, Encrypted
     field :api_secret, Encrypted
@@ -10,8 +21,11 @@ defmodule PortfolioMonitor.Account.BitmexAcc do
     field :deposit_usd, :integer
     field :deposit_btc, :integer
     field :notes, :string
+    field :margin_balance, :integer, virtual: true
+    field :wallet_balance_now, :integer, virtual: true
     belongs_to :user, PortfolioMonitor.Account.User
     has_many :historical_data, PortfolioMonitor.Portfolio.HistoricalDatum
+
     timestamps()
   end
 

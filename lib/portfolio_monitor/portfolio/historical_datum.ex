@@ -2,6 +2,7 @@ defmodule PortfolioMonitor.Portfolio.HistoricalDatum do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @derive {Jason.Encoder, only: [:id, :wallet_balance, :inserted_at]}
   schema "historical_data" do
     field :wallet_balance, :integer
     field :margin_balance, :integer

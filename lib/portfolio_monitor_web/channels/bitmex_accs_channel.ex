@@ -17,7 +17,7 @@ defmodule PortfolioMonitorWeb.BitmexAccsChannel do
     data =
       socket.assigns.user
       |> Account.list_bitmex_accs(:with_details)
-      |> Enum.into(%{}, &{&1[:id], &1})
+      |> Enum.into(%{}, &{&1.id, &1})
 
     {:reply, {:ok, %{accs: data}}, socket}
   end
