@@ -32,8 +32,8 @@ export default () => {
   const genCardGroup = () => {
     let groups = []
     let cardsCopy = [...cards]
-    cardsCopy = cardsCopy.map((item) => (
-      <Cards style={{width: '30%', backgroundColor: '#e6e6e6'}} title="Mock" data={data} />
+    cardsCopy = cardsCopy.map((item, idx) => (
+      <Cards key={idx} style={{width: '30%', backgroundColor: '#e6e6e6'}} title="Mock" data={data} />
     ))
     for (let i = 0; i < (cardsCopy.length % 3 ? (Math.floor(cardsCopy.length / 3) + 1) : (Math.floor(cardsCopy.length / 3))); i++) {
       groups.push(cardsCopy.slice(0 + (i * 3), 3 + (i * 3)))

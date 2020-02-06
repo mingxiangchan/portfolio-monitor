@@ -28,17 +28,17 @@ export default ({title, data, style}) => {
   return (
     <Card title={title} style={{...style}}>
       <Descriptions>
-        <Descriptions.Item span={24} label="Return since inception"></Descriptions.Item>
-        <Descriptions.Item span={24} label="Earned this month"></Descriptions.Item>
-        <Descriptions.Item span={24} label="Earned past 7-days"></Descriptions.Item>
-        <Descriptions.Item span={24} label="Earned past 24-hours"></Descriptions.Item>
-        <Descriptions.Item span={24} label="Paper gains"></Descriptions.Item>
-        <Descriptions.Item span={24} label="Current leverage"></Descriptions.Item>
-        <Descriptions.Item span={24} label="Open position"></Descriptions.Item>
-        <Descriptions.Item span={24} label="Liquidation price"></Descriptions.Item>
-        <Descriptions.Item span={24} label="Ave. entry price"></Descriptions.Item>
-        <Descriptions.Item span={24} label="Balance"></Descriptions.Item>
-        <Descriptions.Item span={24} label="Note"></Descriptions.Item>
+        <Descriptions.Item span={3} label="Return since inception">Test</Descriptions.Item>
+        <Descriptions.Item span={3} label="Earned this month">Test</Descriptions.Item>
+        <Descriptions.Item span={3} label="Earned past 7-days">Test</Descriptions.Item>
+        <Descriptions.Item span={3} label="Earned past 24-hours">Test</Descriptions.Item>
+        <Descriptions.Item span={3} label="Paper gains">Test</Descriptions.Item>
+        <Descriptions.Item span={3} label="Current leverage">Test</Descriptions.Item>
+        <Descriptions.Item span={3} label="Open position">Test</Descriptions.Item>
+        <Descriptions.Item span={3} label="Liquidation price">Test</Descriptions.Item>
+        <Descriptions.Item span={3} label="Ave. entry price">Test</Descriptions.Item>
+        <Descriptions.Item span={3} label="Balance">Test</Descriptions.Item>
+        <Descriptions.Item span={3} label="Note">Test</Descriptions.Item>
       </Descriptions>
       <Chart height="50%" options={opt} data={data} />
     </Card>
