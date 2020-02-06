@@ -54,16 +54,16 @@ export default () => {
       <Col span={13}>
         <Card title="Cummulative" style={{flexGrow: 1, marginLeft: '10px', backgroundColor: '#e6e6e6'}}>
           <Descriptions column={{md: 1, lg: 2}}>
-            <Descriptions.Item label="Return since inception"></Descriptions.Item>
-            <Descriptions.Item label="Earned this month"></Descriptions.Item>
-            <Descriptions.Item label="Earned past 7-days"></Descriptions.Item>
-            <Descriptions.Item label="Earned past 24-hours"></Descriptions.Item>
-            <Descriptions.Item label="Paper gains"></Descriptions.Item>
-            <Descriptions.Item label="Current leverage"></Descriptions.Item>
-            <Descriptions.Item label="Open position"></Descriptions.Item>
-            <Descriptions.Item label="Liquidation price"></Descriptions.Item>
-            <Descriptions.Item label="Ave. entry price"></Descriptions.Item>
-            <Descriptions.Item label="Balance"></Descriptions.Item>
+            <Descriptions.Item label="Return since inception">TEST</Descriptions.Item>
+            <Descriptions.Item label="Earned this month">TEST</Descriptions.Item>
+            <Descriptions.Item label="Earned past 7-days">TEST</Descriptions.Item>
+            <Descriptions.Item label="Earned past 24-hours">TEST</Descriptions.Item>
+            <Descriptions.Item label="Paper gains">TEST</Descriptions.Item>
+            <Descriptions.Item label="Current leverage">TEST</Descriptions.Item>
+            <Descriptions.Item label="Open position">TEST</Descriptions.Item>
+            <Descriptions.Item label="Liquidation price">TEST</Descriptions.Item>
+            <Descriptions.Item label="Ave. entry price">TEST</Descriptions.Item>
+            <Descriptions.Item label="Balance">TEST</Descriptions.Item>
           </Descriptions>
         </Card>
       </Col>
