@@ -77,6 +77,7 @@ defmodule PortfolioMonitor.Portfolio do
         |> Map.put(:btc_price, btc_price)
 
       create_historical_datum(acc, changes)
+      Account.broadcast_acc_update(acc)
     end
   end
 end
