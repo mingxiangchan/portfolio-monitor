@@ -31,7 +31,9 @@ import_config "#{Mix.env()}.exs"
 
 config :portfolio_monitor, :pow,
   user: PortfolioMonitor.Account.User,
-  repo: PortfolioMonitor.Repo
+  repo: PortfolioMonitor.Repo,
+  extensions: [PowPersistentSession],
+  controller_callbacks: Pow.Extension.Phoenix.ControllerCallbacks
 
 config :portfolio_monitor, PortfolioMonitor.Scheduler,
   jobs: [
