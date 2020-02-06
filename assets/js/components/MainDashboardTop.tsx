@@ -1,41 +1,25 @@
 import React from 'react'
 import Chart from './Chart'
 import {Card, Descriptions, Row, Col} from 'antd'
-
-const data = {
-  labels: ['1', '2', '3', '4', '5'],
-  datasets: [
-    {
-      label: 'First',
-      data: [1,2,3,4,5],
-      fill: false,
-      yAxisID: "f",
-      borderColor: 'gold',
-      pointBackgroundColor: 'gold'
-    },
-    {
-      label: 'Second',
-      data: [50,100,25,1000,1250],
-      fill: false,
-      yAxisID: "s",
-      borderColor: 'blue',
-      pointBackgroundColor: 'blue'
-    }
-  ]
-}
+import {BitmexAcc, BitmexAccsState} from '../types';
 
 const opt = {
   scales: {
     yAxes: [
       {
-        id: 'f',
+        id: 'btcBalance',
         type: 'linear',
-        position: 'left'
-      },
+        position: 'left',
+        ticks: {
+          display: false
+        }
+      }
+    ]
+    xAxes: [
       {
-        id: 's',
-        type: 'linear',
-        position: 'left'
+        ticks: {
+          display: false
+        }
       }
     ]
   },
@@ -45,7 +29,39 @@ const opt = {
   }
 }
 
-export default () => {
+export default ({accs}: {accs: BitmexAccsState}) => {
+  let total = {}
+  
+  const accsArray = Object.values(accs)
+
+  for (let i = 0; i < accsArray.length; i++) {
+    const acc = accsArray[i]
+    for (let y = 0; y < acc.historical_data.length; y++) {
+      const history = acc.historical_data[y]
+      const date = history.inserted_at
+      const balance = (history.wallet_balance / (10 ** 8)).toFixed(4)
+      if (total[date]) {
+        total[date] += balance
+      } else {
+        total[date] = balance
+      }
+    }
+  }
+  
+  const data = {
+    labels: Object.keys(total),
+    datasets: [
+      {
+        label: 'First',
+        data: Object.values(total),
+        fill: false,
+        yAxisID: "btcBalance",
+        borderColor: 'gold',
+        pointBackgroundColor: 'gold'
+      }
+    ]
+  }
+
 	return (
     <Row type="flex" style={{width: "100%", borderBottom: "1px solid #383838", paddingBottom: '5px', marginBottom: '5px'}}>
       <Col span={11}>
@@ -63,7 +79,11 @@ export default () => {
             <Descriptions.Item label="Open position">TEST</Descriptions.Item>
             <Descriptions.Item label="Liquidation price">TEST</Descriptions.Item>
             <Descriptions.Item label="Ave. entry price">TEST</Descriptions.Item>
-            <Descriptions.Item label="Balance">TEST</Descriptions.Item>
+            <Descriptions.Item label="Balance">{
+              (Object.values(accs).reduce((total, acc) => {
+                return total + acc.wallet_balance_now
+              },0) / (10 ** 8)).toFixed(4)
+            }</Descriptions.Item>
           </Descriptions>
         </Card>
       </Col>
