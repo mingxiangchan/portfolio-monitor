@@ -56,11 +56,13 @@ defmodule PortfolioMonitor.Portfolio do
   end
 
   def record_wallet_balances do
+    btc_price = get_last_bitmex_history().btc_price
+
     Account.list_bitmex_accs()
-    |> Enum.each(&record_wallet_balance/1)
+    |> Enum.each(&record_wallet_balance(&1, btc_price))
   end
 
-  def record_wallet_balance(%Account.BitmexAcc{} = acc) do
+  def record_wallet_balance(%Account.BitmexAcc{} = acc, btc_price) do
     credentials = %ExBitmex.Credentials{
       api_key: acc.api_key,
       api_secret: acc.api_secret
@@ -69,7 +71,12 @@ defmodule PortfolioMonitor.Portfolio do
     params = %{currency: "XBt"}
 
     with {:ok, resp, _} <- Margin.get(credentials, params) do
-      create_historical_datum(acc, Map.take(resp, [:wallet_balance, :margin_balance]))
+      changes =
+        resp
+        |> Map.take([:wallet_balance, :margin_balance])
+        |> Map.put(:btc_price, btc_price)
+
+      create_historical_datum(acc, changes)
     end
   end
 end

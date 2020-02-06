@@ -18,7 +18,7 @@ export interface AccCreateFormData {
 export interface HistoricalData {
   wallet_balance_btc: number;
   wallet_balance_usd: number;
-  btc_price: number;
+  btc_price: string;
   inserted_at: string;
 }
 
