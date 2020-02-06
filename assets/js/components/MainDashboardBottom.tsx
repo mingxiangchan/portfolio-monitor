@@ -8,7 +8,7 @@ const data = {
   datasets: [
     {
       label: 'First',
-      data: [1,2,3,4,5],
+      data: [1, 2, 3, 4, 5],
       fill: false,
       yAxisID: "f",
       borderColor: 'gold',
@@ -16,7 +16,7 @@ const data = {
     },
     {
       label: 'Second',
-      data: [50,100,25,1000,1250],
+      data: [50, 100, 25, 1000, 1250],
       fill: false,
       yAxisID: "s",
       borderColor: 'blue',
@@ -27,25 +27,25 @@ const data = {
 
 export default () => {
 
-	const [cards, useCards] = useState([{}, {}, {}, {}, {}])
+  const [cards, useCards] = useState([{}, {}, {}, {}, {}])
 
-	const genCardGroup = () => {
-		let groups = []
-		let cardsCopy = [...cards]
-		cardsCopy = cardsCopy.map((item) => (
-			<Cards style={{width: '30%', backgroundColor: '#e6e6e6'}} title="Mock" data={data}/>
-		))
-		for (let i = 0; i < (cardsCopy.length % 3 ? (Math.floor(cardsCopy.length / 3) + 1) : (Math.floor(cardsCopy.length / 3))); i++) {
-			groups.push(cardsCopy.slice(0 + (i * 3),3 + (i * 3)))
-		}
-		return groups
-	}
+  const genCardGroup = () => {
+    let groups = []
+    let cardsCopy = [...cards]
+    cardsCopy = cardsCopy.map((item) => (
+      <Cards style={{width: '30%', backgroundColor: '#e6e6e6'}} title="Mock" data={data} />
+    ))
+    for (let i = 0; i < (cardsCopy.length % 3 ? (Math.floor(cardsCopy.length / 3) + 1) : (Math.floor(cardsCopy.length / 3))); i++) {
+      groups.push(cardsCopy.slice(0 + (i * 3), 3 + (i * 3)))
+    }
+    return groups
+  }
 
-	return (
-		<div style={{width: "100%"}}>
-			<List itemLayout="horizontal" size="large" pagination={{pageSize: 1}} dataSource={genCardGroup()} renderItem={(item) => (
-				<Row type="flex" justify="space-around">{item}</Row>
-			)} />
-		</div>
-	)
+  return (
+    <div style={{width: "100%"}}>
+      <List itemLayout="horizontal" size="large" pagination={{pageSize: 1}} dataSource={genCardGroup()} renderItem={(item, idx) => (
+        <Row type="flex" justify="space-around" key={`row-${idx}`}>{item}</Row>
+      )} />
+    </div>
+  )
 }

@@ -3,30 +3,30 @@ import {Layout} from 'antd';
 import Top from './MainDashboardTop'
 import Bottom from './MainDashboardBottom'
 import {BitmexAcc, BitmexAccsState} from '../types';
-import socket from '../socket';
+import socket, {afterJoinedAccChannel} from '../socket';
 
 const {Content} = Layout;
 
 export default () => {
   const [accs, setAccs] = useState<BitmexAccsState>({})
 
+  const updateAcc = (acc: BitmexAcc) => {
+    const updatedAcc = {...accs[acc.id], ...acc}
+    setAccs({...accs, [acc.id]: updatedAcc})
+  }
+
   useEffect(() => {
-    const channel = socket.channel("bitmex_accs:index", {})
-    channel.join()
+    // @ts-ignore
+    afterJoinedAccChannel(accChannel => {
+      accChannel.push("get_accs").receive("ok", ({accs}: {accs: BitmexAccsState}) => {
+        setAccs(accs)
+      })
 
-    channel.push("get_accs").receive("ok", ({accs}: {accs: BitmexAccsState}) => {
-      setAccs(accs)
+      accChannel!.on("acc_update", ({acc}: {acc: BitmexAcc}) => {
+        updateAcc(acc)
+      })
     })
 
-    channel.on("acc_update", ({acc}: {acc: BitmexAcc}) => {
-      const updatedAcc = {...accs[acc.id], ...acc}
-      setAccs({...accs, [acc.id]: updatedAcc})
-    })
-
-    channel.on("acc_update", ({acc}: {acc: BitmexAcc}) => {
-      const updatedAcc = {...accs[acc.id], ...acc}
-      setAccs({...accs, [acc.id]: updatedAcc})
-    })
 
     //userChannel.on("wsUpdate", resp => {
     //const bitMexAccId = resp.accId
@@ -42,8 +42,8 @@ export default () => {
   return (
     <Layout style={{marginLeft: 200, backgroundColor: '#000d19'}}>
       <Content style={{margin: '24px 16px 0', overflow: 'scroll', backgroundColor: "#001529", padding: 24}}>
-        <Top accs={accs} />
-        <Bottom accs={accs} />
+        <Top />
+        <Bottom />
       </Content>
     </Layout>
   )

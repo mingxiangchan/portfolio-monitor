@@ -37,11 +37,6 @@ defmodule PortfolioMonitor.Sync.Supervisor do
     DynamicSupervisor.start_child(__MODULE__, child_spec)
   end
 
-  defp initialize_workers do
-    Account.list_bitmex_accs()
-    |> Enum.each(&start_child/1)
-  end
-
   def start_general_btc_info_worker do
     child_spec = {GeneralBtcInfoWorker, %{subscribe: ["trade:XBTUSD"]}}
 

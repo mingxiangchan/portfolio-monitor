@@ -14,6 +14,20 @@ socket.connect()
 export const generalChannel = socket.channel("general_btc_info", {})
 generalChannel.join()
 
+export let bitmexAccChannel = null;
+
+export const afterJoinedAccChannel = callback => {
+  const bmIdxChannel = socket.channel("bitmex_accs:index", {})
+
+  bmIdxChannel.join().receive("ok", ({user_specific_topic}) => {
+    const bmAccChannel = socket.channel(user_specific_topic, {})
+    bmAccChannel.join()
+    callback(bmAccChannel)
+  })
+}
+
+
+
 // Now that you are connected, you can join channels with a topic:
 // let channel = socket.channel("bitmex_acc:2", {})
 // channel.join()

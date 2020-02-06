@@ -4,20 +4,17 @@ defmodule PortfolioMonitor.Account do
 
   alias PortfolioMonitor.Account.BitmexAcc
   alias PortfolioMonitor.Account.User
+  alias PortfolioMonitorWeb.Endpoint
 
   def list_bitmex_accs do
     Repo.all(BitmexAcc)
   end
 
   def list_bitmex_accs(%User{} = user, :with_details) do
-    query =
-      from a in BitmexAcc,
-        join: h in assoc(a, :historical_data),
-        where: a.user_id == ^user.id,
-        order_by: [desc: h.inserted_at],
-        distinct: [a.id]
-
-    query |> with_details_select |> Repo.all()
+    bitmex_acc_with_latest_historical_data_query()
+    |> with_details_select_query
+    |> where([a], a.user_id == ^user.id)
+    |> Repo.all()
   end
 
   def list_bitmex_accs(%User{} = user) do
@@ -30,10 +27,26 @@ defmodule PortfolioMonitor.Account do
   end
 
   def create_bitmex_acc(%User{} = user, attrs \\ %{}) do
-    user
-    |> Ecto.build_assoc(:bitmex_accs, %{})
-    |> BitmexAcc.changeset(attrs)
-    |> Repo.insert()
+    result =
+      user
+      |> Ecto.build_assoc(:bitmex_accs, %{})
+      |> BitmexAcc.changeset(attrs)
+      |> Repo.insert()
+
+    with {:ok, acc} <- result do
+      Task.start(fn -> broadcast_acc_update(acc) end)
+      result
+    end
+  end
+
+  def broadcast_acc_update(%BitmexAcc{} = acc) do
+    acc_data =
+      bitmex_acc_with_latest_historical_data_query()
+      |> with_details_select_query
+      |> where([a], a.id == ^acc.id)
+      |> Repo.one()
+
+    Endpoint.broadcast("bitmex_accs:#{acc.user_id}", "acc_update", %{acc: acc_data})
   end
 
   def change_bitmex_acc(bitmex_acc, changes \\ %{}) do
@@ -51,12 +64,14 @@ defmodule PortfolioMonitor.Account do
     Repo.delete(bitmex_acc)
   end
 
-  def bitmex_acc_with_details(user) do
-    query = from b in BitmexAcc, where: b.user_id == ^user.id
-    Repo.all(query)
+  def bitmex_acc_with_latest_historical_data_query do
+    from a in BitmexAcc,
+      left_join: h in assoc(a, :historical_data),
+      order_by: [desc: h.inserted_at],
+      distinct: [a.id]
   end
 
-  def with_details_select(query) do
+  def with_details_select_query(query) do
     select(query, [a, h], %{
       id: a.id,
       name: a.name,
