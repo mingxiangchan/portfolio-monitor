@@ -7,7 +7,23 @@ const opt = {
   scales: {
     yAxes: [
       {
+        id: 'prices',
+        type: 'linear',
+        position: 'left',
+        ticks: {
+          display: false
+        }
+      },
+      {
         id: 'btcBalance',
+        type: 'linear',
+        position: 'left',
+        ticks: {
+          display: false
+        }
+      },
+      {
+        id: 'usdBalance',
         type: 'linear',
         position: 'left',
         ticks: {
@@ -31,22 +47,43 @@ const opt = {
 
 export default ({style, acc}: {acc: BitmexAcc}) => {
   let labels = []
+  let prices = []
   let btcBalance = []
+  let usdBalance = []
 
   for (let i = 0; i < acc.historical_data.length; i++) {
     const item = acc.historical_data[i]
     labels.push(item.inserted_at)
-    btcBalance.push((item.wallet_balance / (10 ** 8)).toFixed(4))
+    prices.push(item.btc_price)
+    const btc = (item.wallet_balance_btc / (10 ** 8)).toFixed(4)
+    btcBalance.push(btc)
+    usdBalance.push(btc * item.btc_price)
   }
 
   let datasets = [
+    {
+      label: "BTC Price",
+      data: prices,
+      fill: false,
+      yAxisID: "prices",
+      borderColor: 'gold',
+      pointBackgroundColor: 'gold'
+    },
     {
       label: "BTC Balance",
       data: btcBalance,
       fill: false,
       yAxisID: "btcBalance",
-      borderColor: 'gold',
-      pointBackgroundColor: 'gold'
+      borderColor: "blue",
+      pointBackgroundColor: "blue"
+    },
+    {
+      label: "USD Balance",
+      data: usdBalance,
+      fill: false,
+      yAxisID: "usdBalance",
+      borderColor: "deeppink",
+      pointBackgroundColor: "deeppink"
     }
   ]
 

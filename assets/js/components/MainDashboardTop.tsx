@@ -52,7 +52,7 @@ export default ({accs}: {accs: BitmexAccsState}) => {
     labels: Object.keys(total),
     datasets: [
       {
-        label: 'First',
+        label: 'BTC Balance',
         data: Object.values(total),
         fill: false,
         yAxisID: "btcBalance",

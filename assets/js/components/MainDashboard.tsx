@@ -35,6 +35,8 @@ export default () => {
     //})
   }, [])
 
+  console.log(accs)
+
   return (
     <Layout style={{marginLeft: 200, backgroundColor: '#000d19'}}>
       <Content style={{margin: '24px 16px 0', overflow: 'scroll', backgroundColor: "#001529", padding: 24}}>
