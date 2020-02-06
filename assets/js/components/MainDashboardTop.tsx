@@ -7,7 +7,23 @@ const opt = {
   scales: {
     yAxes: [
       {
+        id: 'btcPrice',
+        type: 'linear',
+        position: 'left',
+        ticks: {
+          display: false
+        }
+      },
+      {
         id: 'btcBalance',
+        type: 'linear',
+        position: 'left',
+        ticks: {
+          display: false
+        }
+      },
+      {
+        id: 'usdBalance',
         type: 'linear',
         position: 'left',
         ticks: {
@@ -36,28 +52,55 @@ export default ({accs}: {accs: BitmexAccsState}) => {
 
   for (let i = 0; i < accsArray.length; i++) {
     const acc = accsArray[i]
+    acc.historical_data.sort((a, b) => {
+      if (a.inserted_at > b.inserted_at) {
+        return 1
+      } else {
+        return -1
+      }
+    })
     for (let y = 0; y < acc.historical_data.length; y++) {
       const history = acc.historical_data[y]
       const date = history.inserted_at
-      const balance = (history.wallet_balance / (10 ** 8)).toFixed(4)
+      const btcPrice = history.btc_price
+      const btcBalance = history.wallet_balance_btc / (10 ** 8)
       if (total[date]) {
-        total[date] += balance
+        total[date].btcBalance += btcBalance
       } else {
-        total[date] = balance
+        total[date] = {
+          btcPrice
+          btcBalance
+        }
       }
     }
   }
   
   const data = {
-    labels: Object.keys(total),
+    labels: Object.keys(total).map((time) => (new Date(time).toLocaleString())),
     datasets: [
       {
-        label: 'BTC Balance',
-        data: Object.values(total),
+        label: 'BTC Price',
+        data: Object.values(total).map(item => (item.btcPrice)),
         fill: false,
-        yAxisID: "btcBalance",
+        yAxisID: "btcPrice",
         borderColor: 'gold',
         pointBackgroundColor: 'gold'
+      },
+      {
+        label: 'BTC Balance',
+        data: Object.values(total).map(item => (item.btcBalance.toFixed(4))),
+        fill: false,
+        yAxisID: "btcBalance",
+        borderColor: 'blue',
+        pointBackgroundColor: 'blue'
+      },
+      {
+        label: 'USD Balance',
+        data: Object.values(total).map(item => ((item.btcPrice * item.btcBalance).toFixed(2))),
+        fill: false,
+        yAxisID: "usdBalance",
+        borderColor: 'deeppink',
+        pointBackgroundColor: 'deeppink'
       }
     ]
   }

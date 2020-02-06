@@ -1,5 +1,5 @@
 import React from 'react'
-import {Card, Descriptions} from 'antd'
+import {Card, Descriptions, Spin} from 'antd'
 import Chart from './Chart'
 import {BitmexAcc} from '../types';
 
@@ -57,7 +57,7 @@ export default ({style, acc}: {acc: BitmexAcc}) => {
     prices.push(item.btc_price)
     const btc = (item.wallet_balance_btc / (10 ** 8)).toFixed(4)
     btcBalance.push(btc)
-    usdBalance.push(btc * item.btc_price)
+    usdBalance.push((btc * item.btc_price).toFixed(2))
   }
 
   let datasets = [
@@ -89,21 +89,29 @@ export default ({style, acc}: {acc: BitmexAcc}) => {
 
 
   const data = {
-    labels: acc.historical_data.map((item) => (item.inserted_at)),
+    labels: acc.historical_data.map((item) => (new Date(item.inserted_at).toLocaleString())),
     datasets
   }
+
+  const rsi = (acc.wallet_balance_now - acc.deposit_btc) / (10 ** 8)
+  const usdBalance = rsi * acc.lastPrice
+  const leverage = Math.abs(acc.unrealisedPnl / acc.margin_balance)
+  
+  console.log(acc)
 
   return (
     <Card title={acc.name} style={{...style}}>
       <Descriptions>
-        <Descriptions.Item span={3} label="Return since inception">Test</Descriptions.Item>
+        <Descriptions.Item span={3} label="Return since inception">
+          {(rsi / (acc.deposit_btc / (10 ** 8))).toFixed(2)}% / BTC {rsi.toFixed(8)} / USD { usdBalance ? usdBalance.toFixed(2) : <Spin /> }
+        </Descriptions.Item>
         <Descriptions.Item span={3} label="Earned this month">Test</Descriptions.Item>
         <Descriptions.Item span={3} label="Earned past 7-days">Test</Descriptions.Item>
         <Descriptions.Item span={3} label="Earned past 24-hours">Test</Descriptions.Item>
-        <Descriptions.Item span={3} label="Paper gains">Test</Descriptions.Item>
-        <Descriptions.Item span={3} label="Current leverage">Test</Descriptions.Item>
-        <Descriptions.Item span={3} label="Open position">Test</Descriptions.Item>
-        <Descriptions.Item span={3} label="Liquidation price">Test</Descriptions.Item>
+        <Descriptions.Item span={3} label="Paper gains">{acc.unrealisedPnl ? (acc.unrealisedPnl / (10 ** 8)).toFixed(8) : <Spin />}</Descriptions.Item>
+        <Descriptions.Item span={3} label="Current leverage">{leverage ? leverage.toFixed(1) : <Spin />}</Descriptions.Item>
+        <Descriptions.Item span={3} label="Open position">{acc.currentQty}</Descriptions.Item>
+        <Descriptions.Item span={3} label="Liquidation price">{acc.liquidationPrice}</Descriptions.Item>
         <Descriptions.Item span={3} label="Ave. entry price">Test</Descriptions.Item>
         <Descriptions.Item span={3} label="Balance">{(acc.wallet_balance_now / (10 ** 8)).toFixed(4)}</Descriptions.Item>
         <Descriptions.Item span={3} label="Note">{acc.notes}</Descriptions.Item>
