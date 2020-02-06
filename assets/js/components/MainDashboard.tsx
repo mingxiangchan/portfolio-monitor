@@ -21,6 +21,9 @@ export default () => {
         const updatedAcc = {...accs[acc.id], ...acc}
         setAccs({...accs, [acc.id]: updatedAcc})
       })
+
+      accChannel!.on("ws_margin", resp => console.log(resp))
+      accChannel!.on("ws_position", resp => console.log(resp))
     })
 
     //userChannel.on("wsUpdate", resp => {
