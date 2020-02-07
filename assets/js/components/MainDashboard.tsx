@@ -8,22 +8,40 @@ import socket, {afterJoinedAccChannel} from '../socket';
 const {Content} = Layout;
 
 export default () => {
-  const [accs, setAccs] = useState<BitmexAccsState>({})
+  const [accounts, setAccs] = useState<BitmexAccsState>({})
 
   useEffect(() => {
     // @ts-ignore
     afterJoinedAccChannel(accChannel => {
       accChannel.push("get_accs").receive("ok", ({accs}: {accs: BitmexAccsState}) => {
         setAccs(accs)
+        
+        accChannel!.on("acc_update", ({acc}: {acc: BitmexAcc}) => {
+          const updatedAcc = {...accounts[acc.id], ...acc}
+          setAccs({...accounts, [acc.id]: updatedAcc})
+        })
+
+        accChannel!.on("ws_margin", resp => {
+          const id = resp.acc_id
+          const {unrealisedPnl, marginBalance} = resp.data[0]
+          setAccs((prevAccs) => {
+            const oldAcc = prevAccs[id]
+            const updatedAcc = {...oldAcc, ...unrealisedPnl && {unrealisedPnl}, ...marginBalance && {marginBalance}}
+            return {...prevAccs, [id]: updatedAcc}
+          })
+        })
+        accChannel!.on("ws_position", resp => {
+          const id = resp.acc_id
+          // avgEntryPrice missing
+          const {currentQty, liquidationPrice, lastPrice} = resp.data[0]
+          setAccs((prevAccs) => {
+            const oldAcc = prevAccs[id]
+            const updatedAcc = {...oldAcc, currentQty, liquidationPrice, lastPrice: lastPrice ? lastPrice : oldAcc.lastPrice}
+            return {...prevAccs, [id]: updatedAcc}
+          })
+        })
       })
 
-      accChannel!.on("acc_update", ({acc}: {acc: BitmexAcc}) => {
-        const updatedAcc = {...accs[acc.id], ...acc}
-        setAccs({...accs, [acc.id]: updatedAcc})
-      })
-
-      accChannel!.on("ws_margin", resp => console.log(resp))
-      accChannel!.on("ws_position", resp => console.log(resp))
     })
 
     //userChannel.on("wsUpdate", resp => {
@@ -35,13 +53,11 @@ export default () => {
     //})
   }, [])
 
-  console.log(accs)
-
   return (
     <Layout style={{marginLeft: 200, backgroundColor: '#000d19'}}>
       <Content style={{margin: '24px 16px 0', overflow: 'scroll', backgroundColor: "#001529", padding: 24}}>
-        <Top />
-        <Bottom />
+        <Top accs={accounts}/>
+        <Bottom accs={accounts}/>
       </Content>
     </Layout>
   )
