@@ -42,6 +42,11 @@ const opt = {
   tooltips: {
     mode: 'index',
     intersect: false
+  },
+  legend: {
+    labels: {
+      fontColor: "#999999"
+    }
   }
 }
 
@@ -117,22 +122,24 @@ export default ({accs}: {accs: BitmexAccsState}) => {
   }
 
   const cummulative = Object.values(accs).reduce((total, acc) => {
-    const {wallet_balance_now, deposit_btc, currentQty, marginBalance, unrealisedPnl, lastPrice} = acc
+    const {wallet_balance_now, deposit_btc, currentQty, marginBalance, unrealisedPnl, lastPrice, liquidationPrice} = acc
+    const liqPriceGap = liquidationPrice && lastPrice ? liquidationPrice - lastPrice : total.liqPriceGap
+    const smallerLiqPrice = liqPriceGap < total.liqPriceGap
     return {
       mBalance: marginBalance ? total.mBalance + marginBalance : total.mBalance,
       pnl: unrealisedPnl ? total.pnl + unrealisedPnl : total.pnl,
       qty: currentQty ? total.qty + currentQty : total.qty,
       balance: total.balance + acc.wallet_balance_now,
       start: total.start + deposit_btc,
-      price: lastPrice ? lastPrice : total.price
+      price: lastPrice ? lastPrice : total.price,
+      liqPrice: smallerLiqPrice ? liquidationPrice : total.liqPrice,
+      liqPriceGap: smallerLiqPrice ? liqPriceGap : total.liqPriceGap
     }
-  }, {pnl: 0, qty: 0, balance: 0, start: 0, mBalance: 0, price: 0})
-
-  console.log(cummulative)
+  }, {pnl: 0, qty: 0, balance: 0, start: 0, mBalance: 0, price: 0, liqPrice: 0, liqPriceGap: Infinity})
 
   const rsi = cummulative.balance - cummulative.start
   const btcRsi = rsi / (10 ** 8)
-
+  const leverage = Math.abs((cummulative.qty / cummulative.mBalance) * (10 ** 4))
   return (
     <Row type="flex" style={{width: "100%", borderBottom: "1px solid #383838", paddingBottom: '5px', marginBottom: '5px'}}>
       <Col span={11}>
@@ -150,9 +157,9 @@ export default ({accs}: {accs: BitmexAccsState}) => {
             <Descriptions.Item label="Earned past 7-days">TEST</Descriptions.Item>
             <Descriptions.Item label="Earned past 24-hours">TEST</Descriptions.Item>
             <Descriptions.Item label="Paper gains">{cummulative.pnl ? (cummulative.pnl / (10 ** 8)).toFixed(8) : <Spin />}</Descriptions.Item>
-            <Descriptions.Item label="Current leverage">TEST</Descriptions.Item>
+            <Descriptions.Item label="Current leverage">{leverage && leverage != Infinity ? leverage.toFixed(1) : <Spin />}</Descriptions.Item>
             <Descriptions.Item label="Open position">{cummulative.qty ? cummulative.qty : <Spin />}</Descriptions.Item>
-            <Descriptions.Item label="Liquidation price">TEST</Descriptions.Item>
+            <Descriptions.Item label="Liquidation price">{cummulative.liqPrice}</Descriptions.Item>
             <Descriptions.Item label="Ave. entry price">TEST</Descriptions.Item>
             <Descriptions.Item label="Balance">{(cummulative.balance / (10 ** 8)).toFixed(4)}</Descriptions.Item>
           </Descriptions>

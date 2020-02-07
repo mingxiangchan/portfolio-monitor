@@ -107,7 +107,7 @@ export default ({style, acc}: {acc: BitmexAcc}) => {
         <Descriptions.Item span={3} label="Earned past 7-days">Test</Descriptions.Item>
         <Descriptions.Item span={3} label="Earned past 24-hours">Test</Descriptions.Item>
         <Descriptions.Item span={3} label="Paper gains">{acc.unrealisedPnl ? (acc.unrealisedPnl / (10 ** 8)).toFixed(8) : <Spin />}</Descriptions.Item>
-        <Descriptions.Item span={3} label="Current leverage">{leverage ? leverage.toFixed(1) : <Spin />}</Descriptions.Item>
+        <Descriptions.Item span={3} label="Current leverage">{leverage && leverage != Infinity ? leverage.toFixed(1) : <Spin />}</Descriptions.Item>
         <Descriptions.Item span={3} label="Open position">{acc.currentQty ? acc.currentQty : <Spin />}</Descriptions.Item>
         <Descriptions.Item span={3} label="Liquidation price">{acc.liquidationPrice ? acc.liquidationPrice : <Spin />}</Descriptions.Item>
         <Descriptions.Item span={3} label="Ave. entry price">Test</Descriptions.Item>
