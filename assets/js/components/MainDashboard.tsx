@@ -36,7 +36,7 @@ export default () => {
           const {currentQty, liquidationPrice, lastPrice} = resp.data[0]
           setAccs((prevAccs) => {
             const oldAcc = prevAccs[id]
-            const updatedAcc = {...oldAcc, currentQty, liquidationPrice, lastPrice: lastPrice ? lastPrice : accsCopy[id].lastPrice}
+            const updatedAcc = {...oldAcc, currentQty, liquidationPrice, lastPrice: lastPrice ? lastPrice : oldAcc.lastPrice}
             return {...prevAccs, [id]: updatedAcc}
           })
         })
