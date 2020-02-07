@@ -30,13 +30,15 @@ export interface BitmexAcc {
   notes: string;
   margin_balance: number
   historical_data: HistoricalData[];
+  wallet_balance_now?: number;
   wallet_balance_1_day?: number;
   wallet_balance_7_days?: number;
   wallet_balance_30_days?: number;
-  unrealised_pnl?: number;
-  current_qty?: number;
-  liquidation_price?: number;
   avg_entry_price?: number;
+  // comes from bitmex WS
+  unrealisedPnl?: number;
+  currentQty?: number;
+  liquidationPrice?: number;
 }
 
 export interface BitmexAccsState {
