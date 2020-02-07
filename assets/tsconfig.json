@@ -5,7 +5,7 @@
     "target": "ES5",
     "allowSyntheticDefaultImports": true,
     "allowJs": true,
-    "strict": true,
+    "strict": false,
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
     "module": "ES2015",
