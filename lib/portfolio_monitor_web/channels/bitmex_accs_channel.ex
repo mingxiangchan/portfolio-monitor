@@ -1,7 +1,7 @@
 defmodule PortfolioMonitorWeb.BitmexAccsChannel do
+  use Appsignal.Instrumentation.Decorators
   use PortfolioMonitorWeb, :channel
   alias PortfolioMonitor.Account
-  alias PortfolioMonitorWeb.Endpoint
   alias PortfolioMonitor.Sync.Worker
 
   def join("bitmex_accs:index", _payload, socket) do
@@ -15,6 +15,7 @@ defmodule PortfolioMonitorWeb.BitmexAccsChannel do
     {:ok, socket}
   end
 
+  @decorate channel_action()
   def handle_in("get_accs", _paylod, socket) do
     data =
       socket.assigns.user

@@ -18,6 +18,13 @@ defmodule PortfolioMonitor.Application do
       PortfolioMonitor.Scheduler
     ]
 
+    :telemetry.attach(
+      "appsignal-ecto",
+      [:portfolio_monitor, :repo, :query],
+      &Appsignal.Ecto.handle_event/4,
+      nil
+    )
+
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: PortfolioMonitor.Supervisor]

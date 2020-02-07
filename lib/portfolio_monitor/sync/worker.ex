@@ -1,5 +1,4 @@
 defmodule PortfolioMonitor.Sync.Worker do
-  alias PortfolioMonitor.Portfolio
   alias PortfolioMonitorWeb.Endpoint
   use ExBitmex.WebSocket
 
