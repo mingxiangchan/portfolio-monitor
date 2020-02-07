@@ -91,36 +91,6 @@ export default ({accs}: {accs: BitmexAccsState}) => {
     }
   }
 
-  const data = {
-    labels: Object.keys(total).map((time) => (new Date(time).toLocaleString())),
-    datasets: [
-      {
-        label: 'BTC Price',
-        data: Object.values(total).map(item => (item.btcPrice)),
-        fill: false,
-        yAxisID: "btcPrice",
-        borderColor: 'gold',
-        pointBackgroundColor: 'gold'
-      },
-      {
-        label: 'BTC Balance',
-        data: Object.values(total).map(item => (item.btcBalance.toFixed(4))),
-        fill: false,
-        yAxisID: "btcBalance",
-        borderColor: 'blue',
-        pointBackgroundColor: 'blue'
-      },
-      {
-        label: 'USD Balance',
-        data: Object.values(total).map(item => ((item.btcPrice * item.btcBalance).toFixed(2))),
-        fill: false,
-        yAxisID: "usdBalance",
-        borderColor: 'deeppink',
-        pointBackgroundColor: 'deeppink'
-      }
-    ]
-  }
-
   const cummulative = Object.values(accs).reduce((total, acc) => {
     const {wallet_balance_now, deposit_btc, currentQty, marginBalance, unrealisedPnl, lastPrice, liquidationPrice} = acc
     const liqPriceGap = liquidationPrice && lastPrice ? liquidationPrice - lastPrice : total.liqPriceGap
@@ -136,6 +106,36 @@ export default ({accs}: {accs: BitmexAccsState}) => {
       liqPriceGap: smallerLiqPrice ? liqPriceGap : total.liqPriceGap
     }
   }, {pnl: 0, qty: 0, balance: 0, start: 0, mBalance: 0, price: 0, liqPrice: 0, liqPriceGap: Infinity})
+
+  const data = {
+    labels: Object.keys(total).map((time) => (new Date(time).toLocaleString())).concat(["Now"]),
+    datasets: [
+      {
+        label: 'BTC Price',
+        data: Object.values(total).map(item => (item.btcPrice)).concat([cummulative.price]),
+        fill: false,
+        yAxisID: "btcPrice",
+        borderColor: 'gold',
+        pointBackgroundColor: 'gold'
+      },
+      {
+        label: 'BTC Balance',
+        data: Object.values(total).map(item => (item.btcBalance.toFixed(4))).concat([(cummulative.balance / (10 ** 8)).toFixed(4)]),
+        fill: false,
+        yAxisID: "btcBalance",
+        borderColor: 'blue',
+        pointBackgroundColor: 'blue'
+      },
+      {
+        label: 'USD Balance',
+        data: Object.values(total).map(item => ((item.btcPrice * item.btcBalance).toFixed(2))).concat([((cummulative.balance * cummulative.price) / (10 ** 8)).toFixed(2)]),
+        fill: false,
+        yAxisID: "usdBalance",
+        borderColor: 'deeppink',
+        pointBackgroundColor: 'deeppink'
+      }
+    ]
+  }
 
   const rsi = cummulative.balance - cummulative.start
   const btcRsi = rsi / (10 ** 8)

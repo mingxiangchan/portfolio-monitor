@@ -63,7 +63,7 @@ export default ({style, acc}: {acc: BitmexAcc}) => {
   let datasets = [
     {
       label: "BTC Price",
-      data: prices,
+      data: prices.concat([acc.lastPrice]),
       fill: false,
       yAxisID: "prices",
       borderColor: 'gold',
@@ -71,7 +71,7 @@ export default ({style, acc}: {acc: BitmexAcc}) => {
     },
     {
       label: "BTC Balance",
-      data: btcBalance,
+      data: btcBalance.concat([(acc.wallet_balance_now / (10 ** 8)).toFixed(4)]),
       fill: false,
       yAxisID: "btcBalance",
       borderColor: "blue",
@@ -79,7 +79,7 @@ export default ({style, acc}: {acc: BitmexAcc}) => {
     },
     {
       label: "USD Balance",
-      data: usdBalance,
+      data: usdBalance.concat([((acc.lastPrice * acc.wallet_balance_now) / (10 ** 8)).toFixed(2)]),
       fill: false,
       yAxisID: "usdBalance",
       borderColor: "deeppink",
@@ -89,7 +89,7 @@ export default ({style, acc}: {acc: BitmexAcc}) => {
 
 
   const data = {
-    labels: acc.historical_data.map((item) => (new Date(item.inserted_at).toLocaleString())),
+    labels: (acc.historical_data.map((item) => (new Date(item.inserted_at).toLocaleString()))).concat(["Now"]),
     datasets
   }
 

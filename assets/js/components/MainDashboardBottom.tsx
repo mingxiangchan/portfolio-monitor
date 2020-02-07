@@ -17,7 +17,8 @@ export default ({accs}: {accs: BitmexAccsState}) => {
       <Cards key={idx} style={{width: '30%', backgroundColor: '#e6e6e6'}} acc={item[1]} />
       : null
     ))
-    for (let i = 0; i < (accsCopy.length % 3 ? (Math.floor(accsCopy.length / 3) + 1) : (Math.floor(accsCopy.length / 3))); i++) {
+    const loopCount = (accsCopy.length % 3 ? (Math.floor(accsCopy.length / 3) + 1) : (Math.floor(accsCopy.length / 3)))
+    for (let i = 0; i < loopCount; i++) {
       groups.push(accsCopy.slice(0 + (i * 3), 3 + (i * 3)))
     }
     return groups
