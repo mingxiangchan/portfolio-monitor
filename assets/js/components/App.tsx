@@ -11,7 +11,7 @@ const App = () => (
     <Col span={24}>
       <Layout style={{height: '100vh'}}>
         <TopNav />
-        <Layout style={{marginTop: 64, backgroundColor: 'black'}}>
+        <Layout style={{marginTop: 50, backgroundColor: 'black'}}>
           <SideNav />
           <MainDashboard />
         </Layout>

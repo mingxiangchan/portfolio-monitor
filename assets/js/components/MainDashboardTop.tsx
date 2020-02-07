@@ -1,7 +1,7 @@
 import React from 'react'
 import Chart from './Chart'
 import {Card, Descriptions, Row, Col, Spin} from 'antd'
-import {BitmexAcc, BitmexAccsState} from '../types';
+import {BitmexAcc} from '../types';
 
 const opt = {
   scales: {
@@ -50,21 +50,11 @@ const opt = {
   }
 }
 
-export default ({accs}: {accs: BitmexAccsState}) => {
-  if (accs == undefined) {
-    return (
-      <div style={{textAlign: 'center'}}>
-        <Spin size="large" />
-      </div>
-    )
-  }
-
+export default ({accs}: {accs: BitmexAcc[]}) => {
   let total = {}
 
-  const accsArray = Object.values(accs)
-
-  for (let i = 0; i < accsArray.length; i++) {
-    const acc = accsArray[i]
+  for (let i = 0; i < accs.length; i++) {
+    const acc = accs[i]
     if (!acc.historical_data) {
       continue
     }
@@ -91,7 +81,7 @@ export default ({accs}: {accs: BitmexAccsState}) => {
     }
   }
 
-  const cummulative = Object.values(accs).reduce((total, acc) => {
+  const cummulative = accs.reduce((total, acc) => {
     const {wallet_balance_now, deposit_btc, currentQty, marginBalance, unrealisedPnl, lastPrice, liquidationPrice} = acc
     const liqPriceGap = liquidationPrice && lastPrice ? liquidationPrice - lastPrice : total.liqPriceGap
     const smallerLiqPrice = liqPriceGap < total.liqPriceGap
@@ -140,6 +130,7 @@ export default ({accs}: {accs: BitmexAccsState}) => {
   const rsi = cummulative.balance - cummulative.start
   const btcRsi = rsi / (10 ** 8)
   const leverage = Math.abs((cummulative.qty / cummulative.mBalance) * (10 ** 4))
+
   return (
     <Row type="flex" style={{width: "100%", borderBottom: "1px solid #383838", paddingBottom: '5px', marginBottom: '5px'}}>
       <Col span={11}>
@@ -147,11 +138,11 @@ export default ({accs}: {accs: BitmexAccsState}) => {
       </Col>
       <Col span={13}>
         <Card title="Cummulative" style={{flexGrow: 1, marginLeft: '10px', backgroundColor: '#e6e6e6'}}>
-          <Descriptions column={{md: 1, lg: 2}}>
+          <Descriptions column={{md: 1, lg: 2}} size="small">
             <Descriptions.Item label="Return since inception">{
-              (rsi / cummulative.start).toFixed(2)}% / 
-              BTC {btcRsi.toFixed(8)} / 
-              USD {cummulative.price ? (btcRsi * cummulative.price).toFixed(2) : <Spin />}
+              (rsi / cummulative.start).toFixed(2)}% /
+                  BTC {btcRsi.toFixed(8)} /
+                  USD {cummulative.price ? (btcRsi * cummulative.price).toFixed(2) : <Spin />}
             </Descriptions.Item>
             <Descriptions.Item label="Earned this month">TEST</Descriptions.Item>
             <Descriptions.Item label="Earned past 7-days">TEST</Descriptions.Item>
