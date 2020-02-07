@@ -1,5 +1,3 @@
-import antdcss from 'antd/dist/antd.css'
-import css from "../css/app.css"
 import React from "react"
 import ReactDOM from 'react-dom'
 

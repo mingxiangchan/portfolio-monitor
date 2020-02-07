@@ -1,9 +1,10 @@
-const path = require('path');
-const glob = require('glob');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const TerserPlugin = require('terser-webpack-plugin');
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
+const path = require('path')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const nodeModulesPath = path.resolve(__dirname, 'node_modules')
+const ImageminPlugin = require('imagemin-webpack-plugin').default
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
+const TerserPlugin = require('terser-webpack-plugin')
 
 const devMode = process.env.NODE_ENV !== 'production'
 
@@ -11,21 +12,22 @@ function minimizers() {
   if (devMode) {
     return []
   } else {
-    return [new TerserPlugin(), new OptimizeCSSAssetsPlugin({})]
+    return [
+      new TerserPlugin({cache: true, parallel: true, sourceMap: false}), 
+      new OptimizeCSSAssetsPlugin({})
+    ]
   }
 }
 
-module.exports = (env, options) => ({
+// The webpack config
+module.exports = {
   devtool: 'source-map',
-  optimization: {
-    minimizer: minimizers(),
-  },
   entry: {
     app: [
       'core-js/stable',
       'regenerator-runtime/runtime',
       'phoenix_html',
-      './css/app.css',
+      './css/app.scss',
       './js/app.js',
     ],
   },
@@ -35,8 +37,34 @@ module.exports = (env, options) => ({
     chunkFilename: 'js/[name].js',
     publicPath: '/',
   },
+  optimization: {
+    minimizer: minimizers(),
+  },
+  plugins: [
+    // Copy all of our assets to the priv/static folder
+    new CopyWebpackPlugin([
+      {
+        from: path.resolve(__dirname, 'static'),
+        to: path.resolve(__dirname, '..', 'priv', 'static'),
+      },
+    ]),
+    new ImageminPlugin({
+      disable: devMode,
+      test: /\.(jpe?g|png|gif|svg)$/i,
+    }),
+    // Separate the css into it's own file
+    new MiniCssExtractPlugin({
+      filename: 'css/[name].css',
+      chunkFilename: '[id].css',
+    }),
+  ],
+  resolve: {
+    extensions: ['.tsx', '.ts', '.js'],
+    symlinks: false,
+  },
   module: {
     rules: [
+      // TS rules
       {
         test: /\.tsx?$/,
         use: [
@@ -49,34 +77,60 @@ module.exports = (env, options) => ({
         ],
         exclude: /node_modules/,
       },
+      // JS rules
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader'
-        }
+        loader: 'babel-loader',
       },
+      // CSS rules
       {
         test: /\.css$/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader']
-      }
-
-    ]
-  },
-  plugins: [
-    new CopyWebpackPlugin([
-      {
-        from: path.resolve(__dirname, 'static'),
-        to: path.resolve(__dirname, '..', 'priv', 'static'),
+        use: [
+          MiniCssExtractPlugin.loader,
+          {loader: 'css-loader', options: {sourceMap: false}},
+        ]
       },
-    ]),
-    new MiniCssExtractPlugin({
-      filename: 'css/[name].css',
-      chunkFilename: '[id].css',
-    }),
-  ],
-  resolve: {
-    extensions: ['.tsx', '.ts', '.js'],
-    symlinks: false
-  }
-});
+      // SCSS rules
+      {
+        test: /\.scss$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          {loader: 'css-loader', options: {sourceMap: true}},
+          {
+            loader: 'resolve-url-loader',
+            options: {keepQuery: true, sourceMap: true},
+          },
+          {
+            loader: 'sass-loader',
+            options: {
+              sourceMap: true,
+              sassOptions: {
+                includePaths: [nodeModulesPath],
+              },
+            },
+          },
+        ],
+      },
+      // For images and fonts found in our scss files
+      {
+        test: /\.(jpg|jpeg|gif|png)$/,
+        exclude: [nodeModulesPath],
+        use: [
+          'file-loader',
+          {
+            loader: 'image-webpack-loader',
+            options: {
+              disable: devMode,
+            },
+          },
+        ],
+      },
+      {
+        test: /\.(woff2?|ttf|eot|svg)(\?[a-z0-9\=\.]+)?$/,
+        exclude: [nodeModulesPath],
+        loader: 'file-loader',
+      },
+    ],
+  },
+}
