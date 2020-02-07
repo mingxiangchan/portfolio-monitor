@@ -63,7 +63,7 @@ export default ({style, acc}: {acc: BitmexAcc}) => {
   let datasets = [
     {
       label: "BTC Price",
-      data: prices,
+      data: prices.concat([acc.lastPrice]),
       fill: false,
       yAxisID: "prices",
       borderColor: 'gold',
@@ -71,7 +71,7 @@ export default ({style, acc}: {acc: BitmexAcc}) => {
     },
     {
       label: "BTC Balance",
-      data: btcBalance,
+      data: btcBalance.concat([(acc.wallet_balance_now / (10 ** 8)).toFixed(4)]),
       fill: false,
       yAxisID: "btcBalance",
       borderColor: "blue",
@@ -79,7 +79,7 @@ export default ({style, acc}: {acc: BitmexAcc}) => {
     },
     {
       label: "USD Balance",
-      data: usdBalance,
+      data: usdBalance.concat([((acc.lastPrice * acc.wallet_balance_now) / (10 ** 8)).toFixed(2)]),
       fill: false,
       yAxisID: "usdBalance",
       borderColor: "deeppink",
@@ -89,7 +89,7 @@ export default ({style, acc}: {acc: BitmexAcc}) => {
 
 
   const data = {
-    labels: acc.historical_data.map((item) => (new Date(item.inserted_at).toLocaleString())),
+    labels: (acc.historical_data.map((item) => (new Date(item.inserted_at).toLocaleString()))).concat(["Now"]),
     datasets
   }
 
@@ -107,9 +107,9 @@ export default ({style, acc}: {acc: BitmexAcc}) => {
         <Descriptions.Item span={3} label="Earned past 7-days">Test</Descriptions.Item>
         <Descriptions.Item span={3} label="Earned past 24-hours">Test</Descriptions.Item>
         <Descriptions.Item span={3} label="Paper gains">{acc.unrealisedPnl ? (acc.unrealisedPnl / (10 ** 8)).toFixed(8) : <Spin />}</Descriptions.Item>
-        <Descriptions.Item span={3} label="Current leverage">{leverage ? leverage.toFixed(1) : <Spin />}</Descriptions.Item>
-        <Descriptions.Item span={3} label="Open position">{acc.currentQty}</Descriptions.Item>
-        <Descriptions.Item span={3} label="Liquidation price">{acc.liquidationPrice}</Descriptions.Item>
+        <Descriptions.Item span={3} label="Current leverage">{leverage && leverage != Infinity ? leverage.toFixed(1) : <Spin />}</Descriptions.Item>
+        <Descriptions.Item span={3} label="Open position">{acc.currentQty ? acc.currentQty : <Spin />}</Descriptions.Item>
+        <Descriptions.Item span={3} label="Liquidation price">{acc.liquidationPrice ? acc.liquidationPrice : <Spin />}</Descriptions.Item>
         <Descriptions.Item span={3} label="Ave. entry price">Test</Descriptions.Item>
         <Descriptions.Item span={3} label="Balance">{(acc.wallet_balance_now / (10 ** 8)).toFixed(4)}</Descriptions.Item>
         <Descriptions.Item span={3} label="Note">{acc.notes}</Descriptions.Item>
