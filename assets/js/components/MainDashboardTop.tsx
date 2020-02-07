@@ -96,7 +96,7 @@ export default ({accs}: {accs: BitmexAccsState}) => {
     const liqPriceGap = liquidationPrice && lastPrice ? liquidationPrice - lastPrice : total.liqPriceGap
     const smallerLiqPrice = liqPriceGap < total.liqPriceGap
     return {
-      mBalance: marginBalance ? total.mBalance + marginBalance : total.mBalance,
+      mBalance: total.mBalance + (marginBalance ? marginBalance : acc.margin_balance),
       pnl: unrealisedPnl ? total.pnl + unrealisedPnl : total.pnl,
       qty: currentQty ? total.qty + currentQty : total.qty,
       balance: total.balance + acc.wallet_balance_now,

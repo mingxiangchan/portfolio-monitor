@@ -95,7 +95,7 @@ export default ({style, acc}: {acc: BitmexAcc}) => {
 
   const rsi = (acc.wallet_balance_now - acc.deposit_btc) / (10 ** 8)
   const usdBalance = rsi * acc.lastPrice
-  const leverage = Math.abs((acc.currentQty / acc.margin_balance) * (10 ** 4))
+  const leverage = Math.abs((acc.currentQty / (acc.marginBalance ? acc.marginBalance : acc.margin_balance)) * (10 ** 4))
 
   return (
     <Card title={acc.name} style={{...style}}>
