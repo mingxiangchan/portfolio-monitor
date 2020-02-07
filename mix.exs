@@ -49,6 +49,7 @@ defmodule PortfolioMonitor.MixProject do
       {:httpoison, "~> 1.6"},
       {:cors_plug, "~> 2.0"},
       {:quantum, "~> 2.3"},
+      {:appsignal, "~> 1.0"},
       {:timex, "~> 3.0"}
     ]
   end
