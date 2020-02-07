@@ -23,6 +23,7 @@ function minimizers() {
 module.exports = {
   devtool: 'source-map',
   entry: {
+    login: './css/login.scss',
     app: [
       'core-js/stable',
       'regenerator-runtime/runtime',
