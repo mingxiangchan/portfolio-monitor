@@ -10,7 +10,9 @@ export default ({accs}: {accs: BitmexAccsState}) => {
     let groups = []
     let accsCopy = Object.entries(accs)
     accsCopy = accsCopy.map((item, idx) => (
+      item[1].historical_data ?
       <Cards key={idx} style={{width: '30%', backgroundColor: '#e6e6e6'}} acc={item[1]} />
+      : null
     ))
     for (let i = 0; i < (accsCopy.length % 3 ? (Math.floor(accsCopy.length / 3) + 1) : (Math.floor(accsCopy.length / 3))); i++) {
       groups.push(accsCopy.slice(0 + (i * 3), 3 + (i * 3)))

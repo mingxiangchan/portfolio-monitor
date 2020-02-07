@@ -52,6 +52,9 @@ export default ({accs}: {accs: BitmexAccsState}) => {
 
   for (let i = 0; i < accsArray.length; i++) {
     const acc = accsArray[i]
+    if (!acc.historical_data) {
+      continue
+    }
     acc.historical_data.sort((a, b) => {
       if (a.inserted_at > b.inserted_at) {
         return 1
