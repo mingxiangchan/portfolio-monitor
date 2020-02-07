@@ -132,13 +132,13 @@ export default ({accs}: {accs: BitmexAcc[]}) => {
   const leverage = Math.abs((cummulative.qty / cummulative.mBalance) * (10 ** 4))
 
   return (
-    <Row type="flex" style={{width: "100%", borderBottom: "1px solid #383838", paddingBottom: '5px', marginBottom: '5px'}}>
-      <Col span={11}>
-        <Chart data={data} options={opt} />
-      </Col>
-      <Col span={13}>
-        <Card title="Cummulative" style={{flexGrow: 1, marginLeft: '10px', backgroundColor: '#e6e6e6'}}>
-          <Descriptions column={{md: 1, lg: 2}} size="small">
+    <Row type="flex" style={{width: "100%", borderBottom: "1px solid #383838", paddingBottom: '5px', marginBottom: '5px', maxHeight: "45vh"}}>
+      <Card>
+        <Col span={11}>
+          <Chart data={data} options={opt} />
+        </Col>
+        <Col span={12} offset={1}>
+          <Descriptions column={{md: 1, lg: 2}} size="small" title="Cumulative">
             <Descriptions.Item label="Return since inception">{
               (rsi / cummulative.start).toFixed(2)}% /
                   BTC {btcRsi.toFixed(8)} /
@@ -154,8 +154,8 @@ export default ({accs}: {accs: BitmexAcc[]}) => {
             <Descriptions.Item label="Ave. entry price">TEST</Descriptions.Item>
             <Descriptions.Item label="Balance">{(cummulative.balance / (10 ** 8)).toFixed(4)}</Descriptions.Item>
           </Descriptions>
-        </Card>
-      </Col>
+        </Col>
+      </Card>
     </Row>
   )
 }

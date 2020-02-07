@@ -1,9 +1,9 @@
 import React, {useState, useEffect} from 'react'
-import {Layout, Spin} from 'antd';
+import {Layout} from 'antd';
 import MainDashboardTop from './MainDashboardTop'
 import MainDashboardBottom from './MainDashboardBottom'
 import {BitmexAcc, BitmexAccsState} from '../types';
-import socket, {afterJoinedAccChannel} from '../socket';
+import {afterJoinedAccChannel} from '../socket';
 
 const {Content} = Layout;
 
@@ -52,17 +52,14 @@ export default () => {
     expandedAccs.push(accounts[id])
   }
 
-  const loading = expandedAccs.length === 0
 
   console.log(expandedAccs)
 
   return (
     <Layout style={{marginLeft: 200, backgroundColor: '#000d19'}}>
-      <Content style={{margin: '24px 16px 0', overflow: 'scroll', backgroundColor: "#001529", padding: 24}}>
-        <Spin spinning={loading} size="large" tip="Loading Accounts">
-          <MainDashboardTop accs={expandedAccs} />
-          <MainDashboardBottom accs={expandedAccs} />
-        </Spin>
+      <Content style={{padding: 24}}>
+        <MainDashboardTop accs={expandedAccs} />
+        <MainDashboardBottom accs={expandedAccs} />
       </Content>
     </Layout>
   )

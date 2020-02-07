@@ -10,8 +10,7 @@ const App = () => (
   <Row>
     <Col span={24}>
       <Layout style={{height: '100vh'}}>
-        <TopNav />
-        <Layout style={{marginTop: 50, backgroundColor: 'black'}}>
+        <Layout style={{backgroundColor: 'black'}}>
           <SideNav />
           <MainDashboard />
         </Layout>
