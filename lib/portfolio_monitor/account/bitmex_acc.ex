@@ -12,6 +12,9 @@ defmodule PortfolioMonitor.Account.BitmexAcc do
              :deposit_btc,
              :margin_balance,
              :wallet_balance_now,
+             :wallet_balance_1_day,
+             :wallet_balance_7_days,
+             :wallet_balance_30_days,
              :historical_data
            ]}
   schema "bitmex_accs" do
@@ -23,6 +26,10 @@ defmodule PortfolioMonitor.Account.BitmexAcc do
     field :notes, :string
     field :margin_balance, :integer, virtual: true
     field :wallet_balance_now, :integer, virtual: true
+    field :wallet_balance_1_day, :integer, virtual: true
+    field :wallet_balance_7_days, :integer, virtual: true
+    field :wallet_balance_30_days, :integer, virtual: true
+
     belongs_to :user, PortfolioMonitor.Account.User
     has_many :historical_data, PortfolioMonitor.Portfolio.HistoricalDatum
 
