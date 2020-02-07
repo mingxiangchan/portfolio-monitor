@@ -87,11 +87,11 @@ defmodule PortfolioMonitor.Portfolio do
     d30_query = oldest_historical_datum_within_days(30)
 
     from a in query,
-      join: b in subquery(d1_query),
+      left_join: b in subquery(d1_query),
       on: a.id == b.bitmex_acc_id,
-      join: c in subquery(d7_query),
+      left_join: c in subquery(d7_query),
       on: a.id == c.bitmex_acc_id,
-      join: d in subquery(d30_query),
+      left_join: d in subquery(d30_query),
       on: a.id == d.bitmex_acc_id,
       select_merge: %{
         wallet_balance_1_day: b.wallet_balance,
