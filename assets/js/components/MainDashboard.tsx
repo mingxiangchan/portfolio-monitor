@@ -8,14 +8,14 @@ import socket, {afterJoinedAccChannel} from '../socket';
 const {Content} = Layout;
 
 export default () => {
-  const [accounts, setAccs] = useState<BitmexAccsState>(undefined)
+  const [accounts, setAccs] = useState<BitmexAccsState>(null)
 
   useEffect(() => {
     // @ts-ignore
     afterJoinedAccChannel(accChannel => {
       accChannel.push("get_accs").receive("ok", ({accs}: {accs: BitmexAccsState}) => {
         setAccs(accs)
-        
+
         accChannel!.on("acc_update", ({acc}: {acc: BitmexAcc}) => {
           const updatedAcc = {...accounts[acc.id], ...acc}
           setAccs((prevAccs) => {
@@ -58,8 +58,8 @@ export default () => {
   return (
     <Layout style={{marginLeft: 200, backgroundColor: '#000d19'}}>
       <Content style={{margin: '24px 16px 0', overflow: 'scroll', backgroundColor: "#001529", padding: 24}}>
-        <Top accs={accounts}/>
-        <Bottom accs={accounts}/>
+        <Top accs={accounts} />
+        <Bottom accs={accounts} />
       </Content>
     </Layout>
   )
