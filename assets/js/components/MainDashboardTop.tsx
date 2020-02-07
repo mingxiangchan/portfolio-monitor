@@ -30,7 +30,7 @@ const opt = {
           display: false
         }
       }
-    ]
+    ],
     xAxes: [
       {
         ticks: {
@@ -47,7 +47,7 @@ const opt = {
 
 export default ({accs}: {accs: BitmexAccsState}) => {
   let total = {}
-  
+
   const accsArray = Object.values(accs)
 
   for (let i = 0; i < accsArray.length; i++) {
@@ -71,13 +71,13 @@ export default ({accs}: {accs: BitmexAccsState}) => {
         total[date].btcBalance += btcBalance
       } else {
         total[date] = {
-          btcPrice
+          btcPrice,
           btcBalance
         }
       }
     }
   }
-  
+
   const data = {
     labels: Object.keys(total).map((time) => (new Date(time).toLocaleString())),
     datasets: [
@@ -108,10 +108,10 @@ export default ({accs}: {accs: BitmexAccsState}) => {
     ]
   }
 
-	return (
+  return (
     <Row type="flex" style={{width: "100%", borderBottom: "1px solid #383838", paddingBottom: '5px', marginBottom: '5px'}}>
       <Col span={11}>
-        <Chart data={data} options={opt}/>
+        <Chart data={data} options={opt} />
       </Col>
       <Col span={13}>
         <Card title="Cummulative" style={{flexGrow: 1, marginLeft: '10px', backgroundColor: '#e6e6e6'}}>
@@ -128,7 +128,7 @@ export default ({accs}: {accs: BitmexAccsState}) => {
             <Descriptions.Item label="Balance">{
               (Object.values(accs).reduce((total, acc) => {
                 return total + acc.wallet_balance_now
-              },0) / (10 ** 8)).toFixed(4)
+              }, 0) / (10 ** 8)).toFixed(4)
             }</Descriptions.Item>
           </Descriptions>
         </Card>
