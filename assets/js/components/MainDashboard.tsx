@@ -18,7 +18,9 @@ export default () => {
         
         accChannel!.on("acc_update", ({acc}: {acc: BitmexAcc}) => {
           const updatedAcc = {...accounts[acc.id], ...acc}
-          setAccs({...accounts, [acc.id]: updatedAcc})
+          setAccs((prevAccs) => {
+            return {...prevAccs, [acc.id]: updatedAcc}
+          })
         })
 
         accChannel!.on("ws_margin", resp => {

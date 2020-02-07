@@ -97,8 +97,6 @@ export default ({style, acc}: {acc: BitmexAcc}) => {
   const usdBalance = rsi * acc.lastPrice
   const leverage = Math.abs(acc.unrealisedPnl / acc.margin_balance)
   
-  console.log(acc)
-
   return (
     <Card title={acc.name} style={{...style}}>
       <Descriptions>
