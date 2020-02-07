@@ -8,7 +8,7 @@ import socket, {afterJoinedAccChannel} from '../socket';
 const {Content} = Layout;
 
 export default () => {
-  const [accounts, setAccs] = useState<BitmexAccsState>({})
+  const [accounts, setAccs] = useState<BitmexAccsState>(undefined)
 
   useEffect(() => {
     // @ts-ignore

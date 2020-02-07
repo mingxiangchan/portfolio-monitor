@@ -7,6 +7,9 @@ import {BitmexAccsState} from '../types';
 export default ({accs}: {accs: BitmexAccsState}) => {
 
   const genCardGroup = () => {
+    if (accs == undefined) {
+      return []
+    }
     let groups = []
     let accsCopy = Object.entries(accs)
     accsCopy = accsCopy.map((item, idx) => (

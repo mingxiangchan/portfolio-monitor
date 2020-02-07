@@ -46,6 +46,14 @@ const opt = {
 }
 
 export default ({accs}: {accs: BitmexAccsState}) => {
+  if (accs == undefined) {
+    return (
+      <div style={{textAlign: 'center'}}>
+        <Spin size="large" />
+      </div>
+    )
+  }
+
   let total = {}
 
   const accsArray = Object.values(accs)
