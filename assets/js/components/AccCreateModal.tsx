@@ -9,7 +9,6 @@ const AccCreateModal = () => {
     <>
       <Button
         type="primary"
-        size="large"
         onClick={() => {
           setVisible(!visible);
         }}

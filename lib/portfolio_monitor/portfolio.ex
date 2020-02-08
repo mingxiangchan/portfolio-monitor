@@ -80,4 +80,37 @@ defmodule PortfolioMonitor.Portfolio do
       Account.broadcast_acc_update(acc)
     end
   end
+
+  def with_historical_balance(query) do
+    d1_query = oldest_historical_datum_within_days(1)
+    d7_query = oldest_historical_datum_within_days(7)
+    d30_query = oldest_historical_datum_within_days(30)
+
+    from a in query,
+      left_join: b in subquery(d1_query),
+      on: a.id == b.bitmex_acc_id,
+      left_join: c in subquery(d7_query),
+      on: a.id == c.bitmex_acc_id,
+      left_join: d in subquery(d30_query),
+      on: a.id == d.bitmex_acc_id,
+      select_merge: %{
+        wallet_balance_1_day: b.wallet_balance,
+        wallet_balance_7_days: c.wallet_balance,
+        wallet_balance_30_days: d.wallet_balance
+      }
+  end
+
+  defp oldest_historical_datum_within_days(diff) do
+    {:ok, target_datetime} =
+      Date.utc_today()
+      |> Date.add(-diff)
+      |> NaiveDateTime.new(Time.utc_now())
+
+    from h in HistoricalDatum,
+      where: h.inserted_at >= ^target_datetime,
+      order_by: h.inserted_at,
+      limit: 1
+  end
 end
+
+# Account.bitmex_acc_with_latest_historical_data_query |> where([a], a.id == 1) |> Portfolio.with_historical_balance |> Repo.all

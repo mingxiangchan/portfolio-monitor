@@ -13,6 +13,7 @@ defmodule PortfolioMonitor.Account do
 
   def list_bitmex_accs(%User{} = user, :with_details) do
     bitmex_acc_with_latest_historical_data_query()
+    |> Portfolio.with_historical_balance()
     |> where([a], a.user_id == ^user.id)
     |> Repo.all()
   end
@@ -42,6 +43,7 @@ defmodule PortfolioMonitor.Account do
   def broadcast_acc_update(%BitmexAcc{} = acc) do
     acc_data =
       bitmex_acc_with_latest_historical_data_query()
+      |> Portfolio.with_historical_balance()
       |> where([a], a.id == ^acc.id)
       |> Repo.one()
 
