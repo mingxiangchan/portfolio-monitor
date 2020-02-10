@@ -1,3 +1,6 @@
+import axios from 'axios'
+
+
 // NOTE: The contents of this file will only be executed if
 // you uncomment its entry in "assets/js/app.js".
 
@@ -7,9 +10,22 @@
 // Pass the token on params as below. Or remove it
 // from the params if you are not using authentication.
 import { Socket } from "phoenix"
+
 let socket = new Socket("/socket", { params: { _csrf_token: window.csrfToken } })
 
-socket.connect()
+if(window.csrfToken){
+  socket.onError(err => {
+    axios.delete("/session", {headers:{"x-csrf-token": window.csrfToken}})
+      .then(res => {
+        window.location.reload()
+      })
+      .catch(err => {
+        console.log("Error :", err)
+      })
+  })
+  socket.connect()
+  
+}
 
 export const generalChannel = socket.channel("general_btc_info", {})
 generalChannel.join()

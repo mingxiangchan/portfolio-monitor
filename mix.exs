@@ -50,7 +50,8 @@ defmodule PortfolioMonitor.MixProject do
       {:cors_plug, "~> 2.0"},
       {:quantum, "~> 2.3"},
       {:appsignal, "~> 1.0"},
-      {:timex, "~> 3.0"}
+      {:timex, "~> 3.0"},
+      {:redix, "~> 0.9.2"}
     ]
   end
 

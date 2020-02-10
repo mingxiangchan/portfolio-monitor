@@ -27,7 +27,7 @@ defmodule PortfolioMonitorWeb.UserSocket do
     backend =
       Keyword.merge(
         Application.get_env(:portfolio_monitor, :pow, []),
-        backend: Pow.Store.Backend.EtsCache
+        backend: PortfolioMonitorWeb.PowRedisCache
       )
 
     case Pow.Store.CredentialsCache.get(backend, session_key) do

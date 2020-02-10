@@ -32,7 +32,9 @@ import_config "#{Mix.env()}.exs"
 config :portfolio_monitor, :pow,
   user: PortfolioMonitor.Account.User,
   repo: PortfolioMonitor.Repo,
-  web_module: PortfolioMonitorWeb
+  web_module: PortfolioMonitorWeb,
+  cache_store_backend: PortfolioMonitorWeb.PowRedisCache
+
 
 config :portfolio_monitor, PortfolioMonitor.Scheduler,
   jobs: [
