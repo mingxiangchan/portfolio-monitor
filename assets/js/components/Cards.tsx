@@ -2,31 +2,29 @@ import React from 'react'
 import {Card, Descriptions, Spin} from 'antd'
 import {BitmexAcc} from '../types';
 import CardChart from './CardChart';
-
+import {formatEarnings} from '../utils/priceFormat'
 
 export default ({acc}: {acc: BitmexAcc}) => {
   const queriedAtLeastOnce = !!acc.wallet_balance_now
   const rsi = (acc.wallet_balance_now - acc.deposit_btc) / (10 ** 8)
   const usdBalance = rsi * acc.lastPrice
   const leverage = Math.abs((acc.currentQty / (acc.marginBalance ? acc.marginBalance : acc.margin_balance)) * (10 ** 4))
-  const formatBTC = (amnt: number) => (amnt / (10 ** 8)).toFixed(4)
-
 
   return (
     <Spin spinning={!queriedAtLeastOnce} tip="Pending First Query">
       <Card title={acc.name}>
         <Descriptions size="small">
           <Descriptions.Item span={3} label="Return since inception">
-            {(rsi / (acc.deposit_btc / (10 ** 8))).toFixed(2)}% / BTC {rsi.toFixed(8)} / USD {usdBalance ? usdBalance.toFixed(2) : <Spin />}
+            {formatEarnings(acc.deposit_btc, acc.wallet_balance_now, acc.lastPrice)}
           </Descriptions.Item>
           <Descriptions.Item span={3} label="Earned this month">
-            {formatBTC(acc.wallet_balance_now - acc.wallet_balance_30_days)} BTC
+            {formatEarnings(acc.wallet_balance_30_days, acc.wallet_balance_now, acc.lastPrice)}
         </Descriptions.Item>
           <Descriptions.Item span={3} label="Earned past 7-days">
-            {formatBTC(acc.wallet_balance_now - acc.wallet_balance_7_days)} BTC
+            {formatEarnings(acc.wallet_balance_7_days, acc.wallet_balance_now, acc.lastPrice)}
         </Descriptions.Item>
           <Descriptions.Item span={3} label="Earned past 24-hours">
-            {formatBTC(acc.wallet_balance_now - acc.wallet_balance_1_day)} BTC
+            {formatEarnings(acc.wallet_balance_1_day, acc.wallet_balance_now, acc.lastPrice)}
         </Descriptions.Item>
           <Descriptions.Item span={3} label="Paper gains">
             {acc.unrealisedPnl ? (acc.unrealisedPnl / (10 ** 8)).toFixed(8) : <Spin />}

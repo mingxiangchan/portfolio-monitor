@@ -2,6 +2,7 @@ import React from 'react'
 import Chart from './Chart'
 import {Card, Descriptions, Row, Col, Spin} from 'antd'
 import {BitmexAcc} from '../types';
+import {formatEarnings} from '../utils/priceFormat'
 
 const opt = {
   scales: {
@@ -82,7 +83,7 @@ export default ({accs}: {accs: BitmexAcc[]}) => {
   }
 
   const cummulative = accs.reduce((total, acc) => {
-    const {wallet_balance_now, deposit_btc, currentQty, marginBalance, unrealisedPnl, lastPrice, liquidationPrice} = acc
+    const {wallet_balance_30_days, wallet_balance_7_days, wallet_balance_1_day, wallet_balance_now, deposit_btc, currentQty, marginBalance, unrealisedPnl, lastPrice, liquidationPrice} = acc
     const liqPriceGap = liquidationPrice && lastPrice ? liquidationPrice - lastPrice : total.liqPriceGap
     const smallerLiqPrice = liqPriceGap < total.liqPriceGap
     return {
@@ -94,15 +95,28 @@ export default ({accs}: {accs: BitmexAcc[]}) => {
       price: lastPrice ? lastPrice : total.price,
       liqPrice: smallerLiqPrice ? liquidationPrice : total.liqPrice,
       liqPriceGap: smallerLiqPrice ? liqPriceGap : total.liqPriceGap
+      priceDay: total.priceDay + wallet_balance_1_day,
+      price7: total.price7 + wallet_balance_7_days,
+      price30: total.price30 + wallet_balance_30_days,
     }
-  }, {pnl: 0, qty: 0, balance: 0, start: 0, mBalance: 0, price: 0, liqPrice: 0, liqPriceGap: Infinity})
+  }, {pnl: 0, qty: 0, balance: 0, start: 0, mBalance: 0, price: undefined, liqPrice: 0, liqPriceGap: Infinity, price30: 0, price7: 0, priceDay: 0})
+
+  const graphData = {price: [], btcBalance: [], usdBalance: []}
+  const totalValues = Object.values(total)
+
+  for (let i = 0; i < totalValues.length; i++) {
+    const value = totalValues[i]
+    graphData.price.push(value.btcPrice)
+    graphData.btcBalance.push(value.btcBalance.toFixed(4))
+    graphData.usdBalance.push((value.btcPrice * value.btcBalance).toFixed(2))
+  }
 
   const data = {
     labels: Object.keys(total).map((time) => (new Date(time).toLocaleString())).concat(["Now"]),
     datasets: [
       {
         label: 'BTC Price',
-        data: Object.values(total).map(item => (item.btcPrice)).concat([cummulative.price]),
+        data: graphData.price.concat([cummulative.price]),
         fill: false,
         yAxisID: "btcPrice",
         borderColor: 'gold',
@@ -110,7 +124,7 @@ export default ({accs}: {accs: BitmexAcc[]}) => {
       },
       {
         label: 'BTC Balance',
-        data: Object.values(total).map(item => (item.btcBalance.toFixed(4))).concat([(cummulative.balance / (10 ** 8)).toFixed(4)]),
+        data: graphData.btcBalance.concat([(cummulative.balance / (10 ** 8)).toFixed(4)]),
         fill: false,
         yAxisID: "btcBalance",
         borderColor: 'blue',
@@ -118,7 +132,7 @@ export default ({accs}: {accs: BitmexAcc[]}) => {
       },
       {
         label: 'USD Balance',
-        data: Object.values(total).map(item => ((item.btcPrice * item.btcBalance).toFixed(2))).concat([((cummulative.balance * cummulative.price) / (10 ** 8)).toFixed(2)]),
+        data: graphData.usdBalance.concat([((cummulative.balance * cummulative.price) / (10 ** 8)).toFixed(2)]),
         fill: false,
         yAxisID: "usdBalance",
         borderColor: 'deeppink',
@@ -139,14 +153,10 @@ export default ({accs}: {accs: BitmexAcc[]}) => {
         </Col>
         <Col span={12} offset={1}>
           <Descriptions column={{md: 1, lg: 2}} size="small" title="Cumulative">
-            <Descriptions.Item label="Return since inception">{
-              (rsi / cummulative.start).toFixed(2)}% /
-                  BTC {btcRsi.toFixed(8)} /
-                  USD {cummulative.price ? (btcRsi * cummulative.price).toFixed(2) : <Spin />}
-            </Descriptions.Item>
-            <Descriptions.Item label="Earned this month">TEST</Descriptions.Item>
-            <Descriptions.Item label="Earned past 7-days">TEST</Descriptions.Item>
-            <Descriptions.Item label="Earned past 24-hours">TEST</Descriptions.Item>
+            <Descriptions.Item label="Return since inception">{formatEarnings(cummulative.start, cummulative.balance, cummulative.price)}</Descriptions.Item>
+            <Descriptions.Item label="Earned this month">{formatEarnings(cummulative.price30, cummulative.balance, cummulative.price)}</Descriptions.Item>
+            <Descriptions.Item label="Earned past 7-days">{formatEarnings(cummulative.price7, cummulative.balance, cummulative.price)}</Descriptions.Item>
+            <Descriptions.Item label="Earned past 24-hours">{formatEarnings(cummulative.priceDay, cummulative.balance, cummulative.price)}</Descriptions.Item>
             <Descriptions.Item label="Paper gains">{cummulative.pnl ? (cummulative.pnl / (10 ** 8)).toFixed(8) : <Spin />}</Descriptions.Item>
             <Descriptions.Item label="Current leverage">{leverage && leverage != Infinity ? leverage.toFixed(1) : <Spin />}</Descriptions.Item>
             <Descriptions.Item label="Open position">{cummulative.qty ? cummulative.qty : <Spin />}</Descriptions.Item>
