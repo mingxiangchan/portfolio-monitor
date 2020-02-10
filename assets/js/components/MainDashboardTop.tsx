@@ -94,7 +94,7 @@ export default ({accs}: {accs: BitmexAcc[]}) => {
       start: total.start + deposit_btc,
       price: lastPrice ? lastPrice : total.price,
       liqPrice: smallerLiqPrice ? liquidationPrice : total.liqPrice,
-      liqPriceGap: smallerLiqPrice ? liqPriceGap : total.liqPriceGap
+      liqPriceGap: smallerLiqPrice ? liqPriceGap : total.liqPriceGap,
       priceDay: total.priceDay + wallet_balance_1_day,
       price7: total.price7 + wallet_balance_7_days,
       price30: total.price30 + wallet_balance_30_days,
