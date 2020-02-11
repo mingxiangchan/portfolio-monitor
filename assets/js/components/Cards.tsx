@@ -14,7 +14,10 @@ export default ({acc}: {acc: BitmexAcc}) => {
   const rsi = (acc.wallet_balance_now - acc.deposit_btc) / (10 ** 8)
   const leverage = Math.abs((acc.currentQty / (acc.marginBalance ? acc.marginBalance : acc.margin_balance)) * (10 ** 4))
   const livePrice = testnet ? testPrice : realPrice
-  const lastPrice = acc.lastPrice ? acc.lastPrice : livePrice
+  const lastPrice = acc.lastPrice !== undefined ? acc.lastPrice : livePrice
+  console.log(`lastPrice: ${lastPrice}`)
+  console.log(`livePrice: ${livePrice}`)
+
 
   return (
     <Spin spinning={!queriedAtLeastOnce} tip="Pending First Query">

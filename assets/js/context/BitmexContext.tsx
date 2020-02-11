@@ -14,8 +14,8 @@ export const BitmexContextProvider = ({children}) => {
       changeOpenTestPrice(resp.opening_test_price)
       changeOpenRealPrice(resp.opening_real_price)
       // set testPrice and realPrice one-time
-      changeTestPrice(resp.opening_test_price)
-      changeRealPrice(resp.opening_real_price)
+      changeTestPrice(parseFloat(resp.opening_test_price))
+      changeTestPrice(parseFloat(resp.opening_real_price))
     })
 
     generalChannel.on("testnet_price", resp => {
