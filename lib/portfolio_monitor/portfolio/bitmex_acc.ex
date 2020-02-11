@@ -1,4 +1,4 @@
-defmodule PortfolioMonitor.Account.BitmexAcc do
+defmodule PortfolioMonitor.Portfolio.BitmexAcc do
   use Ecto.Schema
   import Ecto.Changeset
   alias PortfolioMonitor.CustomFields.Encrypted

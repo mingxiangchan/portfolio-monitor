@@ -1,14 +1,14 @@
 defmodule PortfolioMonitorWeb.BitmexAccController do
   use PortfolioMonitorWeb, :controller
 
-  alias PortfolioMonitor.Account
-  alias PortfolioMonitor.Account.BitmexAcc
+  alias PortfolioMonitor.Portfolio
+  alias PortfolioMonitor.Portfolio.BitmexAcc
 
   action_fallback PortfolioMonitorWeb.FallbackController
 
   def create(conn, %{"bitmex_acc" => bitmex_acc_params}) do
     user = Pow.Plug.current_user(conn)
-    result = Account.create_bitmex_acc(user, bitmex_acc_params)
+    result = Portfolio.create_bitmex_acc(user, bitmex_acc_params)
 
     with {:ok, %BitmexAcc{} = bitmex_acc} <- result do
       conn
@@ -18,9 +18,9 @@ defmodule PortfolioMonitorWeb.BitmexAccController do
   end
 
   def update(conn, %{"id" => id, "bitmex_acc" => bitmex_acc_params}) do
-    bitmex_acc = Account.get_bitmex_acc(id)
+    bitmex_acc = Portfolio.get_bitmex_acc(id)
 
-    result = Account.update_bitmex_acc(bitmex_acc, bitmex_acc_params)
+    result = Portfolio.update_bitmex_acc(bitmex_acc, bitmex_acc_params)
 
     with {:ok, %BitmexAcc{} = bitmex_acc} <- result do
       conn
@@ -30,8 +30,8 @@ defmodule PortfolioMonitorWeb.BitmexAccController do
   end
 
   def delete(conn, %{"id" => id}) do
-    bitmex_acc = Account.get_bitmex_acc(id)
-    {:ok, _bitmex_acc} = Account.delete_bitmex_acc(bitmex_acc)
+    bitmex_acc = Portfolio.get_bitmex_acc(id)
+    {:ok, _bitmex_acc} = Portfolio.delete_bitmex_acc(bitmex_acc)
     render(conn, "success.json", action: "Delete")
   end
 end

@@ -6,7 +6,7 @@ defmodule PortfolioMonitor.Portfolio.HistoricalDatum do
     field :wallet_balance, :integer
     field :margin_balance, :integer
     field :btc_price, :decimal
-    belongs_to :bitmex_acc, PortfolioMonitor.Account.BitmexAcc
+    belongs_to :bitmex_acc, PortfolioMonitor.Portfolio.BitmexAcc
 
     timestamps()
   end
