@@ -6,7 +6,7 @@ export const formatEarnings = (start: number, end: number, price: number) => {
   const diff = end - start
   const percent = (diff / start).toFixed(2)
   const btc = formatBTC(diff)
-  const usd = diff * price
+  const usd = btc * price
   return (
     <React.Fragment>
 		 	{percent}% / BTC {btc} / USD {usd ? usd.toFixed(2) : <Spin />}
