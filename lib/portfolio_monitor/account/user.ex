@@ -3,7 +3,7 @@ defmodule PortfolioMonitor.Account.User do
   use Pow.Ecto.Schema
   use Pow.Extension.Ecto.Schema,
     extensions: [PowPersistentSession]
-  alias PortfolioMonitor.Account.BitmexAcc
+  alias PortfolioMonitor.Portfolio.BitmexAcc
 
   schema "users" do
     pow_user_fields()

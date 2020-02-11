@@ -1,7 +1,7 @@
 defmodule PortfolioMonitorWeb.BitmexAccsChannel do
   use Appsignal.Instrumentation.Decorators
   use PortfolioMonitorWeb, :channel
-  alias PortfolioMonitor.Account
+  alias PortfolioMonitor.Portfolio
   alias PortfolioMonitor.Sync.Worker
 
   def join("bitmex_accs:index", _payload, socket) do
@@ -19,7 +19,7 @@ defmodule PortfolioMonitorWeb.BitmexAccsChannel do
   def handle_in("get_accs", _paylod, socket) do
     data =
       socket.assigns.user
-      |> Account.list_bitmex_accs(:with_details)
+      |> Portfolio.list_bitmex_accs(:with_details)
       |> Enum.into(%{}, &{&1.id, &1})
 
     {:reply, {:ok, %{accs: data}}, socket}
@@ -27,7 +27,7 @@ defmodule PortfolioMonitorWeb.BitmexAccsChannel do
 
   defp initialize_ws_workers(user) do
     user
-    |> Account.list_bitmex_accs()
+    |> Portfolio.list_bitmex_accs()
     |> Enum.each(&start_acc_ws_worker/1)
   end
 

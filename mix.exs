@@ -51,6 +51,8 @@ defmodule PortfolioMonitor.MixProject do
       {:quantum, "~> 2.3"},
       {:appsignal, "~> 1.0"},
       {:timex, "~> 3.0"},
+      {:exvcr, "~> 0.10", only: :test},
+      {:ex_machina, "~> 2.3", only: :test},
       {:redix, "~> 0.9.2"}
     ]
   end
