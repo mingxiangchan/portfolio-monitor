@@ -37,11 +37,11 @@ defmodule PortfolioMonitor.Portfolio do
   end
 
   def get_current_opening_price do
-    date = Timex.now
+    date = Timex.now()
 
     query =
       from h in BitmexHistory,
-        where: h.inserted_at >= ^Timex.beginning_of_day(date), 
+        where: h.inserted_at >= ^Timex.beginning_of_day(date),
         where: h.inserted_at <= ^Timex.end_of_day(date),
         order_by: [asc: h.inserted_at],
         distinct: h.is_testnet
@@ -80,8 +80,15 @@ defmodule PortfolioMonitor.Portfolio do
   def record_wallet_balances do
     prices = get_last_bitmex_history()
 
-    list_bitmex_accs()
-    |> Enum.each(&record_wallet_balance(&1, prices))
+    Task.Supervisor.start_link(name: :record_wallet_balances_supervisor)
+
+    Task.Supervisor.async_stream_nolink(
+      :record_wallet_balances_supervisor,
+      list_bitmex_accs(),
+      &record_wallet_balance(&1, prices),
+      max_concurrency: 5
+    )
+    |> Enum.to_list()
   end
 
   def record_wallet_balance(%BitmexAcc{id: id, detected_invalid: true}, _) do
@@ -89,11 +96,12 @@ defmodule PortfolioMonitor.Portfolio do
   end
 
   def record_wallet_balance(%BitmexAcc{} = acc, {real_price, test_price}) do
-    btc_price = case acc.is_testnet do
-      true -> test_price
-      false -> real_price
-    end
-    
+    btc_price =
+      case acc.is_testnet do
+        true -> test_price
+        false -> real_price
+      end
+
     credentials = %ExBitmex.Credentials{
       api_key: acc.api_key,
       api_secret: acc.api_secret
@@ -195,10 +203,11 @@ defmodule PortfolioMonitor.Portfolio do
   end
 
   def update_bitmex_acc(%BitmexAcc{} = bitmex_acc, attrs) do
-    result = bitmex_acc
-    |> BitmexAcc.changeset(attrs)
-    |> Repo.update()
-    
+    result =
+      bitmex_acc
+      |> BitmexAcc.changeset(attrs)
+      |> Repo.update()
+
     with {:ok, updated_acc} <- result do
       broadcast_acc_update(updated_acc)
       {:ok, updated_acc}
