@@ -24,7 +24,7 @@ defmodule PortfolioMonitorWeb.BitmexAccController do
 
     with {:ok, %BitmexAcc{} = bitmex_acc} <- result do
       conn
-      |> put_status(:updated)
+      |> put_status(:accepted)
       |> render("show.json", bitmex_acc: bitmex_acc)
     end
   end

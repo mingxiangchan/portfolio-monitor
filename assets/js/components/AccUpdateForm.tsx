@@ -39,16 +39,10 @@ const AccUpdateForm = Form.create<ModalUpdateFormProps>(formOpts)(
           return
         }
 
-        const {name, is_testnet, api_key, api_secret, notes} = values
-
         const updatedData = {
-          name,
-          is_testnet,
-          notes,
+          ...values,
           deposit_usd: Math.floor(values.deposit_usd * 100),
           deposit_btc: Math.floor(values.deposit_btc * 100000000),
-          ...api_key ? {api_key} : undefined,
-          ...api_secret ? {api_secret} : undefined
         }
 
         doPut(`/api/bitmex_accs/${acc.id}`, {bitmex_acc: updatedData}, _resp => {
