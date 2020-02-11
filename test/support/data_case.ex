@@ -24,6 +24,7 @@ defmodule PortfolioMonitor.DataCase do
       import Ecto.Changeset
       import Ecto.Query
       import PortfolioMonitor.DataCase
+      import PortfolioMonitor.Factories
     end
   end
 

@@ -3,6 +3,7 @@ defmodule PortfolioMonitor.Portfolio do
   The Portfolio context.
   """
 
+  require Logger
   import Ecto.Query, warn: false
   alias PortfolioMonitor.Repo
   alias PortfolioMonitor.Account.User
@@ -63,6 +64,10 @@ defmodule PortfolioMonitor.Portfolio do
     |> Enum.each(&record_wallet_balance(&1, btc_price))
   end
 
+  def record_wallet_balance(%BitmexAcc{id: id, detected_invalid: true}, _) do
+    Logger.warn("Skipping hourly update for acc:#{id} due to invalid credentials")
+  end
+
   def record_wallet_balance(%BitmexAcc{} = acc, btc_price) do
     credentials = %ExBitmex.Credentials{
       api_key: acc.api_key,
@@ -79,6 +84,9 @@ defmodule PortfolioMonitor.Portfolio do
 
       create_historical_datum(acc, changes)
       broadcast_acc_update(acc)
+    else
+      {:error, {:unauthorized, _}, _} ->
+        update_bitmex_acc(acc, %{detected_invalid: true})
     end
   end
 

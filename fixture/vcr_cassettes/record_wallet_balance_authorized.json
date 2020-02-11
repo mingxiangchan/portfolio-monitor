@@ -1,0 +1,36 @@
+[
+  {
+    "request": {
+      "body": "{\"currency\":\"XBt\"}",
+      "headers": {
+        "Content-Type": "application/json",
+        "api-nonce": "96498058065851",
+        "api-key": "RsQ3vToW8TuTiH4elmdlsDvN",
+        "api-signature": "a76195c94f22703077fc276db50df8f5d914c2f9a5b513025403a39d7be949ec"
+      },
+      "method": "get",
+      "options": [],
+      "request_body": "",
+      "url": "https://testnet.bitmex.com/api/v1/user/margin"
+    },
+    "response": {
+      "binary": false,
+      "body": "{\"account\":273244,\"currency\":\"XBt\",\"riskLimit\":1000000000000,\"prevState\":\"\",\"state\":\"\",\"action\":\"\",\"amount\":976446,\"pendingCredit\":0,\"pendingDebit\":0,\"confirmedDebit\":0,\"prevRealisedPnl\":30,\"prevUnrealisedPnl\":0,\"grossComm\":2982,\"grossOpenCost\":0,\"grossOpenPremium\":0,\"grossExecCost\":0,\"grossMarkValue\":512400,\"riskValue\":512400,\"taxableMargin\":0,\"initMargin\":0,\"maintMargin\":5771,\"sessionMargin\":0,\"targetExcessMargin\":0,\"varMargin\":0,\"realisedPnl\":-2982,\"unrealisedPnl\":-20230,\"indicativeTax\":0,\"unrealisedProfit\":0,\"syntheticMargin\":null,\"walletBalance\":973464,\"marginBalance\":953234,\"marginBalancePcnt\":1,\"marginLeverage\":0.5375385267415975,\"marginUsedPcnt\":0.0061,\"excessMargin\":947463,\"excessMarginPcnt\":1,\"availableMargin\":947463,\"withdrawableMargin\":947463,\"timestamp\":\"2020-02-11T05:11:50.503Z\",\"grossLastValue\":512400,\"commission\":null}",
+      "headers": {
+        "Date": "Tue, 11 Feb 2020 05:12:18 GMT",
+        "Content-Type": "application/json; charset=utf-8",
+        "Content-Length": "846",
+        "Connection": "keep-alive",
+        "Set-Cookie": "AWSALBTG=OGP594AGa1mzVj9WW/oz1fY5lGZ3HcePI8Qhd8gZHtwmMmeXU8GkG3ctrQqHInAarItI4NwrS2oZCUShxd2GGoccQnlqy1jqyZ5NA6mgl8ireu64089JT4tnA/ore8CpOXxXZ/Uk1AUZJITfOsssl6zKm5xefbPRepFL41JD/qaL+jAWmcQ=; Expires=Tue, 18 Feb 2020 05:12:18 GMT; Path=/",
+        "X-RateLimit-Limit": "60",
+        "X-RateLimit-Remaining": "59",
+        "X-RateLimit-Reset": "1581397939",
+        "X-Powered-By": "Profit",
+        "ETag": "W/\"34e-FRdAqGVTpGalrgX7jVp3y58MBVs\"",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains"
+      },
+      "status_code": 200,
+      "type": "ok"
+    }
+  }
+]
