@@ -8,6 +8,7 @@ defmodule PortfolioMonitor.Portfolio.BitmexAcc do
              :id,
              :name,
              :notes,
+             :detected_invalid,
              :deposit_usd,
              :deposit_btc,
              :margin_balance,

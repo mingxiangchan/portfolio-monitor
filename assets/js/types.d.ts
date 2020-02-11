@@ -29,6 +29,7 @@ export interface BitmexAcc {
   deposit_usd: number;
   notes: string;
   margin_balance: number
+  detected_invalid: boolean;
   historical_data: HistoricalData[];
   wallet_balance_now?: number;
   wallet_balance_1_day?: number;
@@ -40,6 +41,7 @@ export interface BitmexAcc {
   currentQty?: number;
   liquidationPrice?: number;
   lastPrice?: number;
+  marginBalance?: number;
 }
 
 export interface BitmexAccsState {

@@ -1,5 +1,5 @@
 import React from 'react'
-import {Card, Descriptions, Spin} from 'antd'
+import {Card, Descriptions, Spin, Alert} from 'antd'
 import {BitmexAcc} from '../types';
 import CardChart from './CardChart';
 import {formatEarnings} from '../utils/priceFormat'
@@ -13,19 +13,20 @@ export default ({acc}: {acc: BitmexAcc}) => {
   return (
     <Spin spinning={!queriedAtLeastOnce} tip="Pending First Query">
       <Card title={acc.name}>
+        {acc.detected_invalid ? <Alert type="error" message="Invalid API credentials" /> : null}
         <Descriptions size="small">
           <Descriptions.Item span={3} label="Return since inception">
             {formatEarnings(acc.deposit_btc, acc.wallet_balance_now, acc.lastPrice)}
           </Descriptions.Item>
           <Descriptions.Item span={3} label="Earned this month">
             {formatEarnings(acc.wallet_balance_30_days, acc.wallet_balance_now, acc.lastPrice)}
-        </Descriptions.Item>
+          </Descriptions.Item>
           <Descriptions.Item span={3} label="Earned past 7-days">
             {formatEarnings(acc.wallet_balance_7_days, acc.wallet_balance_now, acc.lastPrice)}
-        </Descriptions.Item>
+          </Descriptions.Item>
           <Descriptions.Item span={3} label="Earned past 24-hours">
             {formatEarnings(acc.wallet_balance_1_day, acc.wallet_balance_now, acc.lastPrice)}
-        </Descriptions.Item>
+          </Descriptions.Item>
           <Descriptions.Item span={3} label="Paper gains">
             {acc.unrealisedPnl ? (acc.unrealisedPnl / (10 ** 8)).toFixed(8) : <Spin />}
           </Descriptions.Item>
