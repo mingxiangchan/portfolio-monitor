@@ -1,8 +1,8 @@
 import React from 'react'
 import Chart from './Chart'
-import {Card, Descriptions, Row, Col, Spin} from 'antd'
-import {BitmexAcc} from '../types';
-import {formatEarnings} from '../utils/priceFormat'
+import { Card, Descriptions, Row, Col, Spin } from 'antd'
+import { BitmexAcc } from '../types';
+import { formatEarnings } from '../utils/priceFormat'
 
 const opt = {
   scales: {
@@ -51,7 +51,7 @@ const opt = {
   }
 }
 
-export default ({accs}: {accs: BitmexAcc[]}) => {
+export default ({ accs }: { accs: BitmexAcc[] }) => {
   let total = {}
 
   for (let i = 0; i < accs.length; i++) {
@@ -83,7 +83,7 @@ export default ({accs}: {accs: BitmexAcc[]}) => {
   }
 
   const cummulative = accs.reduce((total, acc) => {
-    const {wallet_balance_30_days, wallet_balance_7_days, wallet_balance_1_day, wallet_balance_now, deposit_btc, currentQty, marginBalance, unrealisedPnl, lastPrice, liquidationPrice} = acc
+    const { wallet_balance_30_days, wallet_balance_7_days, wallet_balance_1_day, wallet_balance_now, deposit_btc, currentQty, marginBalance, unrealisedPnl, lastPrice, liquidationPrice } = acc
     const liqPriceGap = liquidationPrice && lastPrice ? liquidationPrice - lastPrice : total.liqPriceGap
     const smallerLiqPrice = liqPriceGap < total.liqPriceGap
     return {
@@ -99,9 +99,9 @@ export default ({accs}: {accs: BitmexAcc[]}) => {
       price7: total.price7 + wallet_balance_7_days,
       price30: total.price30 + wallet_balance_30_days,
     }
-  }, {pnl: 0, qty: 0, balance: 0, start: 0, mBalance: 0, price: undefined, liqPrice: 0, liqPriceGap: Infinity, price30: 0, price7: 0, priceDay: 0})
+  }, { pnl: 0, qty: 0, balance: 0, start: 0, mBalance: 0, price: undefined, liqPrice: 0, liqPriceGap: Infinity, price30: 0, price7: 0, priceDay: 0 })
 
-  const graphData = {price: [], btcBalance: [], usdBalance: []}
+  const graphData = { price: [], btcBalance: [], usdBalance: [] }
   const totalValues = Object.values(total)
 
   for (let i = 0; i < totalValues.length; i++) {
@@ -146,13 +146,13 @@ export default ({accs}: {accs: BitmexAcc[]}) => {
   const leverage = Math.abs((cummulative.qty / cummulative.mBalance) * (10 ** 4))
 
   return (
-    <Row type="flex" style={{width: "100%", borderBottom: "1px solid #383838", paddingBottom: '5px', marginBottom: '5px', maxHeight: "45vh"}}>
+    <Row type="flex" style={{ width: "100%", borderBottom: "1px solid #383838", paddingBottom: '5px', marginBottom: '5px', maxHeight: "45vh" }}>
       <Card>
         <Col span={11}>
           <Chart data={data} options={opt} />
         </Col>
         <Col span={12} offset={1}>
-          <Descriptions column={{md: 1, lg: 2}} size="small" title="Cumulative">
+          <Descriptions column={{ md: 1, lg: 2 }} size="small" title="Cumulative">
             <Descriptions.Item label="Return since inception">{formatEarnings(cummulative.start, cummulative.balance, cummulative.price)}</Descriptions.Item>
             <Descriptions.Item label="Earned this month">{formatEarnings(cummulative.price30, cummulative.balance, cummulative.price)}</Descriptions.Item>
             <Descriptions.Item label="Earned past 7-days">{formatEarnings(cummulative.price7, cummulative.balance, cummulative.price)}</Descriptions.Item>

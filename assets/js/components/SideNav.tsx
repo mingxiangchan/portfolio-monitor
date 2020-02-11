@@ -1,14 +1,14 @@
-import React, {useState, useEffect, useContext} from 'react'
-import {Layout, Menu, Typography, Button, Spin, Switch, Divider} from 'antd'
+import React, { useState, useEffect, useContext } from 'react'
+import { Layout, Menu, Typography, Button, Spin, Switch, Divider } from 'antd'
 import moment from 'moment'
-import {generalChannel} from "../socket"
+import { generalChannel } from "../socket"
 import AccCreateModal from './AccCreateModal'
 import DashboardContext from '../context/DashboardContext'
 
 const url = "https://testnet.bitmex.com/api/v1/trade/bucketed?binSize=1d&partial=false&symbol=XBTUSD&count=1&reverse=true"
 
-const {Title} = Typography;
-const {Sider} = Layout
+const { Title } = Typography;
+const { Sider } = Layout
 
 const SideNav = () => {
   const [time, changeTime] = useState(moment())
@@ -17,7 +17,7 @@ const SideNav = () => {
   const [loaded, changeLoaded] = useState(false)
   const [openTestPrice, changeOpenTestPrice] = useState(1)
   const [openRealPrice, changeOpenRealPrice] = useState(1)
-  const {testnet, setTestnet} = useContext(DashboardContext)
+  const { testnet, setTestnet } = useContext(DashboardContext)
 
   const testPriceDiffAbs = testPrice - openTestPrice
   const testPriceDiffPer = (testPriceDiffAbs / openTestPrice).toFixed(2)
@@ -64,21 +64,21 @@ const SideNav = () => {
         padding: '20px'
       }}
     >
-      <Title level={2} style={{color: 'white'}}>Hi Josh</Title>
-      <Title level={3} style={{color: 'white'}}>{time.format("h:mm:ss A")}</Title>
-      <Title level={3} style={{color: 'white', marginBottom: '20px'}}>{time.format("MMM DD, YYYY")}</Title>
+      <Title level={2} style={{ color: 'white' }}>Hi Josh</Title>
+      <Title level={3} style={{ color: 'white' }}>{time.format("h:mm:ss A")}</Title>
+      <Title level={3} style={{ color: 'white', marginBottom: '20px' }}>{time.format("MMM DD, YYYY")}</Title>
       {
         testnet ? (
           <>
-            <Title level={4} style={{color: 'red'}}>{"TESTNET"}</Title>
-            <p style={{color: 'white'}}>{testPriceDiffAbs} ({testPriceDiffPer}%)</p>
-            <Title level={3} style={{color: 'white', marginBottom: '20px'}}>{loaded ? testPrice.toFixed(1) : <Spin />}</Title>
+            <Title level={4} style={{ color: 'red' }}>{"TESTNET"}</Title>
+            <p style={{ color: 'white' }}>{testPriceDiffAbs} ({testPriceDiffPer}%)</p>
+            <Title level={3} style={{ color: 'white', marginBottom: '20px' }}>{loaded ? testPrice.toFixed(1) : <Spin />}</Title>
           </>
         ) : (
             <>
-              <Title level={4} style={{color: 'green'}}>{"LIVE"}</Title>
-              <p style={{color: 'white'}}>{realPriceDiffAbs} ({realPriceDiffPer}%)</p>
-              <Title level={3} style={{color: 'white'}}>{loaded ? realPrice.toFixed(1) : <Spin />}</Title>
+              <Title level={4} style={{ color: 'green' }}>{"LIVE"}</Title>
+              <p style={{ color: 'white' }}>{realPriceDiffAbs} ({realPriceDiffPer}%)</p>
+              <Title level={3} style={{ color: 'white' }}>{loaded ? realPrice.toFixed(1) : <Spin />}</Title>
             </>
           )
       }
