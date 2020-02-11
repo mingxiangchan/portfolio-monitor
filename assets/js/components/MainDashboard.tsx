@@ -17,9 +17,8 @@ export default () => {
         setAccs(accs)
 
         accChannel!.on("acc_update", ({acc}: {acc: BitmexAcc}) => {
-          const updatedAcc = {...accounts[acc.id], ...acc}
           setAccs((prevAccs) => {
-            return {...prevAccs, [acc.id]: updatedAcc}
+            return {...prevAccs, [acc.id]: acc}
           })
         })
 

@@ -45,6 +45,14 @@ const AccUpdateForm = Form.create<ModalUpdateFormProps>(formOpts)(
           deposit_btc: Math.floor(values.deposit_btc * 100000000),
         }
 
+        if (!values.api_key) {
+          delete updatedData.api_key
+        }
+
+        if (!values.api_secret) {
+          delete updatedData.api_secret
+        }
+
         doPut(`/api/bitmex_accs/${acc.id}`, {bitmex_acc: updatedData}, _resp => {
           message.success(`Updated Bitmex Acc: ${values.name}`)
           form.resetFields();

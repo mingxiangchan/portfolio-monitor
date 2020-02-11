@@ -31,6 +31,8 @@ defmodule PortfolioMonitorWeb.BitmexAccsChannel do
     |> Enum.each(&start_acc_ws_worker/1)
   end
 
+  defp start_acc_ws_worker(%{detected_invalid: true}), do: nil
+
   defp start_acc_ws_worker(acc) do
     auth_config = Map.take(acc, [:api_key, :api_secret])
 
