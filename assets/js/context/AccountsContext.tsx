@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { notification } from 'antd'
-import { BitmexAcc, BitmexAccsState } from '../types';
-import { afterJoinedAccChannel } from '../socket';
+import { BitmexAcc, BitmexAccsState } from '../types'
+import { afterJoinedAccChannel } from '../socket'
 
 const AccountsContext = React.createContext(null)
 
@@ -9,7 +9,6 @@ export const AccountsContextProvider = ({ children }) => {
     const [accounts, setAccs] = useState<BitmexAccsState>(null)
     useEffect(() => {
         notification.info({ message: "Loading Accounts" })
-        // @ts-ignore
         afterJoinedAccChannel(accChannel => {
             accChannel.push("get_accs").receive("ok", ({ accs }: { accs: BitmexAccsState }) => {
                 console.log(accs)
