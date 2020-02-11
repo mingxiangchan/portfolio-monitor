@@ -27,7 +27,7 @@ aes_key =
 app_name =
   System.get_env("APP_NAME") ||
     raise """
-    environment variable AES_KEY is missing.
+    environment variable APP_NAME is missing.
     """
 
 config :portfolio_monitor, PortfolioMonitor.Repo,

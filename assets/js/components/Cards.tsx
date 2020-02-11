@@ -1,5 +1,5 @@
 import React, {useContext} from 'react'
-import {Card, Descriptions, Alert} from 'antd'
+import {Card, Descriptions, Alert, Spin} from 'antd'
 import {BitmexAcc} from '../types';
 import CardChart from './CardChart';
 import {formatEarnings} from '../utils/priceFormat'
