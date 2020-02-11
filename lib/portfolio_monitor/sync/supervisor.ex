@@ -30,7 +30,8 @@ defmodule PortfolioMonitor.Sync.Supervisor do
         auth_subscribe: ["order", "margin", "position", "trade"],
         config: auth_config,
         name: String.to_atom("BitMexAccWorker.#{bitmex_acc.id}")
-      }
+      },
+      bitmex_acc.is_testnet
     }
 
     DynamicSupervisor.start_child(__MODULE__, child_spec)

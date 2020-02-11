@@ -16,7 +16,8 @@ defmodule PortfolioMonitor.Portfolio.BitmexAcc do
              :wallet_balance_1_day,
              :wallet_balance_7_days,
              :wallet_balance_30_days,
-             :historical_data
+             :historical_data,
+             :is_testnet
            ]}
   schema "bitmex_accs" do
     field :api_key, Encrypted
@@ -31,6 +32,7 @@ defmodule PortfolioMonitor.Portfolio.BitmexAcc do
     field :wallet_balance_1_day, :integer, virtual: true
     field :wallet_balance_7_days, :integer, virtual: true
     field :wallet_balance_30_days, :integer, virtual: true
+    field :is_testnet, :boolean
 
     belongs_to :user, PortfolioMonitor.Account.User
     has_many :historical_data, PortfolioMonitor.Portfolio.HistoricalDatum
@@ -45,7 +47,8 @@ defmodule PortfolioMonitor.Portfolio.BitmexAcc do
     :user_id,
     :deposit_usd,
     :deposit_btc,
-    :detected_invalid
+    :detected_invalid,
+    :is_testnet
   ]
 
   @doc false

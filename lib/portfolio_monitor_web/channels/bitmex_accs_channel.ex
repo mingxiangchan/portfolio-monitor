@@ -42,6 +42,6 @@ defmodule PortfolioMonitorWeb.BitmexAccsChannel do
       auth_subscribe: ["margin", "position"],
       config: auth_config,
       name: String.to_atom("BitMexAccWorker.#{acc.id}")
-    })
+    }, acc.is_testnet)
   end
 end

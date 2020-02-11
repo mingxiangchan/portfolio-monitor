@@ -29,6 +29,7 @@ defmodule PortfolioMonitor.Portfolio do
   def get_last_bitmex_history do
     query =
       from h in BitmexHistory,
+        where: h.is_testnet == true,
         order_by: [desc: h.inserted_at],
         limit: 1
 
@@ -45,9 +46,14 @@ defmodule PortfolioMonitor.Portfolio do
   def record_current_btc_price do
     params = %{symbol: "XBTUSD", count: 1, reverse: true}
 
-    with {:ok, trades, _rate_limit} <- ExBitmex.Rest.Trade.Index.get(params) do
+    with {:ok, trades, _rate_limit} <- ExBitmex.Rest.Trade.Index.get(params, true) do
       %{price: price} = hd(trades)
-      create_bitmex_history(%{btc_price: price})
+      create_bitmex_history(%{btc_price: price, is_testnet: true})
+    end
+
+    with {:ok, trades, _rate_limit} <- ExBitmex.Rest.Trade.Index.get(params, false) do
+      %{price: price} = hd(trades)
+      create_bitmex_history(%{btc_price: price, is_testnet: false})
     end
   end
 
@@ -76,7 +82,7 @@ defmodule PortfolioMonitor.Portfolio do
 
     params = %{currency: "XBt"}
 
-    with {:ok, resp, _} <- Margin.get(credentials, params) do
+    with {:ok, resp, _} <- Margin.get(credentials, params, acc.is_testnet) do
       changes =
         resp
         |> Map.take([:wallet_balance, :margin_balance])
