@@ -13,7 +13,8 @@ defmodule PortfolioMonitor.Sync.Supervisor do
     {:ok, pid} = DynamicSupervisor.init(strategy: :one_for_one)
 
     Task.start(fn ->
-      start_general_btc_info_worker()
+      start_general_btc_info_worker(true)
+      start_general_btc_info_worker(false)
       # initialize_workers()
     end)
 
@@ -37,8 +38,11 @@ defmodule PortfolioMonitor.Sync.Supervisor do
     DynamicSupervisor.start_child(__MODULE__, child_spec)
   end
 
-  def start_general_btc_info_worker do
-    child_spec = {GeneralBtcInfoWorker, %{subscribe: ["trade:XBTUSD"]}}
+  def start_general_btc_info_worker(is_testnet) do
+    child_spec = {GeneralBtcInfoWorker, %{
+      subscribe: ["trade:XBTUSD"],
+      is_testnet: is_testnet
+    }}
 
     DynamicSupervisor.start_child(__MODULE__, child_spec)
   end

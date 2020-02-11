@@ -29,11 +29,25 @@ defmodule PortfolioMonitor.Portfolio do
   def get_last_bitmex_history do
     query =
       from h in BitmexHistory,
-        where: h.is_testnet == true,
         order_by: [desc: h.inserted_at],
-        limit: 1
+        distinct: h.is_testnet
 
-    Repo.one(query)
+    Repo.all(query)
+    |> organize_price_type
+  end
+
+  def get_current_opening_price do
+    date = Timex.now
+
+    query =
+      from h in BitmexHistory,
+        where: h.inserted_at >= ^Timex.beginning_of_day(date), 
+        where: h.inserted_at <= ^Timex.end_of_day(date),
+        order_by: [asc: h.inserted_at],
+        distinct: h.is_testnet
+
+    Repo.all(query)
+    |> organize_price_type
   end
 
   def create_historical_datum(%BitmexAcc{} = acc, attrs \\ %{}) do
@@ -64,17 +78,22 @@ defmodule PortfolioMonitor.Portfolio do
   end
 
   def record_wallet_balances do
-    btc_price = get_last_bitmex_history().btc_price
+    prices = get_last_bitmex_history()
 
     list_bitmex_accs()
-    |> Enum.each(&record_wallet_balance(&1, btc_price))
+    |> Enum.each(&record_wallet_balance(&1, prices))
   end
 
   def record_wallet_balance(%BitmexAcc{id: id, detected_invalid: true}, _) do
     Logger.warn("Skipping hourly update for acc:#{id} due to invalid credentials")
   end
 
-  def record_wallet_balance(%BitmexAcc{} = acc, btc_price) do
+  def record_wallet_balance(%BitmexAcc{} = acc, {real_price, test_price}) do
+    btc_price = case acc.is_testnet do
+      true -> test_price
+      false -> real_price
+    end
+    
     credentials = %ExBitmex.Credentials{
       api_key: acc.api_key,
       api_secret: acc.api_secret
@@ -204,5 +223,14 @@ defmodule PortfolioMonitor.Portfolio do
         margin_balance: h.margin_balance,
         wallet_balance_now: h.wallet_balance
       }
+  end
+
+  defp organize_price_type(bitmex_history) do
+    [first, second] = bitmex_history
+
+    test_price = if first.is_testnet == true, do: first.btc_price, else: second.btc_price
+    real_price = if first.is_testnet == false, do: first.btc_price, else: second.btc_price
+
+    {real_price, test_price}
   end
 end
