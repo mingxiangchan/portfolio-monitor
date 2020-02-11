@@ -4,6 +4,7 @@ defmodule PortfolioMonitor.Portfolio.BitmexHistory do
 
   schema "bitmex_history" do
     field :btc_price, :decimal
+    field :is_testnet, :boolean
 
     timestamps()
   end
@@ -11,7 +12,7 @@ defmodule PortfolioMonitor.Portfolio.BitmexHistory do
   @doc false
   def changeset(bitmex_history, attrs) do
     bitmex_history
-    |> cast(attrs, [:btc_price])
-    |> validate_required([:btc_price])
+    |> cast(attrs, [:btc_price, :is_testnet])
+    |> validate_required([:btc_price, :is_testnet])
   end
 end
