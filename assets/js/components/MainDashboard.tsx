@@ -9,7 +9,6 @@ import DashboardContext from '../context/DashboardContext'
 const {Content} = Layout;
 
 export default () => {
-
   const {accounts} = useContext(AccountsContext)
   const {testnet} = useContext(DashboardContext)
 

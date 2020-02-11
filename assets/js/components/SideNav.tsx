@@ -82,9 +82,14 @@ const SideNav = () => {
             </>
           )
       }
-      <Switch defaultChecked={!testnet} unCheckedChildren="Testnet" checkedChildren="BitMex" onChange={(actual) => {
-        setTestnet(!actual)
-      }} />
+      <Switch
+        defaultChecked={!testnet}
+        unCheckedChildren="Test"
+        checkedChildren="Live"
+        onChange={(actual) => {
+          setTestnet(!actual)
+        }}
+      />
       <Divider />
       <AccCreateModal />
       <br />
