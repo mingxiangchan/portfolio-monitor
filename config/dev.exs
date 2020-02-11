@@ -75,10 +75,6 @@ config :phoenix, :stacktrace_depth, 20
 # Initialize plugs at runtime for faster development compilation
 config :phoenix, :plug_init_mode, :runtime
 
-config :ex_bitmex,
-  test_mode: true,
-  domain: "testnet.bitmex.com"
-
 config :portfolio_monitor, :aes_key, "M4__0myz68RiGgag2XpzPF5A4oPfO6f1H5XChHhxvwo="
 
 config :portfolio_monitor,

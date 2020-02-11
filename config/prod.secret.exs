@@ -24,6 +24,12 @@ aes_key =
     environment variable AES_KEY is missing.
     """
 
+app_name =
+  System.get_env("APP_NAME") ||
+    raise """
+    environment variable AES_KEY is missing.
+    """
+
 config :portfolio_monitor, PortfolioMonitor.Repo,
   ssl: true,
   url: database_url,
@@ -39,3 +45,5 @@ config :portfolio_monitor, PortfolioMonitorWeb.Endpoint,
 config :portfolio_monitor, :aes_key, aes_key
 
 config :portfolio_monitor, :secret_key_base, secret_key_base
+
+config :joken, default_signer: app_name
