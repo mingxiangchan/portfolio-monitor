@@ -3,7 +3,7 @@ defmodule PortfolioMonitor.Repo.Migrations.AddIsTestBoolToBitmexHistory do
 
   def change do
     alter table(:bitmex_history) do
-      add(:is_testnet, :bool)
+      add(:is_testnet, :bool, null: false, default: true)
     end
   end
 end

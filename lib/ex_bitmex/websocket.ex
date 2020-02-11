@@ -29,7 +29,7 @@ defmodule ExBitmex.WebSocket do
         WebSockex.start_link(base_uri(), __MODULE__, state, opts)
       end
 
-      def start_link(args \\ %{}, is_testnet) do
+      def start_link(args, is_testnet) do
         subscription = args[:subscribe] || []
         auth_subscription = args[:auth_subscribe] || []
         opts = consturct_opts(args)
@@ -217,7 +217,7 @@ defmodule ExBitmex.WebSocket do
       end
 
       defp base_uri(is_testnet) do
-        "wss://" <> ((istestnet && "testnet") || "www") <> ".bitmex.com/realtime"
+        "wss://" <> ((is_testnet && "testnet") || "www") <> ".bitmex.com/realtime"
       end
 
       defoverridable handle_response: 2, handle_disconnect: 2
