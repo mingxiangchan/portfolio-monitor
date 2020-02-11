@@ -3,6 +3,7 @@ import {Card, Descriptions, Spin, Alert} from 'antd'
 import {BitmexAcc} from '../types';
 import CardChart from './CardChart';
 import {formatEarnings} from '../utils/priceFormat'
+import AccUpdateModal from './AccUpdateModal'
 
 export default ({acc}: {acc: BitmexAcc}) => {
   const queriedAtLeastOnce = !!acc.wallet_balance_now
@@ -48,6 +49,7 @@ export default ({acc}: {acc: BitmexAcc}) => {
           <Descriptions.Item span={3} label="Note">{acc.notes}</Descriptions.Item>
         </Descriptions>
         <CardChart acc={acc} />
+        <AccUpdateModal acc={acc}/>
       </Card>
     </Spin>
   )

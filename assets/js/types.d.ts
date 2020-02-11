@@ -5,6 +5,10 @@ export interface ModalFormProps extends FormComponentProps {
   setVisible: (arg0: boolean) => void;
 }
 
+export interface UpdateModalFormProps extends ModalFormProps {
+  acc: BitmexAcc
+}
+
 export interface AccCreateFormData {
   name: string;
   is_testnet: boolean;
@@ -14,6 +18,8 @@ export interface AccCreateFormData {
   deposit_btc: number;
   notes: string;
 }
+
+export interface AccUpdateFormData extends AccCreateFormData {}
 
 export interface HistoricalData {
   wallet_balance_btc: number;
