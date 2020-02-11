@@ -15,7 +15,7 @@ let socket = new Socket("/socket", { params: { _csrf_token: window.csrfToken } }
 
 if(window.csrfToken){
   socket.onError(err => {
-    axios.delete("/session", {headers:{"x-csrf-token": window.csrfToken}})
+    axios.delete("/session", {headers:{"x-csrf-token": window.csrfToken}, params: {"_csrf_token": window.csrfToken}})
       .then(res => {
         window.location.reload()
       })

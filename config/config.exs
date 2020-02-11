@@ -33,9 +33,8 @@ config :portfolio_monitor, :pow,
   user: PortfolioMonitor.Account.User,
   repo: PortfolioMonitor.Repo,
   web_module: PortfolioMonitorWeb,
-  cache_store_backend: PortfolioMonitorWeb.PowRedisCache
-
-
+  cache_store_backend: Pow.Store.Backend.EtsCache
+  
 config :portfolio_monitor, PortfolioMonitor.Scheduler,
   jobs: [
     # Record current btc price every 1 hr
