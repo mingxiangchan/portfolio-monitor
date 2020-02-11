@@ -17,12 +17,13 @@ const formItemlayout = {
 const AccUpdateForm = Form.create<ModalUpdateFormProps>(formOpts)(
   ({form, visible, setVisible, acc}: ModalUpdateFormProps) => {
     const setInitial = () => {
-      const {name, deposit_usd, deposit_btc, notes} = acc
+      const {name, deposit_usd, deposit_btc, notes, is_testnet} = acc
       form.setFieldsValue({
         name,
         deposit_btc: deposit_btc / 100000000,
         deposit_usd: deposit_usd / 100,
-        notes
+        notes,
+        is_testnet
       })
     }
 

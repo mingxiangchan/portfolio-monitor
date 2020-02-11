@@ -1,22 +1,29 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {Layout, Row, Col} from 'antd';
-import TopNav from './TopNav'
 import SideNav from './SideNav'
 import MainDashboard from './MainDashboard'
+import {AccountsContextProvider} from '../context/AccountsContext'
+import DashboardContext from '../context/DashboardContext'
 
-const {Content} = Layout;
+const App = () => {
+  const [testnet, setTestnet] = useState(false)
 
-const App = () => (
-  <Row>
-    <Col span={24}>
-      <Layout style={{height: '100vh'}}>
-        <Layout style={{backgroundColor: 'black'}}>
-          <SideNav />
-          <MainDashboard />
-        </Layout>
-      </Layout>
-    </Col>
-  </Row>
-)
+  return (
+    <AccountsContextProvider>
+      <DashboardContext.Provider value={{testnet, setTestnet}}>
+        <Row>
+          <Col span={24}>
+            <Layout style={{height: '100vh'}}>
+              <Layout style={{backgroundColor: 'black'}}>
+                <SideNav />
+                <MainDashboard />
+              </Layout>
+            </Layout>
+          </Col>
+        </Row>
+      </DashboardContext.Provider>
+    </AccountsContextProvider>
+  )
+}
 
 export default App
