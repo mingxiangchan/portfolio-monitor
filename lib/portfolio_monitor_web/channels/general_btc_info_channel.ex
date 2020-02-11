@@ -9,7 +9,7 @@ defmodule PortfolioMonitorWeb.GeneralBtcInfoChannel do
 
   @decorate channel_action()
   def handle_in("get_opening_price", _, socket) do
-    history = PortfolioMonitor.Portfolio.get_last_bitmex_history()
-    {:reply, {:ok, %{opening_price: history.btc_price}}, socket}
+    {real_price, test_price} = PortfolioMonitor.Portfolio.get_current_opening_price()
+    {:reply, {:ok, %{opening_test_price: test_price, opening_real_price: real_price }}, socket}
   end
 end

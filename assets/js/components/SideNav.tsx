@@ -11,23 +11,34 @@ const {Sider} = Layout
 
 const SideNav = () => {
   const [time, changeTime] = useState(moment())
-  const [price, changePrice] = useState(0)
+  const [testPrice, changePrice] = useState(0)
+  const [realPrice, changeRealPrice] = useState(0)
   const [loaded, changeLoaded] = useState(false)
-  const [openPrice, changeOpenPrice] = useState(1)
+  const [openTestPrice, changeOpenTestPrice] = useState(1)
+  const [openRealPrice, changeOpenRealPrice] = useState(1)
 
-  const priceDiffAbs = price - openPrice
-  const priceDiffPer = (priceDiffAbs / openPrice).toFixed(2)
+  const testPriceDiffAbs = testPrice - openTestPrice
+  const testPriceDiffPer = (testPriceDiffAbs / openTestPrice).toFixed(2)
 
+  const realPriceDiffAbs = realPrice - openRealPrice
+  const realPriceDiffPer = (realPriceDiffAbs / openRealPrice).toFixed(2)
 
   useEffect(() => {
     generalChannel.push("get_opening_price").receive("ok", resp => {
-      changeOpenPrice(resp.opening_price)
+      changeOpenTestPrice(resp.opening_test_price)
+      changeOpenRealPrice(resp.opening_real_price)
     })
 
-    generalChannel.on("price", resp => {
+    generalChannel.on("testnet_price", resp => {
       loaded ? null : changeLoaded(true)
       const newPrice: number = resp.data.data[0].price
       changePrice(newPrice)
+    })
+
+    generalChannel.on("livenet_price", resp => {
+      loaded ? null : changeLoaded(true)
+      const newPrice: number = resp.data.data[0].price
+      changeRealPrice(newPrice)
     })
 
     const int = setInterval(() => {
@@ -54,8 +65,12 @@ const SideNav = () => {
       <Title level={2} style={{color: 'white'}}>Hi Josh</Title>
       <Title level={3} style={{color: 'white'}}>{time.format("h:mm:ss A")}</Title>
       <Title level={3} style={{color: 'white', marginBottom: '20px'}}>{time.format("MMM DD, YYYY")}</Title>
-      <p style={{color: 'white'}}>{priceDiffAbs} ({priceDiffPer}%)</p>
-      <Title level={3} style={{color: 'white'}}>{loaded ? price.toFixed(1) : <Spin />}</Title>
+      <Title level={4} style={{color: 'red'}}>{"TESTNET"}</Title>
+      <p style={{color: 'white'}}>{testPriceDiffAbs} ({testPriceDiffPer}%)</p>
+      <Title level={3} style={{color: 'white', marginBottom: '20px'}}>{loaded ? testPrice.toFixed(1) : <Spin />}</Title>
+      <Title level={4} style={{color: 'green'}}>{"LIVE"}</Title>
+      <p style={{color: 'white'}}>{realPriceDiffAbs} ({realPriceDiffPer}%)</p>
+      <Title level={3} style={{color: 'white'}}>{loaded ? realPrice.toFixed(1) : <Spin />}</Title>
       <AccCreateModal />
       <br />
       <Button type="danger">Log Out</Button>
