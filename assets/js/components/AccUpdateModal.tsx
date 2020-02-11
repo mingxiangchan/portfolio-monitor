@@ -1,22 +1,20 @@
 import React, {useState} from 'react'
-import {Button} from 'antd'
+import {Button, Icon} from 'antd'
 import AccUpdateForm from './AccUpdateForm'
 import {BitmexAcc} from '../types'
 
-const AccUpdateModal = ({acc}: BitmexAcc) => {
+const AccUpdateModal = ({acc}: {acc: BitmexAcc}) => {
   const [visible, setVisible] = useState(false);
 
   return (
     <>
-      <Button
-        type="primary"
+      <Icon
+        type="edit"
         onClick={() => {
           setVisible(!visible);
         }}
-      >
-        Edit
-      </Button>
-      <AccUpdateForm visible={visible} setVisible={setVisible} acc={acc}/>
+      />
+      <AccUpdateForm visible={visible} setVisible={setVisible} acc={acc} />
     </>
   );
 };

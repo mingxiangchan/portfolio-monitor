@@ -13,7 +13,11 @@ export default ({acc}: {acc: BitmexAcc}) => {
 
   return (
     <Spin spinning={!queriedAtLeastOnce} tip="Pending First Query">
-      <Card title={acc.name}>
+      <Card title={acc.name} actions={
+        [
+          <AccUpdateModal acc={acc} />
+        ]
+      }>
         {acc.detected_invalid ? <Alert type="error" message="Invalid API credentials" /> : null}
         <Descriptions size="small">
           <Descriptions.Item span={3} label="Return since inception">
@@ -49,7 +53,6 @@ export default ({acc}: {acc: BitmexAcc}) => {
           <Descriptions.Item span={3} label="Note">{acc.notes}</Descriptions.Item>
         </Descriptions>
         <CardChart acc={acc} />
-        <AccUpdateModal acc={acc}/>
       </Card>
     </Spin>
   )
