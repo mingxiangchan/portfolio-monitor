@@ -1,15 +1,20 @@
-import React from 'react'
+import React, {useContext} from 'react'
 import {Card, Descriptions, Spin, Alert} from 'antd'
 import {BitmexAcc} from '../types';
 import CardChart from './CardChart';
 import {formatEarnings} from '../utils/priceFormat'
 import AccUpdateModal from './AccUpdateModal'
+import BitmexContext from '../context/BitmexContext';
+import DashboardContext from '../context/DashboardContext';
 
 export default ({acc}: {acc: BitmexAcc}) => {
+  const {testPrice, realPrice} = useContext(BitmexContext)
+  const {testnet} = useContext(DashboardContext)
   const queriedAtLeastOnce = !!acc.wallet_balance_now
   const rsi = (acc.wallet_balance_now - acc.deposit_btc) / (10 ** 8)
-  const usdBalance = rsi * acc.lastPrice
   const leverage = Math.abs((acc.currentQty / (acc.marginBalance ? acc.marginBalance : acc.margin_balance)) * (10 ** 4))
+  const livePrice = testnet ? testPrice : realPrice
+  const lastPrice = acc.lastPrice ? acc.lastPrice : livePrice
 
   return (
     <Spin spinning={!queriedAtLeastOnce} tip="Pending First Query">
@@ -21,13 +26,13 @@ export default ({acc}: {acc: BitmexAcc}) => {
         {acc.detected_invalid ? <Alert type="error" message="Invalid API credentials" /> : null}
         <Descriptions size="small">
           <Descriptions.Item span={3} label="Return since inception">
-            {formatEarnings(acc.deposit_btc, acc.wallet_balance_now, acc.lastPrice)}
+            {formatEarnings(acc.deposit_btc, acc.wallet_balance_now, lastPrice)}
           </Descriptions.Item>
           <Descriptions.Item span={3} label="Earned this month">
-            {formatEarnings(acc.wallet_balance_30_days, acc.wallet_balance_now, acc.lastPrice)}
+            {formatEarnings(acc.wallet_balance_30_days, acc.wallet_balance_now, lastPrice)}
           </Descriptions.Item>
           <Descriptions.Item span={3} label="Earned past 7-days">
-            {formatEarnings(acc.wallet_balance_7_days, acc.wallet_balance_now, acc.lastPrice)}
+            {formatEarnings(acc.wallet_balance_7_days, acc.wallet_balance_now, lastPrice)}
           </Descriptions.Item>
           <Descriptions.Item span={3} label="Earned past 24-hours">
             {formatEarnings(acc.wallet_balance_1_day, acc.wallet_balance_now, acc.lastPrice)}
