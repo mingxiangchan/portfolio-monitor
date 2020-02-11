@@ -7,7 +7,7 @@ export default ({accs}: {accs: BitmexAcc[]}) => {
   return (
     <Row >
       <Card style={{minHeight: "50vh"}} >
-        <Col span={24} style={loading ? {display: "flex", justifyContent: "center", alignItems: "center", height: "45vh"} : {}}>
+        <Col span={24} >
           <List
             grid={{gutter: 16, column: 3}}
             itemLayout="horizontal"
