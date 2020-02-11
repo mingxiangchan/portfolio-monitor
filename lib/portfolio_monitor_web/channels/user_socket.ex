@@ -1,41 +1,25 @@
 defmodule PortfolioMonitorWeb.UserSocket do
   use Phoenix.Socket
-  alias PortfolioMonitor.Account.User
+  alias PortfolioMonitor.Account
 
   channel "bitmex_accs:*", PortfolioMonitorWeb.BitmexAccsChannel
   channel "general_btc_info", PortfolioMonitorWeb.GeneralBtcInfoChannel
 
-  def connect(_params, socket, connect_info) do
-    case authorized?(connect_info) do
-      {:ok, user} -> {:ok, assign(socket, :user, user)}
-      {:error, :not_found} -> :error
+  def connect(params, socket, _connect_info) do
+    with %{"token" => token} <- params,
+         {:ok, user} <- find_user(token) do
+      {:ok, assign(socket, :user, user)}
+    else
+      _ -> :error
     end
   end
 
   def id(socket), do: "user_socket:#{socket.assigns.user.id}"
 
-  @spec authorized?(Map.t()) :: {:ok, User.t()} | {:error, atom}
-  defp authorized?(connect_info) do
-    case connect_info do
-      %{session: %{"portfolio_monitor_auth" => key}} -> process_session(key)
-      _ -> {:error, :not_found}
-    end
-  end
-
-  @spec process_session(String.t()) :: {:ok, User.t()} | {:error, atom}
-  defp process_session(session_key) do
-    backend =
-      Keyword.merge(
-        Application.get_env(:portfolio_monitor, :pow, []),
-        backend: Pow.Store.Backend.EtsCache
-      )
-
-    case Pow.Store.CredentialsCache.get(backend, session_key) do
-      {%User{} = user, _session_details} ->
-        {:ok, user}
-
-      :not_found ->
-        {:error, :not_found}
+  defp find_user(token) do
+    with {:ok, results} <- Account.Token.verify_and_validate(token),
+         %{"user_id" => user_id} <- results do
+      {:ok, Account.find_user(user_id)}
     end
   end
 end
