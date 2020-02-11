@@ -15,23 +15,7 @@ defmodule ExBitmex.WebSocket do
       def start_link(args \\ %{}) do
         subscription = args[:subscribe] || []
         auth_subscription = args[:auth_subscribe] || []
-        opts = consturct_opts(args)
-
-        state =
-          args
-          |> Map.merge(%{
-            subscribe: subscription,
-            auth_subscribe: auth_subscription,
-            heartbeat: 0
-          })
-          |> Map.merge(Map.new(opts))
-
-        WebSockex.start_link(base_uri(), __MODULE__, state, opts)
-      end
-
-      def start_link(args, is_testnet) do
-        subscription = args[:subscribe] || []
-        auth_subscription = args[:auth_subscribe] || []
+        is_testnet = args[:is_testnet] || true
         opts = consturct_opts(args)
 
         state =
