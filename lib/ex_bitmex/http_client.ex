@@ -137,7 +137,8 @@ defmodule ExBitmex.Rest.HTTPClient do
   def origin, do: rest_protocol() <> domain()
 
   def api_path do 
-    Application.get_env(:ex_bitmex, :test_mode, "/api/v1")
+    # Application.get_env(:ex_bitmex, :test_mode, "/api/v1")
+    "/api/v1"
   end
 
   @spec url(path) :: String.t()
