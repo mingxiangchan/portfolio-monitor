@@ -170,9 +170,14 @@ defmodule PortfolioMonitor.Portfolio do
   end
 
   def update_bitmex_acc(%BitmexAcc{} = bitmex_acc, attrs) do
-    bitmex_acc
+    result = bitmex_acc
     |> BitmexAcc.changeset(attrs)
     |> Repo.update()
+    
+    with {:ok, updated_acc} <- result do
+      broadcast_acc_update(updated_acc)
+      {:ok, updated_acc}
+    end
   end
 
   def delete_bitmex_acc(%BitmexAcc{} = bitmex_acc) do

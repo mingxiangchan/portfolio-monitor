@@ -52,6 +52,14 @@ defmodule PortfolioMonitor.Portfolio.BitmexAcc do
   def changeset(bitmex_acc, attrs) do
     bitmex_acc
     |> cast(attrs, @required_fields)
+    |> check_api_creds_update
     |> validate_required(@required_fields)
+  end
+
+  def check_api_creds_update(changeset) do
+    case changeset do
+      %{changes: %{api_key: _, api_secret: _}} -> put_change(changeset, :detected_invalid, false)
+      _ -> changeset
+    end
   end
 end
