@@ -36,6 +36,7 @@ export interface BitmexAcc {
   notes: string;
   margin_balance: number
   detected_invalid: boolean;
+  is_testnet: boolean;
   historical_data: HistoricalData[];
   wallet_balance_now?: number;
   wallet_balance_1_day?: number;

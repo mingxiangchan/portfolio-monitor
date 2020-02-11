@@ -5,15 +5,11 @@ import {BitmexAcc} from '../types'
 
 const AccUpdateModal = ({acc}: {acc: BitmexAcc}) => {
   const [visible, setVisible] = useState(false);
+  const onClick = () => {setVisible(!visible);}
 
   return (
     <>
-      <Icon
-        type="edit"
-        onClick={() => {
-          setVisible(!visible);
-        }}
-      />
+      <Button type="primary" shape="circle" icon="edit" onClick={onClick} />
       <AccUpdateForm visible={visible} setVisible={setVisible} acc={acc} />
     </>
   );

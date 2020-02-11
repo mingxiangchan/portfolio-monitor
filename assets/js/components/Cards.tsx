@@ -1,11 +1,12 @@
 import React, {useContext} from 'react'
-import {Card, Descriptions, Alert, Spin} from 'antd'
+import {Card, Descriptions, Spin, Tag, } from 'antd'
 import {BitmexAcc} from '../types';
 import CardChart from './CardChart';
 import {formatEarnings} from '../utils/priceFormat'
 import AccUpdateModal from './AccUpdateModal'
 import BitmexContext from '../context/BitmexContext';
 import DashboardContext from '../context/DashboardContext';
+
 
 export default ({acc}: {acc: BitmexAcc}) => {
   const {testPrice, realPrice} = useContext(BitmexContext)
@@ -16,8 +17,9 @@ export default ({acc}: {acc: BitmexAcc}) => {
 
 
   return (
-    <Card title={acc.name} actions={[<AccUpdateModal acc={acc} />]}>
-      {acc.detected_invalid ? <Alert type="error" message="Invalid API credentials" /> : null}
+    <Card title={acc.name} extra={<AccUpdateModal acc={acc} />}>
+      {acc.is_testnet ? <Tag>Test</Tag> : <Tag>Live</Tag>}
+      {acc.detected_invalid ? <Tag color="red">Invalid Credentials</Tag> : null}
       <Descriptions size="small">
         <Descriptions.Item span={3} label="Return since inception">
           {formatEarnings(acc.deposit_btc, acc.wallet_balance_now, lastPrice)}
