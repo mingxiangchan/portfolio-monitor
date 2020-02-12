@@ -1,6 +1,6 @@
 defmodule PortfolioMonitor.Sync.GeneralBtcInfoWorker do
   alias PortfolioMonitorWeb.Endpoint
-  use ExBitmex.WebSocket
+  use ExBitmex.WebSocketOverride
   require Logger
 
   def handle_response(json, %{is_testnet: is_testnet}) do

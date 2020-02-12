@@ -1,4 +1,4 @@
-defmodule ExBitmex.WebSocket do
+defmodule ExBitmex.WebSocketOverride do
   @moduledoc """
   BitMEX WebSocket client.
   """
@@ -15,7 +15,10 @@ defmodule ExBitmex.WebSocket do
       def start_link(args \\ %{}) do
         subscription = args[:subscribe] || []
         auth_subscription = args[:auth_subscribe] || []
-        is_testnet = args[:is_testnet] || true
+        is_testnet = case args[:is_testnet] do
+          false -> false
+          _ -> true
+        end
         opts = consturct_opts(args)
 
         state =
@@ -54,6 +57,7 @@ defmodule ExBitmex.WebSocket do
       @impl true
       def handle_disconnect(disconnect_map, state) do
         :ok = Logger.warn("#{__MODULE__} disconnected: #{inspect(disconnect_map)}")
+        :timer.sleep(3000)
         {:reconnect, state}
       end
 
