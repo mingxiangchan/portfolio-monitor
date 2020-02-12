@@ -24,6 +24,7 @@ export interface AccUpdateFormData extends AccCreateFormData {}
 export interface HistoricalData {
   wallet_balance_btc: number;
   wallet_balance_usd: number;
+  avg_entry_price: string;
   btc_price: string;
   inserted_at: string;
 }
