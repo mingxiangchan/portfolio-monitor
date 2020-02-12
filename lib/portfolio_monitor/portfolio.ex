@@ -12,6 +12,7 @@ defmodule PortfolioMonitor.Portfolio do
   alias PortfolioMonitor.Portfolio.BitmexAcc
   alias PortfolioMonitorWeb.Endpoint
   alias ExBitmex.Rest.User.Margin
+  alias ExBitmex.Rest.Position
 
   def list_historical_data do
     Repo.all(HistoricalDatum)
@@ -111,11 +112,15 @@ defmodule PortfolioMonitor.Portfolio do
 
     params = %{currency: "XBt"}
 
-    with {:ok, resp, _} <- Margin.get(credentials, params, acc.is_testnet) do
+    with {:ok, margin_resp, _} <- Margin.get(credentials, params, acc.is_testnet),
+         {:ok, position_resp, _} <- Position.Index.get(credentials, params, acc.is_testnet) do
+      avg_entry_price = position_resp |> hd |> Map.get(:avg_entry_price)
+
       changes =
-        resp
+        margin_resp
         |> Map.take([:wallet_balance, :margin_balance])
         |> Map.put(:btc_price, btc_price)
+        |> Map.put(:avg_entry_price, avg_entry_price)
 
       create_historical_datum(acc, changes)
       broadcast_acc_update(acc)

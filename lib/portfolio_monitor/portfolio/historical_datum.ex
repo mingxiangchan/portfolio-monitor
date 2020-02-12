@@ -5,17 +5,25 @@ defmodule PortfolioMonitor.Portfolio.HistoricalDatum do
   schema "historical_data" do
     field :wallet_balance, :integer
     field :margin_balance, :integer
+    field :avg_entry_price, :decimal
     field :btc_price, :decimal
     belongs_to :bitmex_acc, PortfolioMonitor.Portfolio.BitmexAcc
 
     timestamps()
   end
 
+  @required_fields [
+    :wallet_balance,
+    :margin_balance,
+    :btc_price,
+    :avg_entry_price
+  ]
+
   @doc false
   def changeset(historical_datum, attrs) do
     historical_datum
-    |> cast(attrs, [:wallet_balance, :margin_balance, :btc_price])
-    |> validate_required([:wallet_balance, :margin_balance, :btc_price])
+    |> cast(attrs, @required_fields)
+    |> validate_required(@required_fields)
   end
 end
 
@@ -37,6 +45,7 @@ defimpl Jason.Encoder, for: PortfolioMonitor.Portfolio.HistoricalDatum do
       id: row.id,
       wallet_balance_btc: row.wallet_balance,
       wallet_balance_usd: wallet_balance_usd,
+      avg_entry_price: row.avg_entry_price,
       btc_price: row.btc_price,
       inserted_at: row.inserted_at
     }
