@@ -39,10 +39,19 @@ defmodule PortfolioMonitor.Sync.Supervisor do
   end
 
   def start_general_btc_info_worker(is_testnet) do
-    child_spec = {GeneralBtcInfoWorker, %{
-      subscribe: ["trade:XBTUSD"],
-      is_testnet: is_testnet
-    }}
+    name =
+      case is_testnet do
+        true -> String.to_atom("GeneralBtcInfoWorker.TestNet")
+        false -> String.to_atom("GeneralBtcInfoWorker.LiveNet")
+      end
+
+    child_spec =
+      {GeneralBtcInfoWorker,
+       %{
+         subscribe: ["trade:XBTUSD"],
+         is_testnet: is_testnet,
+         name: name
+       }}
 
     DynamicSupervisor.start_child(__MODULE__, child_spec)
   end
