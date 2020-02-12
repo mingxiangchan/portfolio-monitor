@@ -1,8 +1,10 @@
-import React from 'react'
+import React, {useContext} from 'react'
 import Chart from './Chart'
 import { Card, Descriptions, Row, Col, Spin } from 'antd'
 import { BitmexAcc } from '../types';
 import { formatEarnings } from '../utils/priceFormat'
+import BitmexContext from '../context/BitmexContext';
+import DashboardContext from '../context/DashboardContext';
 
 const opt = {
   scales: {
@@ -54,6 +56,9 @@ const opt = {
 export default ({ accs }: { accs: BitmexAcc[] }) => {
   let total = {}
 
+  const {testPrice, realPrice} = useContext(BitmexContext)
+  const {testnet} = useContext(DashboardContext)
+
   for (let i = 0; i < accs.length; i++) {
     const acc = accs[i]
     if (!acc.historical_data) {
@@ -82,6 +87,8 @@ export default ({ accs }: { accs: BitmexAcc[] }) => {
     }
   }
 
+  const price = testnet ? testPrice : realPrice
+
   const cummulative = accs.reduce((total, acc) => {
     const { wallet_balance_30_days, wallet_balance_7_days, wallet_balance_1_day, wallet_balance_now, deposit_btc, currentQty, marginBalance, unrealisedPnl, lastPrice, liquidationPrice, avgEntryPrice, avg_entry_price } = acc
     const liqPriceGap = liquidationPrice && lastPrice ? liquidationPrice - lastPrice : total.liqPriceGap
@@ -100,7 +107,7 @@ export default ({ accs }: { accs: BitmexAcc[] }) => {
       price30: total.price30 + wallet_balance_30_days,
       entry: total.entry + (avgEntryPrice ? avgEntryPrice : avg_entry_price ? parseFloat(avg_entry_price) : 0)
     }
-  }, { pnl: 0, qty: 0, balance: 0, start: 0, mBalance: 0, price: undefined, liqPrice: 0, liqPriceGap: Infinity, price30: 0, price7: 0, priceDay: 0, entry: 0 })
+  }, { pnl: 0, qty: 0, balance: 0, start: 0, mBalance: 0, price, liqPrice: 0, liqPriceGap: Infinity, price30: 0, price7: 0, priceDay: 0, entry: 0 })
 
   const graphData = { price: [], btcBalance: [], usdBalance: [] }
   const totalValues = Object.values(total)
