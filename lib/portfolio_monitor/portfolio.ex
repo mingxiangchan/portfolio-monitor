@@ -114,7 +114,11 @@ defmodule PortfolioMonitor.Portfolio do
 
     with {:ok, margin_resp, _} <- Margin.get(credentials, params, acc.is_testnet),
          {:ok, position_resp, _} <- Position.Index.get(credentials, params, acc.is_testnet) do
-      avg_entry_price = position_resp |> hd |> Map.get(:avg_entry_price)
+      avg_entry_price =
+        case Enum.at(position_resp, 0) do
+          nil -> 0
+          position_data -> Map.get(position_data, :avg_entry_price)
+        end
 
       changes =
         margin_resp

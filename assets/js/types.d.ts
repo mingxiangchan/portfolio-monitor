@@ -24,7 +24,6 @@ export interface AccUpdateFormData extends AccCreateFormData {}
 export interface HistoricalData {
   wallet_balance_btc: number;
   wallet_balance_usd: number;
-  avg_entry_price: string;
   btc_price: string;
   inserted_at: string;
 }
@@ -39,11 +38,11 @@ export interface BitmexAcc {
   detected_invalid: boolean;
   is_testnet: boolean;
   historical_data: HistoricalData[];
+  avg_entry_price: string;
   wallet_balance_now?: number;
   wallet_balance_1_day?: number;
   wallet_balance_7_days?: number;
   wallet_balance_30_days?: number;
-  avg_entry_price?: number;
   // comes from bitmex WS
   unrealisedPnl?: number;
   currentQty?: number;
