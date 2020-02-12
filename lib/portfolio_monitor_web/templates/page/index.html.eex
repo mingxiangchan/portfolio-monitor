@@ -1,1 +1,4 @@
+<link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>"/>
 <div id="react-app-root"></div>
+
+<script type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
