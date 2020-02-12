@@ -237,7 +237,8 @@ defmodule PortfolioMonitor.Portfolio do
       distinct: [a.id],
       select_merge: %{
         margin_balance: h.margin_balance,
-        wallet_balance_now: h.wallet_balance
+        wallet_balance_now: h.wallet_balance,
+        avg_entry_price: h.avg_entry_price
       }
   end
 

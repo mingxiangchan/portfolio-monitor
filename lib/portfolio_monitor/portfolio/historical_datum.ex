@@ -45,7 +45,6 @@ defimpl Jason.Encoder, for: PortfolioMonitor.Portfolio.HistoricalDatum do
       id: row.id,
       wallet_balance_btc: row.wallet_balance,
       wallet_balance_usd: wallet_balance_usd,
-      avg_entry_price: row.avg_entry_price,
       btc_price: row.btc_price,
       inserted_at: row.inserted_at
     }
