@@ -83,7 +83,7 @@ export default ({ accs }: { accs: BitmexAcc[] }) => {
   }
 
   const cummulative = accs.reduce((total, acc) => {
-    const { wallet_balance_30_days, wallet_balance_7_days, wallet_balance_1_day, wallet_balance_now, deposit_btc, currentQty, marginBalance, unrealisedPnl, lastPrice, liquidationPrice } = acc
+    const { wallet_balance_30_days, wallet_balance_7_days, wallet_balance_1_day, wallet_balance_now, deposit_btc, currentQty, marginBalance, unrealisedPnl, lastPrice, liquidationPrice, avgEntryPrice, avg_entry_price } = acc
     const liqPriceGap = liquidationPrice && lastPrice ? liquidationPrice - lastPrice : total.liqPriceGap
     const smallerLiqPrice = liqPriceGap < total.liqPriceGap
     return {
@@ -98,8 +98,9 @@ export default ({ accs }: { accs: BitmexAcc[] }) => {
       priceDay: total.priceDay + wallet_balance_1_day,
       price7: total.price7 + wallet_balance_7_days,
       price30: total.price30 + wallet_balance_30_days,
+      entry: total.entry + (avgEntryPrice ? avgEntryPrice : avg_entry_price ? parseFloat(avg_entry_price) : 0)
     }
-  }, { pnl: 0, qty: 0, balance: 0, start: 0, mBalance: 0, price: undefined, liqPrice: 0, liqPriceGap: Infinity, price30: 0, price7: 0, priceDay: 0 })
+  }, { pnl: 0, qty: 0, balance: 0, start: 0, mBalance: 0, price: undefined, liqPrice: 0, liqPriceGap: Infinity, price30: 0, price7: 0, priceDay: 0, entry: 0 })
 
   const graphData = { price: [], btcBalance: [], usdBalance: [] }
   const totalValues = Object.values(total)
@@ -161,7 +162,7 @@ export default ({ accs }: { accs: BitmexAcc[] }) => {
             <Descriptions.Item label="Current leverage">{leverage && leverage != Infinity ? leverage.toFixed(1) : <Spin />}</Descriptions.Item>
             <Descriptions.Item label="Open position">{cummulative.qty ? cummulative.qty : <Spin />}</Descriptions.Item>
             <Descriptions.Item label="Liquidation price">{cummulative.liqPrice}</Descriptions.Item>
-            <Descriptions.Item label="Ave. entry price">TEST</Descriptions.Item>
+            <Descriptions.Item label="Ave. entry price">{cummulative.entry / accs.length}</Descriptions.Item>
             <Descriptions.Item label="Balance">{(cummulative.balance / (10 ** 8)).toFixed(4)}</Descriptions.Item>
           </Descriptions>
         </Col>
