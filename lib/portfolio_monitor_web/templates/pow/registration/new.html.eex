@@ -4,7 +4,7 @@
     <%= form_for @changeset, @action, [as: :user, class: "login-form"], fn f -> %>
       <%= text_input f, Pow.Ecto.Schema.user_id_field(@changeset), placeholder: "username"%>
       <%= password_input f, :password, placeholder: "password"%>
-      <%= password_input f, :confirm_password, placeholder: "confirm password"%>
+      <%= password_input f, :confirm_password, placeholder: "password"%>
       <%= submit "Sign Up" %>
       <p class="message">Already registered?
         <%= link "Sign in", to: Routes.pow_session_path(@conn, :new) %>

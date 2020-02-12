@@ -50,7 +50,8 @@ defmodule PortfolioMonitor.Portfolio.BitmexAcc do
     :deposit_usd,
     :deposit_btc,
     :detected_invalid,
-    :is_testnet
+    :is_testnet,
+    :notes
   ]
 
   @doc false
