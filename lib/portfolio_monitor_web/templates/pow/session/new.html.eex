@@ -2,7 +2,7 @@
 <div class="login-page">
   <div class="form">
     <%= form_for @changeset, @action, [as: :user, class: "login-form"], fn f -> %>
-      <%= text_input f, Pow.Ecto.Schema.user_id_field(@changeset), placeholder: "username"%>
+      <%= text_input f, Pow.Ecto.Schema.user_id_field(@changeset), placeholder: "email"%>
       <%= password_input f, :password, placeholder: "password"%>
       <%= submit "Log In" %>
       <p class="message">Not registered?
