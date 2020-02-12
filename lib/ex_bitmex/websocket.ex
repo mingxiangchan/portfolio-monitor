@@ -119,10 +119,10 @@ defmodule ExBitmex.WebSocketOverride do
           send_after(self(), {:heartbeat, :ping, heartbeat + 1}, 1_000)
           {:ok, state}
         else
-          if not test_mode() do
-            :ok =
-              Logger.warn("#{__MODULE__} sent heartbeat ##{heartbeat} due to low connectivity")
-          end
+          # if not test_mode() do
+          #   :ok =
+          #     Logger.warn("#{__MODULE__} sent heartbeat ##{heartbeat} due to low connectivity")
+          # end
 
           send_after(self(), {:heartbeat, :pong, heartbeat + 1}, 4_000)
           {:reply, :ping, state}

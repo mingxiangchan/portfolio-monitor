@@ -54,7 +54,6 @@ defmodule PortfolioMonitor.MixProject do
       {:exvcr, "~> 0.10", only: :test},
       {:ex_machina, "~> 2.3", only: :test},
       {:joken, "~> 2.0"},
-      {:redix, "~> 0.9.2"}
     ]
   end
 

@@ -16,7 +16,6 @@ defmodule PortfolioMonitor.Application do
       # {PortfolioMonitor.Worker, arg},
       PortfolioMonitor.Sync.Supervisor,
       PortfolioMonitor.Scheduler,
-      {Redix, name: :redix}
     ]
 
     :telemetry.attach(
