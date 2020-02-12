@@ -1,6 +1,6 @@
 defmodule PortfolioMonitor.Sync.Worker do
   alias PortfolioMonitorWeb.Endpoint
-  use ExBitmex.WebSocket
+  use ExBitmex.WebSocketOverride
 
   def handle_response(json, state) do
     # spawn async, no-link process to perform db insert
@@ -22,4 +22,10 @@ defmodule PortfolioMonitor.Sync.Worker do
   end
 
   def persist_response(_, _), do: nil
+
+  def handle_disconnect(disconnect_map, state) do
+    :ok = Logger.warn("#{__MODULE__} disconnected: #{inspect(disconnect_map)}")
+    :timer.sleep(3000)
+    {:reconnect, state}
+  end
 end
