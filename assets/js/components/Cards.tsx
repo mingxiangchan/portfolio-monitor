@@ -31,7 +31,7 @@ export default ({acc}: {acc: BitmexAcc}) => {
           {formatEarnings(acc.wallet_balance_7_days, acc.wallet_balance_now, lastPrice)}
         </Descriptions.Item>
         <Descriptions.Item span={3} label="Earned past 24-hours">
-          {formatEarnings(acc.wallet_balance_1_day, acc.wallet_balance_now, acc.lastPrice)}
+          {formatEarnings(acc.wallet_balance_1_day, acc.wallet_balance_now, lastPrice)}
         </Descriptions.Item>
         <Descriptions.Item span={3} label="Paper gains">
           {acc.unrealisedPnl ? (acc.unrealisedPnl / (10 ** 8)).toFixed(8) : <Spin />}
