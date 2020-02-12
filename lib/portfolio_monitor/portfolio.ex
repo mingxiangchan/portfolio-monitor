@@ -37,12 +37,14 @@ defmodule PortfolioMonitor.Portfolio do
   end
 
   def get_current_opening_price do
-    date = Timex.now()
+    {:ok, zero_time} = Time.new(0, 0, 0)
+    {:ok, start_datetime} = Date.utc_today() |> NaiveDateTime.new(zero_time)
+    {:ok, end_datetime} = Date.utc_today() |> Date.add(1) |> NaiveDateTime.new(zero_time)
 
     query =
       from h in BitmexHistory,
-        where: h.inserted_at >= ^Timex.beginning_of_day(date),
-        where: h.inserted_at <= ^Timex.end_of_day(date),
+        where: h.inserted_at >= ^start_datetime,
+        where: h.inserted_at <= ^end_datetime,
         order_by: [asc: h.inserted_at],
         distinct: h.is_testnet
 
