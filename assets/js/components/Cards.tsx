@@ -14,11 +14,13 @@ export default ({acc}: {acc: BitmexAcc}) => {
   const leverage = Math.abs((acc.currentQty / (acc.marginBalance ? acc.marginBalance : acc.margin_balance)) * (10 ** 4))
   const livePrice = testnet ? testPrice : realPrice
   const lastPrice = acc.lastPrice !== undefined ? acc.lastPrice : livePrice
+  const pendingFirstQuery = acc.historical_data.length === 0
 
 
   return (
     <Card title={acc.name} extra={<AccUpdateModal acc={acc} />}>
       {acc.is_testnet ? <Tag>Test</Tag> : <Tag>Live</Tag>}
+      {pendingFirstQuery ? <Tag color="blue">Pending First Query</Tag> : null}
       {acc.detected_invalid ? <Tag color="red">Invalid Credentials</Tag> : null}
       <Descriptions size="small">
         <Descriptions.Item span={3} label="Return since inception">
