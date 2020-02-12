@@ -46,8 +46,8 @@ export default ({acc}: {acc: BitmexAcc}) => {
           {acc.liquidationPrice ? acc.liquidationPrice : <Spin />}
         </Descriptions.Item>
         <Descriptions.Item span={3} label="Ave. entry price">
-          Test
-</Descriptions.Item>
+          {acc.avgEntryPrice ? acc.avgEntryPrice : acc.avg_entry_price ? acc.avg_entry_price : "0"}
+        </Descriptions.Item>
         <Descriptions.Item span={3} label="Balance">
           {(acc.wallet_balance_now / (10 ** 8)).toFixed(4)}
         </Descriptions.Item>

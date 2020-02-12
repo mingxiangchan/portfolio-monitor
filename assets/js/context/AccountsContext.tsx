@@ -33,11 +33,10 @@ export const AccountsContextProvider = ({ children }) => {
 
                 accChannel!.on("ws_position", resp => {
                     const id = resp.acc_id
-                    // avgEntryPrice missing
-                    const { currentQty, liquidationPrice, lastPrice } = resp.data[0]
+                    const { currentQty, liquidationPrice, lastPrice, avgEntryPrice } = resp.data[0]
                     setAccs((prevAccs) => {
                         const oldAcc = prevAccs[id]
-                        const updatedAcc = { ...oldAcc, currentQty, liquidationPrice, lastPrice: lastPrice ? lastPrice : oldAcc.lastPrice }
+                        const updatedAcc = { ...oldAcc, currentQty, liquidationPrice, lastPrice: lastPrice ? lastPrice : oldAcc.lastPrice, ...avgEntryPrice ? avgEntryPrice : oldAcc.avg_entry_price }
                         return { ...prevAccs, [id]: updatedAcc }
                     })
                 })
