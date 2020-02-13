@@ -36,7 +36,7 @@ export const AccountsContextProvider = ({ children }) => {
                     const { currentQty, liquidationPrice, lastPrice, avgEntryPrice } = resp.data[0]
                     setAccs((prevAccs) => {
                         const oldAcc = prevAccs[id]
-                        const updatedAcc = { ...oldAcc, currentQty, liquidationPrice, lastPrice: lastPrice ? lastPrice : oldAcc.lastPrice, ...avgEntryPrice ? avgEntryPrice : oldAcc.avg_entry_price }
+                        const updatedAcc = { ...oldAcc, currentQty, liquidationPrice, lastPrice: lastPrice ? lastPrice : oldAcc.lastPrice, ...avgEntryPrice ? {avgEntryPrice} : {avgEntryPrice: oldAcc.avg_entry_price} }
                         return { ...prevAccs, [id]: updatedAcc }
                     })
                 })

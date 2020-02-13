@@ -39,7 +39,7 @@ export default ({acc}: {acc: BitmexAcc}) => {
           {acc.unrealisedPnl ? (acc.unrealisedPnl / (10 ** 8)).toFixed(8) : <Spin />}
         </Descriptions.Item>
         <Descriptions.Item span={3} label="Current leverage">
-          {leverage && leverage != Infinity ? leverage.toFixed(1) : <Spin />}
+          {leverage && leverage != Infinity ? leverage.toFixed(2) : <Spin />}
         </Descriptions.Item>
         <Descriptions.Item span={3} label="Open position">
           {acc.currentQty ? acc.currentQty : <Spin />}
