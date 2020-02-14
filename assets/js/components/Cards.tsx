@@ -16,6 +16,7 @@ export default ({acc}: {acc: BitmexAcc}) => {
   const lastPrice = acc.lastPrice !== undefined ? acc.lastPrice : livePrice
   const pendingFirstQuery = acc.historical_data.length === 0
   const marginBalance = acc.marginBalance ? acc.marginBalance: acc.margin_balance
+  const fiatBalance = (marginBalance / (10 ** 8)) * lastPrice
 
   return (
     <Card title={acc.name} extra={<AccUpdateModal acc={acc} />}>
@@ -50,8 +51,11 @@ export default ({acc}: {acc: BitmexAcc}) => {
         <Descriptions.Item span={3} label="Ave. entry price">
           {acc.avgEntryPrice ? acc.avgEntryPrice : acc.avg_entry_price ? acc.avg_entry_price : "0"}
         </Descriptions.Item>
-        <Descriptions.Item span={3} label="Balance">
-          {(marginBalance / (10 ** 8)).toFixed(4)}
+        <Descriptions.Item span={3} label="Balance(BTC)">
+          {marginBalance ? (marginBalance / (10 ** 8)).toFixed(4) : <Spin/>}
+        </Descriptions.Item>
+        <Descriptions.Item span={3} label="Balance(USD)">
+          {fiatBalance ? (fiatBalance).toFixed(2) : <Spin/> }
         </Descriptions.Item>
         <Descriptions.Item span={3} label="Note">{acc.notes}</Descriptions.Item>
       </Descriptions>

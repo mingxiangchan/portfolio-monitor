@@ -173,7 +173,8 @@ export default ({ accs }: { accs: BitmexAcc[] }) => {
             <Descriptions.Item label="Open position">{cummulative.qty ? cummulative.qty : <Spin />}</Descriptions.Item>
             <Descriptions.Item label="Nearest liquidation price">{cummulative.liqPrice + ` (${cummulative.liqAcc})`}</Descriptions.Item>
             <Descriptions.Item label="Ave. entry price">{cummulative.entry / cummulative.entryCount}</Descriptions.Item>
-            <Descriptions.Item label="Balance">{(cummulative.balance / (10 ** 8)).toFixed(4)}</Descriptions.Item>
+            <Descriptions.Item label="Balance(BTC)">{(cummulative.mBalance / (10 ** 8)).toFixed(4)}</Descriptions.Item>
+            <Descriptions.Item label="Balance(USD)">{(cummulative.mBalance / (10 ** 8) * cummulative.price).toFixed(2)}</Descriptions.Item>
           </Descriptions>
         </Col>
       </Card>
