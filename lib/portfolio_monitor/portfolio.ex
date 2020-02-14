@@ -155,14 +155,12 @@ defmodule PortfolioMonitor.Portfolio do
 
   defp oldest_historical_datum_within_days(diff) do
     {:ok, target_datetime} =
-      Date.utc_today()
-      |> Date.add(-diff)
-      |> NaiveDateTime.new(Time.utc_now())
+      Date.utc_today() |> Date.add(-diff) |> NaiveDateTime.new(Time.utc_now())
 
     from h in HistoricalDatum,
       where: h.inserted_at >= ^target_datetime,
       order_by: h.inserted_at,
-      limit: 1
+      distinct: h.bitmex_acc_id
   end
 
   def list_bitmex_accs do
