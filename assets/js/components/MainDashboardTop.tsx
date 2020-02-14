@@ -156,6 +156,11 @@ export default ({ accs }: { accs: BitmexAcc[] }) => {
   const btcRsi = rsi / (10 ** 8)
   const leverage = Math.abs((cummulative.qty / cummulative.mBalance) * (10 ** 4))
 
+  const closestDay = cummulative.priceDay ? cummulative.priceDay: cummulative.start
+  const closest7 = cummulative.price7 ? cummulative.price7 : closestDay
+  const closest30 = 
+  cummulative.price30 ? cummulative.price30 : closest7
+   
   return (
     <Row type="flex" style={{ width: "100%", borderBottom: "1px solid #383838", paddingBottom: '5px', marginBottom: '5px', maxHeight: "45vh" }}>
       <Card>
@@ -165,9 +170,9 @@ export default ({ accs }: { accs: BitmexAcc[] }) => {
         <Col span={12} offset={1}>
           <Descriptions column={{ md: 1, lg: 2 }} size="small" title="Cumulative">
             <Descriptions.Item label="Return since inception">{formatEarnings(cummulative.start, cummulative.balance, cummulative.price)}</Descriptions.Item>
-            <Descriptions.Item label="Earned this month">{formatEarnings(cummulative.price30, cummulative.balance, cummulative.price)}</Descriptions.Item>
-            <Descriptions.Item label="Earned past 7-days">{formatEarnings(cummulative.price7, cummulative.balance, cummulative.price)}</Descriptions.Item>
-            <Descriptions.Item label="Earned past 24-hours">{formatEarnings(cummulative.priceDay, cummulative.balance, cummulative.price)}</Descriptions.Item>
+            <Descriptions.Item label="Earned this month">{formatEarnings(closest30, cummulative.balance, cummulative.price)}</Descriptions.Item>
+            <Descriptions.Item label="Earned past 7-days">{formatEarnings(closest7, cummulative.balance, cummulative.price)}</Descriptions.Item>
+            <Descriptions.Item label="Earned past 24-hours">{formatEarnings(closestDay , cummulative.balance, cummulative.price)}</Descriptions.Item>
             <Descriptions.Item label="Paper gains">{cummulative.pnl ? (cummulative.pnl / (10 ** 8)).toFixed(8) : <Spin />}</Descriptions.Item>
             <Descriptions.Item label="Current leverage">{leverage && leverage != Infinity ? leverage.toFixed(2) : <Spin />}</Descriptions.Item>
             <Descriptions.Item label="Open position">{cummulative.qty ? cummulative.qty : <Spin />}</Descriptions.Item>
