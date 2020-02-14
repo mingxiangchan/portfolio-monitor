@@ -19,8 +19,6 @@ export default () => {
     }
   }
 
-  console.log(expandedAccs)
-
   return (
     <Layout style={{marginLeft: 200, backgroundColor: '#000d19'}}>
       <Content style={{padding: 24}}>
