@@ -6,6 +6,7 @@ import {formatEarnings} from '../utils/priceFormat'
 import AccUpdateModal from './AccUpdateModal'
 import BitmexContext from '../context/BitmexContext';
 import DashboardContext from '../context/DashboardContext';
+import AccDeleteButton from './AccDeleteButton';
 
 
 export default ({acc}: {acc: BitmexAcc}) => {
@@ -18,7 +19,11 @@ export default ({acc}: {acc: BitmexAcc}) => {
   const leverage = Math.abs((acc.currentQty / fiatBalance))
 
   return (
-    <Card title={acc.name} extra={<AccUpdateModal acc={acc} />}>
+    <Card
+      title={acc.name}
+      extra={<AccUpdateModal acc={acc} />}
+      actions={[<AccDeleteButton acc={acc} />]}
+    >
       {acc.is_testnet ? <Tag>Test</Tag> : <Tag>Live</Tag>}
       {pendingFirstQuery ? <Tag color="blue">Pending First Query</Tag> : null}
       {acc.detected_invalid ? <Tag color="red">Invalid Credentials</Tag> : null}

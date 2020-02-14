@@ -224,7 +224,10 @@ defmodule PortfolioMonitor.Portfolio do
   end
 
   def delete_bitmex_acc(%BitmexAcc{} = bitmex_acc) do
-    Repo.delete(bitmex_acc)
+    with {:ok, acc} <- Repo.delete(bitmex_acc) do
+      Endpoint.broadcast("bitmex_accs:#{acc.user_id}", "acc_deleted", %{acc: %{id: acc.id}})
+      {:ok, acc}
+    end
   end
 
   def ordered_historical_data_query do
