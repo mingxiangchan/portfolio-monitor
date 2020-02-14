@@ -11,7 +11,6 @@ export const AccountsContextProvider = ({children}) => {
     notification.info({message: "Loading Accounts"})
     afterJoinedAccChannel(accChannel => {
       accChannel.push("get_accs").receive("ok", ({accs}: {accs: BitmexAccsState}) => {
-        console.log(accs)
         setAccs(accs)
         notification.success({message: "Accounts Loaded", description: "If no accounts display, try toggling to testnet"})
 
@@ -24,19 +23,22 @@ export const AccountsContextProvider = ({children}) => {
         accChannel!.on("acc_deleted", ({acc}: {acc: BitmexAcc}) => {
           setAccs((prevAccs) => {
             message.warning(`Deleted account with ID: ${acc.id}`)
-            const remainingAccs = prevAccs
-            delete remainingAccs[acc.id]
-            return remainingAccs
+            delete prevAccs[acc.id]
+            return {...prevAccs}
           })
         })
 
         accChannel!.on("ws_margin", resp => {
           const id = resp.acc_id
           const {unrealisedPnl, marginBalance} = resp.data[0]
+
           setAccs((prevAccs) => {
             const oldAcc = prevAccs[id]
-            const updatedAcc = {...oldAcc, ...unrealisedPnl && {unrealisedPnl}, ...marginBalance && {marginBalance}}
-            return {...prevAccs, [id]: updatedAcc}
+            // acc may have just been deleted but ws is not cleared yet
+            if (oldAcc[id]) {
+              const updatedAcc = {...oldAcc, ...unrealisedPnl && {unrealisedPnl}, ...marginBalance && {marginBalance}}
+              return {...prevAccs, [id]: updatedAcc}
+            }
           })
         })
 
@@ -45,8 +47,11 @@ export const AccountsContextProvider = ({children}) => {
           const {currentQty, liquidationPrice, lastPrice, avgEntryPrice} = resp.data[0]
           setAccs((prevAccs) => {
             const oldAcc = prevAccs[id]
-            const updatedAcc = {...oldAcc, currentQty, liquidationPrice, lastPrice: lastPrice ? lastPrice : oldAcc.lastPrice, ...avgEntryPrice ? {avgEntryPrice} : {avgEntryPrice: oldAcc.avg_entry_price}}
-            return {...prevAccs, [id]: updatedAcc}
+            // acc may have just been deleted but ws is not cleared yet
+            if (oldAcc[id]) {
+              const updatedAcc = {...oldAcc, currentQty, liquidationPrice, lastPrice: lastPrice ? lastPrice : oldAcc.lastPrice, ...avgEntryPrice ? {avgEntryPrice} : {avgEntryPrice: oldAcc.avg_entry_price}}
+              return {...prevAccs, [id]: updatedAcc}
+            }
           })
         })
       })
