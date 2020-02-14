@@ -48,6 +48,7 @@ export interface BitmexAcc {
   currentQty?: number;
   liquidationPrice?: number;
   marginBalance?: number;
+  avgEntryPrice?: number;
 }
 
 export interface BitmexAccsState {
