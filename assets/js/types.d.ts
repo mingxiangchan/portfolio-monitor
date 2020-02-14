@@ -47,8 +47,8 @@ export interface BitmexAcc {
   unrealisedPnl?: number;
   currentQty?: number;
   liquidationPrice?: number;
-  lastPrice?: number;
   marginBalance?: number;
+  avgEntryPrice?: number;
 }
 
 export interface BitmexAccsState {
