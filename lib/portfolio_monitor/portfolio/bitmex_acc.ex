@@ -37,7 +37,7 @@ defmodule PortfolioMonitor.Portfolio.BitmexAcc do
     field :avg_entry_price, :decimal, virtual: true
 
     belongs_to :user, PortfolioMonitor.Account.User
-    has_many :historical_data, PortfolioMonitor.Portfolio.HistoricalDatum
+    has_many :historical_data, PortfolioMonitor.Portfolio.HistoricalDatum, on_delete: :delete_all
 
     timestamps()
   end
