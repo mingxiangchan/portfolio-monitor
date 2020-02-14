@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {notification} from 'antd'
+import {notification, message} from 'antd'
 import {BitmexAcc, BitmexAccsState} from '../types'
 import {afterJoinedAccChannel} from '../socket'
 
@@ -23,6 +23,7 @@ export const AccountsContextProvider = ({children}) => {
 
         accChannel!.on("acc_deleted", ({acc}: {acc: BitmexAcc}) => {
           setAccs((prevAccs) => {
+            message.warning(`Deleted account with ID: ${acc.id}`)
             const remainingAccs = prevAccs
             delete remainingAccs[acc.id]
             return remainingAccs
