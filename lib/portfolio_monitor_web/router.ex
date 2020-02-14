@@ -42,6 +42,7 @@ defmodule PortfolioMonitorWeb.Router do
   scope "/api", PortfolioMonitorWeb do
     pipe_through [:api, :api_protected]
 
+    get "/current_user", UserController, :show
     get "/token", TokenController, :show
     post "/bitmex_accs", BitmexAccController, :create
     put "/bitmex_accs/:id", BitmexAccController, :update
