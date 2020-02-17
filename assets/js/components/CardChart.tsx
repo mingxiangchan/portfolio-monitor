@@ -1,6 +1,8 @@
-import React from 'react'
+import React, {useContext} from 'react'
 import { BitmexAcc } from '../types'
 import Chart from './Chart'
+import BitmexContext from '../context/BitmexContext'
+import DashboardContext from '../context/DashboardContext'
 
 const opt = {
   scales: {
@@ -54,6 +56,11 @@ const CardChart: React.FunctionComponent<PropTypes> = ({ acc }: PropTypes) => {
   const btcBalance = []
   const usdBalance = []
 
+  const { testPrice, realPrice } = useContext(BitmexContext)
+  const { testnet } = useContext(DashboardContext)
+
+  const price = testnet ? testPrice : realPrice
+
   for (let i = 0; i < acc.historical_data.length; i++) {
     const item = acc.historical_data[i]
     labels.push(item.inserted_at)
@@ -66,7 +73,7 @@ const CardChart: React.FunctionComponent<PropTypes> = ({ acc }: PropTypes) => {
   const datasets = [
     {
       label: 'BTC Price',
-      data: prices.concat([acc.lastPrice]),
+      data: prices.concat([price]),
       fill: false,
       yAxisID: 'prices',
       borderColor: 'gold',
@@ -83,7 +90,7 @@ const CardChart: React.FunctionComponent<PropTypes> = ({ acc }: PropTypes) => {
     {
       label: 'USD Balance',
       data: usdBalance.concat([
-        ((acc.lastPrice * acc.wallet_balance_now) / 10 ** 8).toFixed(2),
+        ((price * acc.wallet_balance_now) / 10 ** 8).toFixed(2),
       ]),
       fill: false,
       yAxisID: 'usdBalance',
