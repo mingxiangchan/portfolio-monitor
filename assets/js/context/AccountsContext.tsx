@@ -35,7 +35,7 @@ export const AccountsContextProvider = ({children}) => {
           setAccs((prevAccs) => {
             const oldAcc = prevAccs[id]
             // acc may have just been deleted but ws is not cleared yet
-            if (oldAcc[id]) {
+            if (oldAcc) {
               const updatedAcc = {...oldAcc, ...unrealisedPnl && {unrealisedPnl}, ...marginBalance && {marginBalance}}
               return {...prevAccs, [id]: updatedAcc}
             }
@@ -48,7 +48,7 @@ export const AccountsContextProvider = ({children}) => {
           setAccs((prevAccs) => {
             const oldAcc = prevAccs[id]
             // acc may have just been deleted but ws is not cleared yet
-            if (oldAcc[id]) {
+            if (oldAcc) {
               const updatedAcc = {...oldAcc, currentQty, liquidationPrice, lastPrice: lastPrice ? lastPrice : oldAcc.lastPrice, ...avgEntryPrice ? {avgEntryPrice} : {avgEntryPrice: oldAcc.avg_entry_price}}
               return {...prevAccs, [id]: updatedAcc}
             }
