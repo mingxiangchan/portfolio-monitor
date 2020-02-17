@@ -2,6 +2,7 @@ import React from 'react'
 import { ChartOptions } from 'chart.js'
 import Chart from './Chart'
 import { BitmexAcc, CummulativeTotals } from '../types'
+import * as moment from 'moment'
 
 interface PropTypes {
   accs: BitmexAcc[]
@@ -70,7 +71,7 @@ const CummulativeChart: React.FunctionComponent<PropTypes> = ({
     }
     for (let y = 0; y < acc.historical_data.length; y++) {
       const history = acc.historical_data[y]
-      const date = history.inserted_at // TODO: converted iso8601 time to hourly accuraccy
+      const date = moment(history.inserted_at).format('YYY-MM-DD hhA')
       const btcPrice = history.btc_price
       const btcBalance = history.wallet_balance_btc / 10 ** 8
       if (total[date]) {
@@ -96,9 +97,7 @@ const CummulativeChart: React.FunctionComponent<PropTypes> = ({
   }
 
   const data = {
-    labels: Object.keys(total)
-      .map(time => new Date(time).toLocaleString())
-      .concat(['Now']),
+    labels: Object.keys(total).concat(['Now']),
     datasets: [
       {
         label: 'BTC Price',
