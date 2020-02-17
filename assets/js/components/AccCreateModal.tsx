@@ -2,14 +2,14 @@ import React, { useState } from 'react'
 import { Button } from 'antd'
 import AccCreateForm from './AccCreateForm'
 
-const AccCreateModal = () => {
+const AccCreateModal: React.FunctionComponent = () => {
   const [visible, setVisible] = useState(false)
 
   return (
     <>
       <Button
         type="primary"
-        onClick={() => {
+        onClick={(): void => {
           setVisible(!visible)
         }}
       >
