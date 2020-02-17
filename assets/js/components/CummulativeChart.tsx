@@ -1,7 +1,7 @@
 import React from 'react'
 import { ChartOptions } from 'chart.js'
 import Chart from './Chart'
-import { BitmexAcc } from '../types'
+import { BitmexAcc, CummulativeTotals } from '../types'
 
 interface PropTypes {
   accs: BitmexAcc[]
@@ -61,23 +61,16 @@ const CummulativeChart: React.FunctionComponent<PropTypes> = ({
   cummulativeBalance,
   livePrice,
 }: PropTypes) => {
-  const total = {}
+  const total: CummulativeTotals = {}
 
   for (let i = 0; i < accs.length; i++) {
     const acc = accs[i]
     if (!acc.historical_data) {
       continue
     }
-    acc.historical_data.sort((a, b) => {
-      if (a.inserted_at > b.inserted_at) {
-        return 1
-      } else {
-        return -1
-      }
-    })
     for (let y = 0; y < acc.historical_data.length; y++) {
       const history = acc.historical_data[y]
-      const date = history.inserted_at
+      const date = history.inserted_at // TODO: converted iso8601 time to hourly accuraccy
       const btcPrice = history.btc_price
       const btcBalance = history.wallet_balance_btc / 10 ** 8
       if (total[date]) {
@@ -96,9 +89,10 @@ const CummulativeChart: React.FunctionComponent<PropTypes> = ({
 
   for (let i = 0; i < totalValues.length; i++) {
     const value = totalValues[i]
-    graphData.price.push(value.btcPrice)
+    const numericalBtcPrice = parseFloat(value.btcPrice)
+    graphData.price.push(numericalBtcPrice)
     graphData.btcBalance.push(value.btcBalance.toFixed(4))
-    graphData.usdBalance.push((value.btcPrice * value.btcBalance).toFixed(2))
+    graphData.usdBalance.push((numericalBtcPrice * value.btcBalance).toFixed(2))
   }
 
   const data = {
