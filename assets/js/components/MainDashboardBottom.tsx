@@ -1,9 +1,15 @@
 import React from 'react'
-import Cards from './Cards'
-import { List, Row, Col, Card, Spin } from 'antd'
+import AccCard from './AccCard'
+import { List, Row, Col, Card } from 'antd'
 import { BitmexAcc } from '../types'
 
-export default ({ accs }: { accs: BitmexAcc[] }) => {
+interface PropTypes {
+  accs: BitmexAcc[]
+}
+
+const MainDashboardBottom: React.FunctionComponent<PropTypes> = ({
+  accs,
+}: PropTypes) => {
   return (
     <Row>
       <Card style={{ minHeight: '50vh' }}>
@@ -13,9 +19,9 @@ export default ({ accs }: { accs: BitmexAcc[] }) => {
             itemLayout="horizontal"
             pagination={{ pageSize: 3 }}
             dataSource={accs}
-            renderItem={acc => (
+            renderItem={(acc): React.ReactNode => (
               <List.Item>
-                <Cards acc={acc} />
+                <AccCard acc={acc} />
               </List.Item>
             )}
           />
@@ -24,3 +30,5 @@ export default ({ accs }: { accs: BitmexAcc[] }) => {
     </Row>
   )
 }
+
+export default MainDashboardBottom

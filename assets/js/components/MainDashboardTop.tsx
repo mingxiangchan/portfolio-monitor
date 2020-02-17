@@ -53,7 +53,13 @@ const opt = {
   },
 }
 
-export default ({ accs }: { accs: BitmexAcc[] }) => {
+interface PropTypes {
+  accs: BitmexAcc[]
+}
+
+const MainDashboardTop: React.FunctionComponent<PropTypes> = ({
+  accs,
+}: PropTypes) => {
   const total = {}
 
   const { testPrice, realPrice } = useContext(BitmexContext)
@@ -95,7 +101,6 @@ export default ({ accs }: { accs: BitmexAcc[] }) => {
         wallet_balance_30_days,
         wallet_balance_7_days,
         wallet_balance_1_day,
-        wallet_balance_now,
         deposit_btc,
         deposit_usd,
         currentQty,
@@ -115,7 +120,7 @@ export default ({ accs }: { accs: BitmexAcc[] }) => {
           : total.liqPriceGap
       const smallerLiqPrice = liqPriceGap < total.liqPriceGap
       const entryPrice = avgEntryPrice
-        ? parseFloat(avgEntryPrice)
+        ? avgEntryPrice
         : avg_entry_price
         ? parseFloat(avg_entry_price)
         : 0
@@ -211,8 +216,6 @@ export default ({ accs }: { accs: BitmexAcc[] }) => {
     ],
   }
 
-  const rsi = cummulative.balance - cummulative.start
-  const btcRsi = rsi / 10 ** 8
   const leverage = Math.abs((cummulative.qty / cummulative.mBalance) * 10 ** 4)
 
   return (
@@ -303,3 +306,5 @@ export default ({ accs }: { accs: BitmexAcc[] }) => {
     </Row>
   )
 }
+
+export default MainDashboardTop

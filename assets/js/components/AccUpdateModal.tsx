@@ -1,11 +1,17 @@
 import React, { useState } from 'react'
-import { Button, Icon } from 'antd'
+import { Button } from 'antd'
 import AccUpdateForm from './AccUpdateForm'
 import { BitmexAcc } from '../types'
 
-const AccUpdateModal = ({ acc }: { acc: BitmexAcc }) => {
+interface PropTypes {
+  acc: BitmexAcc
+}
+
+const AccUpdateModal: React.FunctionComponent<PropTypes> = ({
+  acc,
+}: PropTypes) => {
   const [visible, setVisible] = useState(false)
-  const onClick = () => {
+  const onClick = (): void => {
     setVisible(!visible)
   }
 

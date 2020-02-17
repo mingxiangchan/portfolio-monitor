@@ -7,7 +7,9 @@ interface PropTypes {
   acc: BitmexAcc
 }
 
-const AccDeleteForm: React.FunctionComponent<PropTypes> = ({ acc }) => {
+const AccDeleteForm: React.FunctionComponent<PropTypes> = ({
+  acc,
+}: PropTypes) => {
   const onConfirm = (): void => {
     doDelete(`/api/bitmex_accs/${acc.id}`, (resp): void => console.log(resp))
   }

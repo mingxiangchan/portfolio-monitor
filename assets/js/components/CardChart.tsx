@@ -44,7 +44,11 @@ const opt = {
   },
 }
 
-export default ({ acc }: { acc: BitmexAcc }) => {
+interface PropTypes {
+  acc: BitmexAcc
+}
+
+const CardChart: React.FunctionComponent<PropTypes> = ({ acc }: PropTypes) => {
   const labels = []
   const prices = []
   const btcBalance = []
@@ -54,9 +58,9 @@ export default ({ acc }: { acc: BitmexAcc }) => {
     const item = acc.historical_data[i]
     labels.push(item.inserted_at)
     prices.push(item.btc_price)
-    const btc = (item.wallet_balance_btc / 10 ** 8).toFixed(4)
-    btcBalance.push(btc)
-    usdBalance.push((btc * item.btc_price).toFixed(2))
+    const btc = item.wallet_balance_btc / 10 ** 8
+    btcBalance.push(btc.toFixed(4))
+    usdBalance.push((btc * parseInt(item.btc_price)).toFixed(2))
   }
 
   const datasets = [
@@ -95,5 +99,7 @@ export default ({ acc }: { acc: BitmexAcc }) => {
     datasets,
   }
 
-  return <Chart height="50%" options={opt} data={data} />
+  return <Chart width="100%" height="50%" options={opt} data={data} />
 }
+
+export default CardChart

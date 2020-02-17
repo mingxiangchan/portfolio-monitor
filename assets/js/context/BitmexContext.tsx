@@ -3,7 +3,13 @@ import { afterJoinedGeneralChannel } from '../socket'
 
 const BitmexContext = React.createContext(null)
 
-export const BitmexContextProvider = ({ children }) => {
+interface PropTypes {
+  children: React.ReactNodeArray
+}
+
+export const BitmexContextProvider: React.FunctionComponent<PropTypes> = ({
+  children,
+}: PropTypes) => {
   const [testPrice, changeTestPrice] = useState(0)
   const [realPrice, changeRealPrice] = useState(0)
   const [openTestPrice, changeOpenTestPrice] = useState(1)

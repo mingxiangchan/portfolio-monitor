@@ -6,13 +6,10 @@ import DashboardContext from '../context/DashboardContext'
 import BitmexContext from '../context/BitmexContext'
 import axios from 'axios'
 
-const url =
-  'https://testnet.bitmex.com/api/v1/trade/bucketed?binSize=1d&partial=false&symbol=XBTUSD&count=1&reverse=true'
-
 const { Title } = Typography
 const { Sider } = Layout
 
-const SideNav = () => {
+const SideNav: React.FunctionComponent = () => {
   const [time, changeTime] = useState(moment())
   const [email, changeEmail] = useState(null)
   const { testPrice, realPrice, openTestPrice, openRealPrice } = useContext(
@@ -37,7 +34,7 @@ const SideNav = () => {
       changeTime(moment())
     }, 1000)
 
-    return () => {
+    return (): void => {
       clearInterval(int)
     }
   }, [])
@@ -92,7 +89,7 @@ const SideNav = () => {
         defaultChecked={!testnet}
         unCheckedChildren="Test"
         checkedChildren="Live"
-        onChange={actual => {
+        onChange={(actual): void => {
           setTestnet(!actual)
         }}
       />

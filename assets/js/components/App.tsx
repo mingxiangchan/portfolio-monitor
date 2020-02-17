@@ -6,7 +6,7 @@ import { AccountsContextProvider } from '../context/AccountsContext'
 import DashboardContext from '../context/DashboardContext'
 import { BitmexContextProvider } from '../context/BitmexContext'
 
-const App = () => {
+const App: React.FunctionComponent = () => {
   const [testnet, setTestnet] = useState(false)
 
   return (

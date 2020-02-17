@@ -8,7 +8,7 @@ import DashboardContext from '../context/DashboardContext'
 
 const { Content } = Layout
 
-export default () => {
+const MainDashboard: React.FunctionComponent = () => {
   const { accounts } = useContext(AccountsContext)
   const { testnet } = useContext(DashboardContext)
 
@@ -28,3 +28,5 @@ export default () => {
     </Layout>
   )
 }
+
+export default MainDashboard

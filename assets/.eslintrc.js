@@ -25,5 +25,6 @@ module.exports = {
       }
   ],
     '@typescript-eslint/camelcase': 0,
+    '@typescript-eslint/member-delimiter-style': 0,
   }
 }

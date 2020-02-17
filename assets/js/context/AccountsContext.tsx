@@ -5,7 +5,9 @@ import { afterJoinedAccChannel } from '../socket'
 
 const AccountsContext = React.createContext(null)
 
-export const AccountsContextProvider = ({ children }) => {
+export const AccountsContextProvider: React.FunctionComponent = ({
+  children,
+}) => {
   const [accounts, setAccs] = useState<BitmexAccsState>(null)
   useEffect(() => {
     notification.info({ message: 'Loading Accounts' })

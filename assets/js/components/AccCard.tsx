@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import { Card, Descriptions, Spin, Tag } from 'antd'
-import { BitmexAcc } from '../types'
+import { AccPropTypes } from '../types'
 import CardChart from './CardChart'
 import { formatEarnings, formatBTC } from '../utils/priceFormat'
 import AccUpdateModal from './AccUpdateModal'
@@ -8,7 +8,9 @@ import BitmexContext from '../context/BitmexContext'
 import DashboardContext from '../context/DashboardContext'
 import AccDeleteButton from './AccDeleteButton'
 
-export default ({ acc }: { acc: BitmexAcc }) => {
+const AccCard: React.FunctionComponent<AccPropTypes> = ({
+  acc,
+}: AccPropTypes) => {
   const { testPrice, realPrice } = useContext(BitmexContext)
   const { testnet } = useContext(DashboardContext)
   const marginBalance = acc.marginBalance
@@ -23,7 +25,7 @@ export default ({ acc }: { acc: BitmexAcc }) => {
     <Card
       title={acc.name}
       extra={<AccUpdateModal acc={acc} />}
-      actions={[<AccDeleteButton acc={acc} />]}
+      actions={[<AccDeleteButton acc={acc} key={`delete-${acc.id}`} />]}
     >
       {acc.is_testnet ? <Tag>Test</Tag> : <Tag>Live</Tag>}
       {pendingFirstQuery ? <Tag color="blue">Pending First Query</Tag> : null}
@@ -98,3 +100,5 @@ export default ({ acc }: { acc: BitmexAcc }) => {
     </Card>
   )
 }
+
+export default AccCard

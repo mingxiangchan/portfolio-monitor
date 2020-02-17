@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { Form, Input, InputNumber, Switch, Modal, message } from 'antd'
-import { ModalUpdateFormProps, AccUpdateFormData } from '../types'
+import { UpdateModalFormProps, AccUpdateFormData } from '../types'
 import { doPut } from '../utils/http'
 
 const { TextArea } = Input
@@ -14,9 +14,9 @@ const formItemlayout = {
   wrapperCol: { span: 16 },
 }
 
-const AccUpdateForm = Form.create<ModalUpdateFormProps>(formOpts)(
-  ({ form, visible, setVisible, acc }: ModalUpdateFormProps) => {
-    const setInitial = () => {
+const AccUpdateForm = Form.create<UpdateModalFormProps>(formOpts)(
+  ({ form, visible, setVisible, acc }: UpdateModalFormProps) => {
+    const setInitial = (): void => {
       const { name, deposit_usd, deposit_btc, notes, is_testnet } = acc
       form.setFieldsValue({
         name,
@@ -33,7 +33,7 @@ const AccUpdateForm = Form.create<ModalUpdateFormProps>(formOpts)(
 
     const { getFieldDecorator } = form
 
-    const handleSubmit = () => {
+    const handleSubmit = (): void => {
       form.validateFields((err, values: AccUpdateFormData) => {
         if (err) {
           message.error('Fix the form errors before submitting please.')
@@ -54,20 +54,16 @@ const AccUpdateForm = Form.create<ModalUpdateFormProps>(formOpts)(
           delete updatedData.api_secret
         }
 
-        doPut(
-          `/api/bitmex_accs/${acc.id}`,
-          { bitmex_acc: updatedData },
-          _resp => {
-            message.success(`Updated Bitmex Acc: ${values.name}`)
-            form.resetFields()
-            setInitial()
-            setVisible(false)
-          },
-        )
+        doPut(`/api/bitmex_accs/${acc.id}`, { bitmex_acc: updatedData }, () => {
+          message.success(`Updated Bitmex Acc: ${values.name}`)
+          form.resetFields()
+          setInitial()
+          setVisible(false)
+        })
       })
     }
 
-    const handleCancel = () => {
+    const handleCancel = (): void => {
       form.resetFields()
       setInitial()
       setVisible(false)
