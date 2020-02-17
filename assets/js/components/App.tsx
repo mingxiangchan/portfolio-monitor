@@ -8,7 +8,6 @@ import { BitmexContextProvider } from '../context/BitmexContext'
 
 const App: React.FunctionComponent = () => {
   const [testnet, setTestnet] = useState(false)
-
   return (
     <BitmexContextProvider>
       <AccountsContextProvider>

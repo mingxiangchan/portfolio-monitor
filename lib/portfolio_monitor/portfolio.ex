@@ -152,7 +152,7 @@ defmodule PortfolioMonitor.Portfolio do
         wallet_balance_30_days: d.wallet_balance,
         btc_price_1_day: b.btc_price,
         btc_price_7_days: c.btc_price,
-        btc_price_30_days: d.btc_price,
+        btc_price_30_days: d.btc_price
       }
   end
 
@@ -234,7 +234,7 @@ defmodule PortfolioMonitor.Portfolio do
   end
 
   def ordered_historical_data_query do
-    from h in HistoricalDatum, order_by: [desc: h.inserted_at]
+    from h in HistoricalDatum, order_by: [asc: h.inserted_at]
   end
 
   def bitmex_acc_with_latest_historical_data_query do

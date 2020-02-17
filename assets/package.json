@@ -6,6 +6,14 @@
     "deploy": "BABEL_ENV=production NODE_ENV=production webpack --mode production",
     "fix": "eslint --fix '*/**/*.{tsx, ts, js}'"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,ts,tsx}": "eslint --cache --fix"
+  },
   "dependencies": {
     "antd": "^3.26.7",
     "axios": "^0.19.2",
@@ -43,8 +51,10 @@
     "eslint-plugin-react": "^7.18.2",
     "eslint-plugin-react-hooks": "^1.7.0",
     "file-loader": "^5.0.2",
+    "husky": "^4.2.3",
     "image-webpack-loader": "^6.0.0",
     "imagemin-webpack-plugin": "^2.4.2",
+    "lint-staged": "^10.0.7",
     "mini-css-extract-plugin": "^0.4.0",
     "node-sass": "^4.13.1",
     "optimize-css-assets-webpack-plugin": "^5.0.1",

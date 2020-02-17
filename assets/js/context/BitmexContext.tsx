@@ -4,7 +4,7 @@ import { afterJoinedGeneralChannel } from '../socket'
 const BitmexContext = React.createContext(null)
 
 interface PropTypes {
-  children: React.ReactNodeArray
+  children: React.ReactNode | React.ReactNodeArray
 }
 
 export const BitmexContextProvider: React.FunctionComponent<PropTypes> = ({
