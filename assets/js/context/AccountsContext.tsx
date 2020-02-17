@@ -15,23 +15,7 @@ export const AccountsContextProvider: React.FunctionComponent = ({
       accChannel
         .push('get_accs')
         .receive('ok', ({ accs }: { accs: BitmexAccsState }) => {
-          for (const id in accs) {
-            accs[id].wallet_balance_now
-
-            accs[id].wallet_balance_1_day = accs[id].wallet_balance_1_day
-              ? accs[id].wallet_balance_1_day
-              : accs[id].wallet_balance_now
-
-            accs[id].wallet_balance_7_days = accs[id].wallet_balance_7_days
-              ? accs[id].wallet_balance_7_days
-              : accs[id].wallet_balance_1_day
-
-            accs[id].wallet_balance_30_days = accs[id].wallet_balance_30_days
-              ? accs[id].wallet_balance_30_days
-              : accs[id].wallet_balance_7_days
-
-            setAccs(accs)
-          }
+          setAccs(accs)
 
           notification.success({
             message: 'Accounts Loaded',
@@ -40,27 +24,9 @@ export const AccountsContextProvider: React.FunctionComponent = ({
 
           accChannel.on('acc_update', ({ acc }: { acc: BitmexAcc }) => {
             setAccs(prevAccs => {
-              const {
-                wallet_balance_now,
-                wallet_balance_1_day,
-                wallet_balance_7_days,
-                wallet_balance_30_days,
-              } = acc
               return {
                 ...prevAccs,
-                [acc.id]: {
-                  ...prevAccs[acc.id],
-                  ...acc,
-                  wallet_balance_1_day: wallet_balance_1_day
-                    ? wallet_balance_1_day
-                    : wallet_balance_now,
-                  wallet_balance_7_days: wallet_balance_7_days
-                    ? wallet_balance_7_days
-                    : wallet_balance_1_day,
-                  wallet_balance_30_days: wallet_balance_30_days
-                    ? wallet_balance_30_days
-                    : wallet_balance_7_days,
-                },
+                [acc.id]: acc,
               }
             })
           })

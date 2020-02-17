@@ -18,10 +18,10 @@ const SideNav: React.FunctionComponent = () => {
   const { testnet, setTestnet } = useContext(DashboardContext)
 
   const testPriceDiffAbs = testPrice - openTestPrice
-  const testPriceDiffPer = (testPriceDiffAbs / openTestPrice).toFixed(2)
+  const testPriceDiffPer = ((testPriceDiffAbs / openTestPrice) * 100).toFixed(2)
 
   const realPriceDiffAbs = realPrice - openRealPrice
-  const realPriceDiffPer = (realPriceDiffAbs / openRealPrice).toFixed(2)
+  const realPriceDiffPer = ((realPriceDiffAbs / openRealPrice) * 100).toFixed(2)
 
   if (!email) {
     axios.get('/api/current_user', { withCredentials: true }).then(resp => {
