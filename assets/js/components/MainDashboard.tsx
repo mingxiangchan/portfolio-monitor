@@ -1,16 +1,16 @@
-import React, {useContext} from 'react'
-import {Layout} from 'antd';
+import React, { useContext } from 'react'
+import { Layout } from 'antd'
 import MainDashboardTop from './MainDashboardTop'
 import MainDashboardBottom from './MainDashboardBottom'
-import {BitmexAcc} from '../types';
+import { BitmexAcc } from '../types'
 import AccountsContext from '../context/AccountsContext'
 import DashboardContext from '../context/DashboardContext'
 
-const {Content} = Layout;
+const { Content } = Layout
 
 export default () => {
-  const {accounts} = useContext(AccountsContext)
-  const {testnet} = useContext(DashboardContext)
+  const { accounts } = useContext(AccountsContext)
+  const { testnet } = useContext(DashboardContext)
 
   const expandedAccs: BitmexAcc[] = []
   for (const id in accounts) {
@@ -20,8 +20,8 @@ export default () => {
   }
 
   return (
-    <Layout style={{marginLeft: 200, backgroundColor: '#000d19'}}>
-      <Content style={{padding: 24}}>
+    <Layout style={{ marginLeft: 200, backgroundColor: '#000d19' }}>
+      <Content style={{ padding: 24 }}>
         <MainDashboardTop accs={expandedAccs} />
         <MainDashboardBottom accs={expandedAccs} />
       </Content>

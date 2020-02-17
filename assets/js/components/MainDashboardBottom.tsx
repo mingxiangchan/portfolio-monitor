@@ -1,17 +1,17 @@
 import React from 'react'
 import Cards from './Cards'
-import {List, Row, Col, Card, Spin} from 'antd'
-import {BitmexAcc} from '../types';
+import { List, Row, Col, Card, Spin } from 'antd'
+import { BitmexAcc } from '../types'
 
-export default ({accs}: {accs: BitmexAcc[]}) => {
+export default ({ accs }: { accs: BitmexAcc[] }) => {
   return (
-    <Row >
-      <Card style={{minHeight: "50vh"}} >
-        <Col span={24} >
+    <Row>
+      <Card style={{ minHeight: '50vh' }}>
+        <Col span={24}>
           <List
-            grid={{gutter: 16, column: 3}}
+            grid={{ gutter: 16, column: 3 }}
             itemLayout="horizontal"
-            pagination={{pageSize: 3}}
+            pagination={{ pageSize: 3 }}
             dataSource={accs}
             renderItem={acc => (
               <List.Item>

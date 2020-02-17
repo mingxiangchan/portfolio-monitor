@@ -1,29 +1,29 @@
-import React, {useEffect} from 'react'
-import {Form, Input, InputNumber, Switch, Modal, message} from 'antd'
-import {ModalUpdateFormProps, AccUpdateFormData} from '../types'
-import {doPut} from '../utils/http'
+import React, { useEffect } from 'react'
+import { Form, Input, InputNumber, Switch, Modal, message } from 'antd'
+import { ModalUpdateFormProps, AccUpdateFormData } from '../types'
+import { doPut } from '../utils/http'
 
-const {TextArea} = Input
+const { TextArea } = Input
 
 const formOpts = {
-  name: "accUpdateForm"
+  name: 'accUpdateForm',
 }
 
 const formItemlayout = {
-  labelCol: {span: 6},
-  wrapperCol: {span: 16},
+  labelCol: { span: 6 },
+  wrapperCol: { span: 16 },
 }
 
 const AccUpdateForm = Form.create<ModalUpdateFormProps>(formOpts)(
-  ({form, visible, setVisible, acc}: ModalUpdateFormProps) => {
+  ({ form, visible, setVisible, acc }: ModalUpdateFormProps) => {
     const setInitial = () => {
-      const {name, deposit_usd, deposit_btc, notes, is_testnet} = acc
+      const { name, deposit_usd, deposit_btc, notes, is_testnet } = acc
       form.setFieldsValue({
         name,
         deposit_btc: deposit_btc / 100000000,
         deposit_usd: deposit_usd / 100,
         notes,
-        is_testnet
+        is_testnet,
       })
     }
 
@@ -31,12 +31,12 @@ const AccUpdateForm = Form.create<ModalUpdateFormProps>(formOpts)(
       setInitial()
     }, [])
 
-    const {getFieldDecorator} = form
+    const { getFieldDecorator } = form
 
     const handleSubmit = () => {
       form.validateFields((err, values: AccUpdateFormData) => {
         if (err) {
-          message.error("Fix the form errors before submitting please.")
+          message.error('Fix the form errors before submitting please.')
           return
         }
 
@@ -54,20 +54,24 @@ const AccUpdateForm = Form.create<ModalUpdateFormProps>(formOpts)(
           delete updatedData.api_secret
         }
 
-        doPut(`/api/bitmex_accs/${acc.id}`, {bitmex_acc: updatedData}, _resp => {
-          message.success(`Updated Bitmex Acc: ${values.name}`)
-          form.resetFields();
-          setInitial()
-          setVisible(false);
-        })
-      });
+        doPut(
+          `/api/bitmex_accs/${acc.id}`,
+          { bitmex_acc: updatedData },
+          _resp => {
+            message.success(`Updated Bitmex Acc: ${values.name}`)
+            form.resetFields()
+            setInitial()
+            setVisible(false)
+          },
+        )
+      })
     }
 
     const handleCancel = () => {
-      form.resetFields();
+      form.resetFields()
       setInitial()
-      setVisible(false);
-    };
+      setVisible(false)
+    }
 
     return (
       <Modal
@@ -79,17 +83,19 @@ const AccUpdateForm = Form.create<ModalUpdateFormProps>(formOpts)(
         width={720}
       >
         <Form {...formItemlayout}>
-
           <Form.Item label="Account Name">
-            {
-              getFieldDecorator('name', {
-                rules: [{required: true, message: 'Please input the account name'}],
-              })(<Input autoFocus />)
-            }
+            {getFieldDecorator('name', {
+              rules: [
+                { required: true, message: 'Please input the account name' },
+              ],
+            })(<Input autoFocus />)}
           </Form.Item>
 
-          <Form.Item label="Is this Testnet" wrapperCol={{span: 1}}>
-            {getFieldDecorator('is_testnet', {valuePropName: "checked", initialValue: true})(<Switch />)}
+          <Form.Item label="Is this Testnet" wrapperCol={{ span: 1 }}>
+            {getFieldDecorator('is_testnet', {
+              valuePropName: 'checked',
+              initialValue: true,
+            })(<Switch />)}
           </Form.Item>
 
           <Form.Item label="API Key">
@@ -102,14 +108,14 @@ const AccUpdateForm = Form.create<ModalUpdateFormProps>(formOpts)(
 
           <Form.Item label="Deposit (USD)">
             {getFieldDecorator('deposit_usd', {
-              rules: [{required: true}],
-            })(<InputNumber min={0} precision={2} style={{width: '100%'}} />)}
+              rules: [{ required: true }],
+            })(<InputNumber min={0} precision={2} style={{ width: '100%' }} />)}
           </Form.Item>
 
           <Form.Item label="Deposit (BTC)">
             {getFieldDecorator('deposit_btc', {
-              rules: [{required: true}],
-            })(<InputNumber min={0} precision={8} style={{width: '100%'}} />)}
+              rules: [{ required: true }],
+            })(<InputNumber min={0} precision={8} style={{ width: '100%' }} />)}
           </Form.Item>
 
           <Form.Item label="Notes">
@@ -118,7 +124,7 @@ const AccUpdateForm = Form.create<ModalUpdateFormProps>(formOpts)(
         </Form>
       </Modal>
     )
-  }
+  },
 )
 
 export default AccUpdateForm
