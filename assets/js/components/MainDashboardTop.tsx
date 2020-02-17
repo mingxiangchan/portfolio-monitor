@@ -172,17 +172,39 @@ export default ({ accs }: { accs: BitmexAcc[] }) => {
         </Col>
         <Col span={12} offset={1}>
           <Descriptions column={{ md: 1, lg: 2 }} size="small" title="Cumulative">
-            <Descriptions.Item label="Return since inception">{formatEarnings(cummulative.start, cummulative.mBalance, cummulative.startUSD, cummulative.price)}</Descriptions.Item>
-            <Descriptions.Item label="Earned this month">{formatEarnings(closest30, cummulative.mBalance, cummulative.fiatBal30,cummulative.price)}</Descriptions.Item>
-            <Descriptions.Item label="Earned past 7-days">{formatEarnings(closest7, cummulative.mBalance, cummulative.fiatBal7,cummulative.price)}</Descriptions.Item>
-            <Descriptions.Item label="Earned past 24-hours">{formatEarnings(closestDay , cummulative.mBalance, cummulative.fiatBal1, cummulative.price)}</Descriptions.Item>
-            <Descriptions.Item label="Paper gains">{cummulative.pnl ? (cummulative.pnl / (10 ** 8)).toFixed(8) : <Spin />}</Descriptions.Item>
-            <Descriptions.Item label="Current leverage">{leverage && leverage != Infinity ? leverage.toFixed(2) : <Spin />}</Descriptions.Item>
-            <Descriptions.Item label="Open position">{cummulative.qty ? cummulative.qty : <Spin />}</Descriptions.Item>
-            <Descriptions.Item label="Nearest liquidation price">{cummulative.liqPrice + ` (${cummulative.liqAcc})`}</Descriptions.Item>
-            <Descriptions.Item label="Ave. entry price">{cummulative.entry / cummulative.entryCount}</Descriptions.Item>
-            <Descriptions.Item label="Balance(BTC)">{(cummulative.mBalance / (10 ** 8)).toFixed(4)}</Descriptions.Item>
-            <Descriptions.Item label="Balance(USD)">{(cummulative.mBalance / (10 ** 8) * cummulative.price).toFixed(2)}</Descriptions.Item>
+            <Descriptions.Item label="Return since inception">
+              {formatEarnings(cummulative.start, cummulative.mBalance, cummulative.startUSD, cummulative.price)}
+            </Descriptions.Item>
+            <Descriptions.Item label="Earned this month">
+              {formatEarnings(closest30, cummulative.mBalance, cummulative.fiatBal30,cummulative.price)}
+            </Descriptions.Item>
+            <Descriptions.Item label="Earned past 7-days">
+              {formatEarnings(closest7, cummulative.mBalance, cummulative.fiatBal7,cummulative.price)}
+            </Descriptions.Item>
+            <Descriptions.Item label="Earned past 24-hours">
+              {formatEarnings(closestDay , cummulative.mBalance, cummulative.fiatBal1, cummulative.price)}
+            </Descriptions.Item>
+            <Descriptions.Item label="Paper gains">
+              {cummulative.pnl ? (cummulative.pnl / (10 ** 8)).toFixed(8) : <Spin />}
+            </Descriptions.Item>
+            <Descriptions.Item label="Current leverage">
+              {leverage && leverage != Infinity ? leverage.toFixed(2) : <Spin />}
+            </Descriptions.Item>
+            <Descriptions.Item label="Open position">
+              {cummulative.qty ? cummulative.qty : <Spin />}
+            </Descriptions.Item>
+            <Descriptions.Item label="Nearest liquidation price">
+              {cummulative.liqPrice + ` (${cummulative.liqAcc})`}
+            </Descriptions.Item>
+            <Descriptions.Item label="Ave. entry price">
+              {cummulative.entry / cummulative.entryCount}
+            </Descriptions.Item>
+            <Descriptions.Item label="Balance(BTC)">
+              {(cummulative.mBalance / (10 ** 8)).toFixed(4)}
+            </Descriptions.Item>
+            <Descriptions.Item label="Balance(USD)">
+              {(cummulative.mBalance / (10 ** 8) * cummulative.price).toFixed(2)}
+            </Descriptions.Item>
           </Descriptions>
         </Col>
       </Card>
