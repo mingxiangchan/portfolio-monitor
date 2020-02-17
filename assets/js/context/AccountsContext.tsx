@@ -73,12 +73,12 @@ export const AccountsContextProvider = ({children}) => {
 
         accChannel!.on("ws_position", resp => {
           const id = resp.acc_id
-          const {currentQty, liquidationPrice, lastPrice, avgEntryPrice} = resp.data[0]
+          const {currentQty, liquidationPrice, avgEntryPrice} = resp.data[0]
           setAccs((prevAccs) => {
             const oldAcc = prevAccs[id]
             // acc may have just been deleted but ws is not cleared yet
             if (oldAcc) {
-              const updatedAcc = {...oldAcc, currentQty, liquidationPrice, lastPrice: lastPrice ? lastPrice : oldAcc.lastPrice, ...avgEntryPrice ? {avgEntryPrice} : {avgEntryPrice: oldAcc.avg_entry_price}}
+              const updatedAcc = {...oldAcc, currentQty, liquidationPrice, ...avgEntryPrice ? {avgEntryPrice} : {avgEntryPrice: oldAcc.avg_entry_price}}
               return {...prevAccs, [id]: updatedAcc}
             }
           })
