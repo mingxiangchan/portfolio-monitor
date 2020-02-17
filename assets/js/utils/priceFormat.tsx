@@ -10,7 +10,7 @@ export const formatEarnings = (
 ): React.ReactNode => {
   const btcEarned = formatBTC(btcT1 - btcT0)
   const usdEarned = formatBTC(btcT1) * lastPrice - usdT0
-  const usdPercentEarned = (usdEarned / usdT0).toFixed(2)
+  const usdPercentEarned = (usdEarned / usdT0 * 100).toFixed(2)
   return (
     <React.Fragment>
       {usdT0 === 0 ? (
