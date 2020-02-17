@@ -16,6 +16,9 @@ defmodule PortfolioMonitor.Portfolio.BitmexAcc do
              :wallet_balance_1_day,
              :wallet_balance_7_days,
              :wallet_balance_30_days,
+             :btc_price_1_day,
+             :btc_price_7_days,
+             :btc_price_30_days,
              :historical_data,
              :is_testnet,
              :avg_entry_price
@@ -34,6 +37,9 @@ defmodule PortfolioMonitor.Portfolio.BitmexAcc do
     field :wallet_balance_1_day, :integer, virtual: true
     field :wallet_balance_7_days, :integer, virtual: true
     field :wallet_balance_30_days, :integer, virtual: true
+    field :btc_price_1_day, :integer, virtual: true
+    field :btc_price_7_days, :integer, virtual: true
+    field :btc_price_30_days, :integer, virtual: true
     field :avg_entry_price, :decimal, virtual: true
 
     belongs_to :user, PortfolioMonitor.Account.User

@@ -43,6 +43,9 @@ export interface BitmexAcc {
   wallet_balance_1_day?: number;
   wallet_balance_7_days?: number;
   wallet_balance_30_days?: number;
+  btc_price_1_day?: number;
+  btc_price_7_days?: number;
+  btc_price_30_days?: number;
   // comes from bitmex WS
   unrealisedPnl?: number;
   currentQty?: number;

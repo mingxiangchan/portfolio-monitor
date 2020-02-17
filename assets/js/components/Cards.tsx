@@ -2,12 +2,11 @@ import React, {useContext} from 'react'
 import {Card, Descriptions, Spin, Tag, } from 'antd'
 import {BitmexAcc} from '../types';
 import CardChart from './CardChart';
-import {formatEarnings} from '../utils/priceFormat'
+import {formatEarnings, formatBTC} from '../utils/priceFormat'
 import AccUpdateModal from './AccUpdateModal'
 import BitmexContext from '../context/BitmexContext';
 import DashboardContext from '../context/DashboardContext';
 import AccDeleteButton from './AccDeleteButton';
-
 
 export default ({acc}: {acc: BitmexAcc}) => {
   const {testPrice, realPrice} = useContext(BitmexContext)
@@ -29,16 +28,16 @@ export default ({acc}: {acc: BitmexAcc}) => {
       {acc.detected_invalid ? <Tag color="red">Invalid Credentials</Tag> : null}
       <Descriptions size="small">
         <Descriptions.Item span={3} label="Return since inception">
-          {formatEarnings(acc.deposit_btc, acc.wallet_balance_now, livePrice)}
+          {formatEarnings(acc.deposit_btc, marginBalance, acc.deposit_usd, livePrice)}
         </Descriptions.Item>
         <Descriptions.Item span={3} label="Earned this month">
-          {formatEarnings(acc.wallet_balance_30_days, acc.wallet_balance_now, livePrice)}
+          {formatEarnings(acc.wallet_balance_30_days, marginBalance, formatBTC(acc.wallet_balance_30_days) * acc.btc_price_30_days , livePrice)}
         </Descriptions.Item>
         <Descriptions.Item span={3} label="Earned past 7-days">
-          {formatEarnings(acc.wallet_balance_7_days, acc.wallet_balance_now, livePrice)}
+          {formatEarnings(acc.wallet_balance_7_days, marginBalance, formatBTC(acc.wallet_balance_7_days) * acc.btc_price_7_days, livePrice)}
         </Descriptions.Item>
         <Descriptions.Item span={3} label="Earned past 24-hours">
-          {formatEarnings(acc.wallet_balance_1_day, acc.wallet_balance_now, livePrice)}
+          {formatEarnings(acc.wallet_balance_1_day, marginBalance, formatBTC(acc.wallet_balance_1_day) * acc.btc_price_1_day, livePrice)}
         </Descriptions.Item>
         <Descriptions.Item span={3} label="Paper gains">
           {acc.unrealisedPnl ? (acc.unrealisedPnl / (10 ** 8)).toFixed(8) : <Spin />}
