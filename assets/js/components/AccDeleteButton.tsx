@@ -1,11 +1,17 @@
 import React from 'react'
-import {BitmexAcc} from '../types';
-import {Icon, Popconfirm} from 'antd';
-import {doDelete} from '../utils/http';
+import { BitmexAcc } from '../types'
+import { Icon, Popconfirm } from 'antd'
+import { doDelete } from '../utils/http'
 
-export default ({acc}: {acc: BitmexAcc}) => {
-  const onConfirm = () => {
-    doDelete(`/api/bitmex_accs/${acc.id}`, resp => console.log(resp))
+interface PropTypes {
+  acc: BitmexAcc
+}
+
+const AccDeleteForm: React.FunctionComponent<PropTypes> = ({
+  acc,
+}: PropTypes) => {
+  const onConfirm = (): void => {
+    doDelete(`/api/bitmex_accs/${acc.id}`, (resp): void => console.log(resp))
   }
 
   return (
@@ -17,3 +23,5 @@ export default ({acc}: {acc: BitmexAcc}) => {
     </Popconfirm>
   )
 }
+
+export default AccDeleteForm

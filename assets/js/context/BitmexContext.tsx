@@ -1,9 +1,15 @@
-import React, {useEffect, useState} from 'react'
-import {afterJoinedGeneralChannel} from "../socket"
+import React, { useEffect, useState } from 'react'
+import { afterJoinedGeneralChannel } from '../socket'
 
 const BitmexContext = React.createContext(null)
 
-export const BitmexContextProvider = ({children}) => {
+interface PropTypes {
+  children: React.ReactNodeArray
+}
+
+export const BitmexContextProvider: React.FunctionComponent<PropTypes> = ({
+  children,
+}: PropTypes) => {
   const [testPrice, changeTestPrice] = useState(0)
   const [realPrice, changeRealPrice] = useState(0)
   const [openTestPrice, changeOpenTestPrice] = useState(1)
@@ -11,7 +17,7 @@ export const BitmexContextProvider = ({children}) => {
 
   useEffect(() => {
     afterJoinedGeneralChannel(generalChannel => {
-      generalChannel.push("get_opening_price").receive("ok", resp => {
+      generalChannel.push('get_opening_price').receive('ok', resp => {
         changeOpenTestPrice(resp.opening_test_price)
         changeOpenRealPrice(resp.opening_real_price)
         // set testPrice and realPrice one-time
@@ -19,12 +25,12 @@ export const BitmexContextProvider = ({children}) => {
         changeTestPrice(parseFloat(resp.opening_real_price))
       })
 
-      generalChannel.on("testnet_price", resp => {
+      generalChannel.on('testnet_price', resp => {
         const newPrice: number = resp.data.data[0].price
         changeTestPrice(newPrice)
       })
 
-      generalChannel.on("livenet_price", resp => {
+      generalChannel.on('livenet_price', resp => {
         const newPrice: number = resp.data.data[0].price
         changeRealPrice(newPrice)
       })
@@ -35,7 +41,7 @@ export const BitmexContextProvider = ({children}) => {
     testPrice,
     realPrice,
     openTestPrice,
-    openRealPrice
+    openRealPrice,
   }
 
   return (

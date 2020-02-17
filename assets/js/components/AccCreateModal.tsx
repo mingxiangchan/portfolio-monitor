@@ -1,23 +1,23 @@
-import React, {useState} from 'react'
-import {Button} from 'antd'
+import React, { useState } from 'react'
+import { Button } from 'antd'
 import AccCreateForm from './AccCreateForm'
 
-const AccCreateModal = () => {
-  const [visible, setVisible] = useState(false);
+const AccCreateModal: React.FunctionComponent = () => {
+  const [visible, setVisible] = useState(false)
 
   return (
     <>
       <Button
         type="primary"
-        onClick={() => {
-          setVisible(!visible);
+        onClick={(): void => {
+          setVisible(!visible)
         }}
       >
         Add Account
       </Button>
       <AccCreateForm visible={visible} setVisible={setVisible} />
     </>
-  );
-};
+  )
+}
 
 export default AccCreateModal

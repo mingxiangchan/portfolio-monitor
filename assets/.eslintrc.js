@@ -1,14 +1,30 @@
 module.exports = {
   root: true,
   parser: '@typescript-eslint/parser',
-  plugins: [
-    '@typescript-eslint',
-  ],
+  parserOptions: {
+    project: './tsconfig.json',
+  },
+  plugins: ['@typescript-eslint'],
   extends: [
-    'airbnb-typescript',
-    'airbnb-hooks',
+    'eslint:recommended',
+    'plugin:prettier/recommended',
+    'prettier/react',
+    'plugin:react/recommended',
     'plugin:@typescript-eslint/eslint-recommended',
     'plugin:@typescript-eslint/recommended',
-    'plugin:@typescript-eslint/recommended-requiring-type-checking'
+    'plugin:@typescript-eslint/recommended-requiring-type-checking',
   ],
-};
+  rules: {
+    "semi": 0,
+    "prettier/prettier": [
+    "error", 
+      {
+        "singleQuote": true, 
+        "semi": false,
+        "trailingComma": "all",
+      }
+  ],
+    '@typescript-eslint/camelcase': 0,
+    '@typescript-eslint/member-delimiter-style': 0,
+  }
+}
