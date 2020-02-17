@@ -62,3 +62,12 @@ export interface BitmexAccsState {
 export interface AccPropTypes {
   acc: BitmexAcc
 }
+
+export interface CummulativeTotal {
+  btcPrice: string
+  btcBalance: number
+}
+
+export interface CummulativeTotals {
+  [key: string]: CummulativeTotal
+}
