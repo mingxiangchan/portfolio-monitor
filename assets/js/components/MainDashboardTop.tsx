@@ -101,7 +101,7 @@ export default ({ accs }: { accs: BitmexAcc[] }) => {
       balance: total.balance + acc.wallet_balance_now,
       start: total.start + deposit_btc,
       price: lastPrice ? lastPrice : total.price,
-      startUSD: total.startUSD + deposit_usd,
+      startUSD: total.startUSD + (deposit_usd/100).toFixed(2),
       liqPrice: smallerLiqPrice ? liquidationPrice : total.liqPrice,
       liqPriceGap: smallerLiqPrice ? liqPriceGap : total.liqPriceGap,
       priceDay: total.priceDay + wallet_balance_1_day,
@@ -160,10 +160,6 @@ export default ({ accs }: { accs: BitmexAcc[] }) => {
   const btcRsi = rsi / (10 ** 8)
   const leverage = Math.abs((cummulative.qty / cummulative.mBalance) * (10 ** 4))
 
-  const closestDay = cummulative.priceDay ? cummulative.priceDay: cummulative.start
-  const closest7 = cummulative.price7 ? cummulative.price7 : closestDay
-  const closest30 =   cummulative.price30 ? cummulative.price30 : closest7
-   
   return (
     <Row type="flex" style={{ width: "100%", borderBottom: "1px solid #383838", paddingBottom: '5px', marginBottom: '5px', maxHeight: "45vh" }}>
       <Card>
@@ -176,13 +172,13 @@ export default ({ accs }: { accs: BitmexAcc[] }) => {
               {formatEarnings(cummulative.start, cummulative.mBalance, cummulative.startUSD, cummulative.price)}
             </Descriptions.Item>
             <Descriptions.Item label="Earned this month">
-              {formatEarnings(closest30, cummulative.mBalance, cummulative.fiatBal30,cummulative.price)}
+              {formatEarnings(cummulative.price30, cummulative.mBalance, cummulative.fiatBal30,cummulative.price)}
             </Descriptions.Item>
             <Descriptions.Item label="Earned past 7-days">
-              {formatEarnings(closest7, cummulative.mBalance, cummulative.fiatBal7,cummulative.price)}
+              {formatEarnings(cummulative.price7, cummulative.mBalance, cummulative.fiatBal7,cummulative.price)}
             </Descriptions.Item>
             <Descriptions.Item label="Earned past 24-hours">
-              {formatEarnings(closestDay , cummulative.mBalance, cummulative.fiatBal1, cummulative.price)}
+              {formatEarnings(cummulative.priceDay , cummulative.mBalance, cummulative.fiatBal1, cummulative.price)}
             </Descriptions.Item>
             <Descriptions.Item label="Paper gains">
               {cummulative.pnl ? (cummulative.pnl / (10 ** 8)).toFixed(8) : <Spin />}

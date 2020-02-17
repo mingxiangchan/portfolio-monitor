@@ -28,7 +28,7 @@ export default ({acc}: {acc: BitmexAcc}) => {
       {acc.detected_invalid ? <Tag color="red">Invalid Credentials</Tag> : null}
       <Descriptions size="small">
         <Descriptions.Item span={3} label="Return since inception">
-          {formatEarnings(acc.deposit_btc, marginBalance, acc.deposit_usd, livePrice)}
+          {formatEarnings(acc.deposit_btc, marginBalance, (acc.deposit_usd/100).toFixed(2), livePrice)}
         </Descriptions.Item>
         <Descriptions.Item span={3} label="Earned this month">
           {formatEarnings(acc.wallet_balance_30_days, marginBalance, formatBTC(acc.wallet_balance_30_days) * acc.btc_price_30_days , livePrice)}
