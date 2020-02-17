@@ -90,8 +90,8 @@ export default ({ accs }: { accs: BitmexAcc[] }) => {
   const price = testnet ? testPrice : realPrice
 
   const cummulative = accs.reduce((total, acc) => {
-    const { wallet_balance_30_days, wallet_balance_7_days, wallet_balance_1_day, wallet_balance_now, deposit_btc,deposit_usd, currentQty, marginBalance, unrealisedPnl, lastPrice, liquidationPrice, avgEntryPrice, avg_entry_price, name, btc_price_1_day, btc_price_7_days, btc_price_30_days } = acc
-    const liqPriceGap = (liquidationPrice && lastPrice) ? Math.abs(liquidationPrice - lastPrice) : total.liqPriceGap
+    const { wallet_balance_30_days, wallet_balance_7_days, wallet_balance_1_day, wallet_balance_now, deposit_btc,deposit_usd, currentQty, marginBalance, unrealisedPnl, liquidationPrice, avgEntryPrice, avg_entry_price, name, btc_price_1_day, btc_price_7_days, btc_price_30_days } = acc
+    const liqPriceGap = (liquidationPrice && price) ? Math.abs(liquidationPrice - price) : total.liqPriceGap
     const smallerLiqPrice = liqPriceGap < total.liqPriceGap
     const entryPrice = (avgEntryPrice ? parseFloat(avgEntryPrice) : avg_entry_price ? parseFloat(avg_entry_price) : 0)
     return {
@@ -100,8 +100,7 @@ export default ({ accs }: { accs: BitmexAcc[] }) => {
       qty: currentQty ? total.qty + currentQty : total.qty,
       balance: total.balance + acc.wallet_balance_now,
       start: total.start + deposit_btc,
-      price: lastPrice ? lastPrice : total.price,
-      startUSD: total.startUSD + (deposit_usd/100).toFixed(2),
+      startUSD: total.startUSD + deposit_usd/100,
       liqPrice: smallerLiqPrice ? liquidationPrice : total.liqPrice,
       liqPriceGap: smallerLiqPrice ? liqPriceGap : total.liqPriceGap,
       priceDay: total.priceDay + wallet_balance_1_day,
@@ -114,7 +113,7 @@ export default ({ accs }: { accs: BitmexAcc[] }) => {
       liqAcc: smallerLiqPrice ? name : total.liqAcc,
       entryCount: total.entryCount + (entryPrice ? 1 : 0)
     }
-  }, { entryCount: 0, pnl: 0, qty: 0, balance: 0, start: 0, mBalance: 0, price, liqPrice: 0, liqPriceGap: Infinity, liqAcc: "", price30: 0, price7: 0, priceDay: 0, entry: 0, fiatBal1: 0, fiatBal7: 0, fiatBal30: 0,startUSD: 0 })
+  }, { entryCount: 0, pnl: 0, qty: 0, balance: 0, start: 0, mBalance: 0, liqPrice: 0, liqPriceGap: Infinity, liqAcc: "", price30: 0, price7: 0, priceDay: 0, entry: 0, fiatBal1: 0, fiatBal7: 0, fiatBal30: 0,startUSD: 0 })
 
   const graphData = { price: [], btcBalance: [], usdBalance: [] }
   const totalValues = Object.values(total)
@@ -131,7 +130,7 @@ export default ({ accs }: { accs: BitmexAcc[] }) => {
     datasets: [
       {
         label: 'BTC Price',
-        data: graphData.price.concat([cummulative.price]),
+        data: graphData.price.concat([price]),
         fill: false,
         yAxisID: "btcPrice",
         borderColor: 'gold',
@@ -147,7 +146,7 @@ export default ({ accs }: { accs: BitmexAcc[] }) => {
       },
       {
         label: 'USD Balance',
-        data: graphData.usdBalance.concat([((cummulative.balance * cummulative.price) / (10 ** 8)).toFixed(2)]),
+        data: graphData.usdBalance.concat([((cummulative.balance * price) / (10 ** 8)).toFixed(2)]),
         fill: false,
         yAxisID: "usdBalance",
         borderColor: 'deeppink',
@@ -169,16 +168,16 @@ export default ({ accs }: { accs: BitmexAcc[] }) => {
         <Col span={12} offset={1}>
           <Descriptions column={{ md: 1, lg: 2 }} size="small" title="Cumulative">
             <Descriptions.Item label="Return since inception">
-              {formatEarnings(cummulative.start, cummulative.mBalance, cummulative.startUSD, cummulative.price)}
+              {formatEarnings(cummulative.start, cummulative.mBalance, cummulative.startUSD, price)}
             </Descriptions.Item>
             <Descriptions.Item label="Earned this month">
-              {formatEarnings(cummulative.price30, cummulative.mBalance, cummulative.fiatBal30,cummulative.price)}
+              {formatEarnings(cummulative.price30, cummulative.mBalance, cummulative.fiatBal30, price)}
             </Descriptions.Item>
             <Descriptions.Item label="Earned past 7-days">
-              {formatEarnings(cummulative.price7, cummulative.mBalance, cummulative.fiatBal7,cummulative.price)}
+              {formatEarnings(cummulative.price7, cummulative.mBalance, cummulative.fiatBal7, price)}
             </Descriptions.Item>
             <Descriptions.Item label="Earned past 24-hours">
-              {formatEarnings(cummulative.priceDay , cummulative.mBalance, cummulative.fiatBal1, cummulative.price)}
+              {formatEarnings(cummulative.priceDay , cummulative.mBalance, cummulative.fiatBal1, price)}
             </Descriptions.Item>
             <Descriptions.Item label="Paper gains">
               {cummulative.pnl ? (cummulative.pnl / (10 ** 8)).toFixed(8) : <Spin />}
@@ -199,7 +198,7 @@ export default ({ accs }: { accs: BitmexAcc[] }) => {
               {(cummulative.mBalance / (10 ** 8)).toFixed(4)}
             </Descriptions.Item>
             <Descriptions.Item label="Balance(USD)">
-              {(cummulative.mBalance / (10 ** 8) * cummulative.price).toFixed(2)}
+              {(cummulative.mBalance / (10 ** 8) * price).toFixed(2)}
             </Descriptions.Item>
           </Descriptions>
         </Col>
