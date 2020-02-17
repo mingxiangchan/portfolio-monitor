@@ -11,12 +11,41 @@ export const AccountsContextProvider = ({children}) => {
     notification.info({message: "Loading Accounts"})
     afterJoinedAccChannel(accChannel => {
       accChannel.push("get_accs").receive("ok", ({accs}: {accs: BitmexAccsState}) => {
-        setAccs(accs)
+        for (const id in accs) {
+          accs[id].wallet_balance_now
+
+          accs[id].wallet_balance_1_day = 
+            accs[id].wallet_balance_1_day 
+            ? accs[id].wallet_balance_1_day 
+            : accs[id].wallet_balance_now 
+
+          accs[id].wallet_balance_7_days = 
+            accs[id].wallet_balance_7_days
+            ? accs[id].wallet_balance_7_days
+            : accs[id].wallet_balance_1_day
+
+          accs[id].wallet_balance_30_days = 
+            accs[id].wallet_balance_30_days
+            ? accs[id].wallet_balance_30_days
+            : accs[id].wallet_balance_7_days
+
+          setAccs(accs)
+        }
+
         notification.success({message: "Accounts Loaded", description: "If no accounts display, try toggling to testnet"})
 
         accChannel!.on("acc_update", ({acc}: {acc: BitmexAcc}) => {
           setAccs((prevAccs) => {
-            return {...prevAccs, [acc.id]: acc}
+            const {wallet_balance_now, wallet_balance_1_day, wallet_balance_7_days, wallet_balance_30_days} = acc
+            return {
+              ...prevAccs, 
+              [acc.id]: { 
+                ...prevAccs[acc.id],
+                ...acc,
+                wallet_balance_1_day: wallet_balance_1_day  ? wallet_balance_1_day : wallet_balance_now ,
+                wallet_balance_7_days: wallet_balance_7_days ? wallet_balance_7_days: wallet_balance_1_day,
+                wallet_balance_30_days: wallet_balance_30_days ? wallet_balance_30_days: wallet_balance_7_days
+              }}
           })
         })
 
