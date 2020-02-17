@@ -149,7 +149,10 @@ defmodule PortfolioMonitor.Portfolio do
       select_merge: %{
         wallet_balance_1_day: b.wallet_balance,
         wallet_balance_7_days: c.wallet_balance,
-        wallet_balance_30_days: d.wallet_balance
+        wallet_balance_30_days: d.wallet_balance,
+        btc_price_1_day: b.btc_price,
+        btc_price_7_days: c.btc_price,
+        btc_price_30_days: d.btc_price,
       }
   end
 
