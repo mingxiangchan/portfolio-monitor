@@ -50,14 +50,17 @@ defmodule PortfolioMonitor.Portfolio.BitmexAcc do
     :deposit_usd,
     :deposit_btc,
     :detected_invalid,
-    :is_testnet,
+    :is_testnet
+  ]
+
+  @non_required_fields [
     :notes
   ]
 
   @doc false
   def changeset(bitmex_acc, attrs) do
     bitmex_acc
-    |> cast(attrs, @required_fields)
+    |> cast(attrs, @required_fields ++ @non_required_fields)
     |> check_api_creds_update
     |> validate_required(@required_fields)
   end
