@@ -1,8 +1,9 @@
 defmodule PortfolioMonitorWeb.BitmexAccsChannel do
   use Appsignal.Instrumentation.Decorators
   use PortfolioMonitorWeb, :channel
+  alias PortfolioMonitorWeb.Presence
   alias PortfolioMonitor.Portfolio
-  alias PortfolioMonitor.Sync.Worker
+  alias PortfolioMonitor.Sync.LiveSupervisor
   intercept ["acc_update", "acc_deleted"]
 
   def join("bitmex_accs:index", _payload, socket) do
@@ -11,8 +12,14 @@ defmodule PortfolioMonitorWeb.BitmexAccsChannel do
   end
 
   def join("bitmex_accs:" <> _user_id, _payload, socket) do
-    updated_socket = initialize_ws_workers(socket)
-    {:ok, updated_socket}
+    send(self(), :after_join)
+    initialize_ws_workers(socket.assigns[:user])
+    {:ok, socket}
+  end
+
+  def handle_info(:after_join, socket) do
+    Presence.track(socket, socket.assigns.user.id, %{logged: true})
+    {:noreply, socket}
   end
 
   @decorate channel_action()
@@ -27,69 +34,60 @@ defmodule PortfolioMonitorWeb.BitmexAccsChannel do
 
   def handle_out("acc_update", msg, socket) do
     push(socket, "acc_update", msg)
-    updated_socket = initialize_ws_workers(socket)
-    {:noreply, updated_socket}
+    initialize_ws_workers(socket.assigns[:user])
+    {:noreply, socket}
   end
 
   def handle_out("acc_deleted", msg, socket) do
     %{acc: %{id: id}} = msg
-    updated_socket = kill_ws_worker(socket, id)
-    push(updated_socket, "acc_deleted", msg)
-    {:noreply, updated_socket}
+    kill_ws_worker(id)
+    push(socket, "acc_deleted", msg)
+    {:noreply, socket}
   end
 
-  # Endpoint.broadcast("bitmex_accs:#{acc.user_id}", "acc_deleted", %{acc: %{id: acc.id}})
-
-  # PRIVATE APIS
-
-  defp initialize_ws_workers(socket) do
-    user = Map.get(socket.assigns, :user)
-    existing_workers = Map.get(socket.assigns, :existing_workers, %{})
-
-    updated_workers =
-      user
-      |> Portfolio.list_bitmex_accs()
-      |> Enum.map(&start_acc_ws_worker(&1, existing_workers))
-      |> Enum.into(%{})
-
-    assign(socket, :existing_workers, updated_workers)
-  end
-
-  defp kill_ws_worker(socket, id) do
-    existing_workers = Map.get(socket.assigns, :existing_workers, %{})
-
-    case Map.get(existing_workers, id) do
+  def terminate(_, %{topic: "bitmex_accs:" <> id} = socket) do
+    socket
+    |> Presence.list()
+    |> Kernel.get_in([id, :metas])
+    |> case do
       nil ->
-        socket
+        nil
 
-      pid ->
-        Process.exit(pid, :normal)
-        updated_workers = Map.drop(existing_workers, [id])
-        assign(socket, :existing_workers, updated_workers)
+      live_ws when is_list(live_ws) and length(live_ws) == 1 ->
+        # when the currently terminating worker is the last one for this user
+        # terminate the bitmex acc ws workers for this user
+        kill_all_ws_workers(socket.assigns.user)
+
+      _ ->
+        nil
     end
   end
 
-  defp start_acc_ws_worker(%{detected_invalid: true}, _), do: nil
+  # PRIVATE APIS
 
-  defp start_acc_ws_worker(acc, existing_workers) do
-    auth_config = Map.take(acc, [:api_key, :api_secret])
+  defp initialize_ws_workers(user) do
+    user
+    |> Portfolio.list_bitmex_accs()
+    |> Enum.map(&start_acc_ws_worker(&1))
+  end
 
-    case Map.get(existing_workers, acc.id) do
-      nil ->
-        {:ok, pid} =
-          Worker.start_link(%{
-            acc_id: acc.id,
-            user_id: acc.user_id,
-            auth_subscribe: ["margin", "position"],
-            is_testnet: acc.is_testnet,
-            config: auth_config,
-            name: String.to_atom("BitMexAccWorker.#{acc.id}")
-          })
+  def kill_all_ws_workers(user) do
+    user
+    |> Portfolio.list_bitmex_accs()
+    |> Enum.map(&kill_ws_worker(&1.id))
+  end
 
-        {acc.id, pid}
+  defp kill_ws_worker(id) do
+    case Process.whereis(:"BitMexAccWorker.#{id}") do
+      nil -> nil
+      pid -> DynamicSupervisor.terminate_child(LiveSupervisor, pid)
+    end
+  end
 
-      existing_pid ->
-        {acc.id, existing_pid}
+  defp start_acc_ws_worker(acc) do
+    case Process.whereis(:"BitMexAccWorker.#{acc.id}") do
+      nil -> LiveSupervisor.start_child(acc)
+      _existing_pid -> nil
     end
   end
 end

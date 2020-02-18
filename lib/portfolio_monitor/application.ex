@@ -15,7 +15,9 @@ defmodule PortfolioMonitor.Application do
       # Starts a worker by calling: PortfolioMonitor.Worker.start_link(arg)
       # {PortfolioMonitor.Worker, arg},
       PortfolioMonitor.Sync.Supervisor,
+      PortfolioMonitor.Sync.LiveSupervisor,
       PortfolioMonitor.Scheduler,
+      PortfolioMonitorWeb.Presence
     ]
 
     :telemetry.attach(
