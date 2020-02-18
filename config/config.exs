@@ -33,7 +33,7 @@ config :portfolio_monitor, :pow,
   user: PortfolioMonitor.Account.User,
   repo: PortfolioMonitor.Repo,
   web_module: PortfolioMonitorWeb,
-  cache_store_backend: Pow.Store.Backend.EtsCache
+  cache_store_backend: PortfolioMonitorWeb.PowRedisCache
   
 config :portfolio_monitor, PortfolioMonitor.Scheduler,
   jobs: [
