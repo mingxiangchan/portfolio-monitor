@@ -10,18 +10,18 @@ export const formatEarnings = (
 ): React.ReactNode => {
   const btcEarned = formatBTC(btcT1 - btcT0)
   const usdEarned = formatBTC(btcT1) * lastPrice - usdT0
-  const usdPercentEarned = (usdEarned / usdT0 * 100).toFixed(2)
+  const usdPercentEarned = ((usdEarned / usdT0) * 100).toFixed(2)
+
+  const displayEarnings = (): React.ReactNode => (
+    <React.Fragment>
+      {usdPercentEarned ? `${usdPercentEarned}%` : <Spin />}/ BTC{' '}
+      {btcEarned ? btcEarned : <Spin />}/ USD{' '}
+      {usdEarned === 0 || usdEarned ? usdEarned.toFixed(2) : <Spin />}
+    </React.Fragment>
+  )
   return (
     <React.Fragment>
-      {usdT0 === 0 ? (
-        'NA'
-      ) : usdPercentEarned ? (
-        `${usdPercentEarned}%`
-      ) : (
-        <Spin />
-      )}
-      / BTC {btcEarned ? btcEarned : <Spin />}/ USD{' '}
-      {usdEarned === 0 || usdEarned ? usdEarned.toFixed(2) : <Spin />}
+      {parseInt(usdT0) === 0 ? 'NA' : displayEarnings()}
     </React.Fragment>
   )
 }

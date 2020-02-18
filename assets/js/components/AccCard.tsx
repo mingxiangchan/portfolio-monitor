@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { Card, Descriptions, Spin, Tag } from 'antd'
+import { Card, Descriptions, Tag } from 'antd'
 import { AccPropTypes } from '../types'
 import CardChart from './CardChart'
 import { formatEarnings } from '../utils/priceFormat'
@@ -63,33 +63,29 @@ const AccCard: React.FunctionComponent<AccPropTypes> = ({
           )}
         </Descriptions.Item>
         <Descriptions.Item span={3} label="Paper gains">
-          {acc.unrealisedPnl ? (
-            (acc.unrealisedPnl / 10 ** 8).toFixed(8)
-          ) : (
-            <Spin />
-          )}
+          {acc.unrealisedPnl ? (acc.unrealisedPnl / 10 ** 8).toFixed(8) : 'NA'}
         </Descriptions.Item>
         <Descriptions.Item span={3} label="Current leverage">
-          {leverage && leverage != Infinity ? leverage.toFixed(2) : <Spin />}
+          {leverage && leverage != Infinity ? leverage.toFixed(2) : 0}
         </Descriptions.Item>
         <Descriptions.Item span={3} label="Open position">
-          {acc.currentQty ? acc.currentQty : <Spin />}
+          {acc.currentQty ? acc.currentQty : 0}
         </Descriptions.Item>
         <Descriptions.Item span={3} label="Liquidation price">
-          {acc.liquidationPrice ? acc.liquidationPrice : <Spin />}
+          {acc.liquidationPrice ? acc.liquidationPrice : 'NA'}
         </Descriptions.Item>
         <Descriptions.Item span={3} label="Ave. entry price">
           {acc.avgEntryPrice
             ? acc.avgEntryPrice
-            : acc.avg_entry_price
+            : parseInt(acc.avg_entry_price)
             ? acc.avg_entry_price
-            : '0'}
+            : 'NA'}
         </Descriptions.Item>
         <Descriptions.Item span={3} label="Balance(BTC)">
-          {marginBalance ? (marginBalance / 10 ** 8).toFixed(4) : <Spin />}
+          {(marginBalance / 10 ** 8).toFixed(4)}
         </Descriptions.Item>
         <Descriptions.Item span={3} label="Balance(USD)">
-          {fiatBalance ? fiatBalance.toFixed(2) : <Spin />}
+          {fiatBalance.toFixed(2)}
         </Descriptions.Item>
         <Descriptions.Item span={3} label="Note">
           {acc.notes}
