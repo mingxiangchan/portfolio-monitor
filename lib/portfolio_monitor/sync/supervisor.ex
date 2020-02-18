@@ -20,23 +20,6 @@ defmodule PortfolioMonitor.Sync.Supervisor do
     {:ok, pid}
   end
 
-  def start_child(bitmex_acc) do
-    auth_config = Map.take(bitmex_acc, [:api_key, :api_secret])
-
-    child_spec = {
-      Worker,
-      %{
-        acc_id: bitmex_acc.id,
-        auth_subscribe: ["order", "margin", "position", "trade"],
-        config: auth_config,
-        name: String.to_atom("BitMexAccWorker.#{bitmex_acc.id}"),
-        is_testnet: bitmex_acc.is_testnet
-      }
-    }
-
-    DynamicSupervisor.start_child(__MODULE__, child_spec)
-  end
-
   def start_general_btc_info_worker(is_testnet) do
     name =
       case is_testnet do
