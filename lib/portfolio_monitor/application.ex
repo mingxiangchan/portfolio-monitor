@@ -17,7 +17,8 @@ defmodule PortfolioMonitor.Application do
       PortfolioMonitor.Sync.Supervisor,
       PortfolioMonitor.Sync.LiveSupervisor,
       PortfolioMonitor.Scheduler,
-      PortfolioMonitorWeb.Presence
+      PortfolioMonitorWeb.Presence,
+      {Redix, name: :redix}
     ]
 
     :telemetry.attach(
