@@ -7,6 +7,7 @@
     <title>PortfolioMonitor · Phoenix Framework</title>
   </head>
   <body>
+    <script>window.csrfToken = "<%= assigns[:csrf_token]  %>";</script>   
     <%= render @view_module, @view_template, assigns %>
   </body>
 </html>
