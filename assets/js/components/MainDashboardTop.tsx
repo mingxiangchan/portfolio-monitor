@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import { Card, Descriptions, Row, Col, Spin } from 'antd'
 import { BitmexAcc } from '../types'
-import { formatEarnings, formatBTC } from '../utils/priceFormat'
+import { formatEarnings } from '../utils/priceFormat'
 import BitmexContext from '../context/BitmexContext'
 import DashboardContext from '../context/DashboardContext'
 import CummulativeChart from './CummulativeChart'
@@ -31,9 +31,9 @@ const MainDashboardTop: React.FunctionComponent<PropTypes> = ({
   let price7 = 0
   let priceDay = 0
   let entry = 0
-  let fiatBal1 = 0
-  let fiatBal7 = 0
-  let fiatBal30 = 0
+  let cFiatBal1 = 0
+  let cFiatBal7 = 0
+  let cFiatBal30 = 0
   let startUSD = 0
 
   for (const acc of accs) {
@@ -51,9 +51,9 @@ const MainDashboardTop: React.FunctionComponent<PropTypes> = ({
       avgEntryPrice,
       avg_entry_price,
       name,
-      btc_price_1_day,
-      btc_price_7_days,
-      btc_price_30_days,
+      fiatBal1,
+      fiatBal7,
+      fiatBal30
     } = acc
 
     const currentLiqPriceGap =
@@ -78,16 +78,16 @@ const MainDashboardTop: React.FunctionComponent<PropTypes> = ({
     priceDay = priceDay + wallet_balance_1_day
     price7 = price7 + wallet_balance_7_days
     price30 = price30 + wallet_balance_30_days
-    fiatBal1 = fiatBal1 + formatBTC(wallet_balance_1_day) * btc_price_1_day
-    fiatBal7 = fiatBal7 + formatBTC(wallet_balance_7_days) * btc_price_7_days
-    fiatBal30 =
-      fiatBal30 + formatBTC(wallet_balance_30_days) * btc_price_30_days
+    cFiatBal1 = cFiatBal1 + fiatBal1
+    cFiatBal7 = cFiatBal7 + fiatBal7
+    cFiatBal30 =
+      cFiatBal30 + fiatBal30
     entry = entry + entryPrice
     liqAcc = smallerLiqPrice ? name : liqAcc
     entryCount = entryCount + (entryPrice ? 1 : 0)
   }
 
-  const fiatBalance = (marginBalance / 10 ** 8) * price
+  const fiatBalance = (mBalance / 10 ** 8) * price
   const leverage = Math.abs(qty / fiatBalance)
 
   return (
@@ -119,13 +119,13 @@ const MainDashboardTop: React.FunctionComponent<PropTypes> = ({
               {formatEarnings(start, mBalance, startUSD, price)}
             </Descriptions.Item>
             <Descriptions.Item label="Earned this month">
-              {formatEarnings(price30, mBalance, fiatBal30, price)}
+              {formatEarnings(price30, mBalance, cFiatBal30, price)}
             </Descriptions.Item>
             <Descriptions.Item label="Earned past 7-days">
-              {formatEarnings(price7, mBalance, fiatBal7, price)}
+              {formatEarnings(price7, mBalance, cFiatBal7, price)}
             </Descriptions.Item>
             <Descriptions.Item label="Earned past 24-hours">
-              {formatEarnings(priceDay, mBalance, fiatBal1, price)}
+              {formatEarnings(priceDay, mBalance, cFiatBal1, price)}
             </Descriptions.Item>
             <Descriptions.Item label="Paper gains">
               {pnl ? (pnl / 10 ** 8).toFixed(8) : <Spin />}

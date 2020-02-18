@@ -2,8 +2,35 @@ import React, { useEffect, useState } from 'react'
 import { notification, message } from 'antd'
 import { BitmexAcc, BitmexAccsState } from '../types'
 import { afterJoinedAccChannel } from '../socket'
+import { formatBTC } from '../utils/priceFormat'
 
 const AccountsContext = React.createContext(null)
+
+const setFallbackValues = (acc) => {
+  const {wallet_balance_1_day ,wallet_balance_7_days, wallet_balance_30_days, btc_price_1_day, btc_price_7_days, btc_price_30_days, deposit_btc, deposit_usd} = acc
+  if(acc.wallet_balance_1_day){
+    
+    acc.fiatBal1 = formatBTC(wallet_balance_1_day) * btc_price_1_day 
+  } else {
+    acc.wallet_balance_1_day = deposit_btc
+    acc.fiatBal1 = deposit_usd 
+  }
+  
+  if(acc.wallet_balance_7_days){
+    acc.fiatBal7 = formatBTC(wallet_balance_7_days) * btc_price_7_days 
+  } else {
+    acc.wallet_balance_7_days = deposit_btc
+    acc.fiatBal7 = deposit_usd 
+  }
+
+  if(acc.wallet_balance_30_days){
+    acc.fiatBal30 = formatBTC(wallet_balance_30_days) * btc_price_30_days 
+  } else {
+    acc.wallet_balance_30_days = deposit_btc
+    acc.fiatBal30 = deposit_usd 
+  }  
+  return acc
+}
 
 export const AccountsContextProvider: React.FunctionComponent = ({
   children,
@@ -15,7 +42,11 @@ export const AccountsContextProvider: React.FunctionComponent = ({
       accChannel
         .push('get_accs')
         .receive('ok', ({ accs }: { accs: BitmexAccsState }) => {
-          setAccs(accs)
+          let completeAccs = {};
+          for(const id in accs){
+            completeAccs[id] = setFallbackValues(accs[id])
+          }
+          setAccs(completeAccs)
 
           notification.success({
             message: 'Accounts Loaded',
@@ -26,7 +57,7 @@ export const AccountsContextProvider: React.FunctionComponent = ({
             setAccs(prevAccs => {
               return {
                 ...prevAccs,
-                [acc.id]: acc,
+                [acc.id]: setFallbackValues(acc),
               }
             })
           })
