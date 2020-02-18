@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { Card, Descriptions, Row, Col, Spin } from 'antd'
+import { Card, Descriptions, Row, Col } from 'antd'
 import { BitmexAcc } from '../types'
 import { formatEarnings } from '../utils/priceFormat'
 import BitmexContext from '../context/BitmexContext'
@@ -26,7 +26,7 @@ const MainDashboardTop: React.FunctionComponent<PropTypes> = ({
   let mBalance = 0
   let liqPrice = 0
   let liqPriceGap = Infinity
-  let liqAcc = ''
+  let liqAcc = null
   let price30 = 0
   let price7 = 0
   let priceDay = 0
@@ -53,7 +53,7 @@ const MainDashboardTop: React.FunctionComponent<PropTypes> = ({
       name,
       fiatBal1,
       fiatBal7,
-      fiatBal30
+      fiatBal30,
     } = acc
 
     const currentLiqPriceGap =
@@ -80,8 +80,7 @@ const MainDashboardTop: React.FunctionComponent<PropTypes> = ({
     price30 = price30 + wallet_balance_30_days
     cFiatBal1 = cFiatBal1 + fiatBal1
     cFiatBal7 = cFiatBal7 + fiatBal7
-    cFiatBal30 =
-      cFiatBal30 + fiatBal30
+    cFiatBal30 = cFiatBal30 + fiatBal30
     entry = entry + entryPrice
     liqAcc = smallerLiqPrice ? name : liqAcc
     entryCount = entryCount + (entryPrice ? 1 : 0)
@@ -128,23 +127,17 @@ const MainDashboardTop: React.FunctionComponent<PropTypes> = ({
               {formatEarnings(priceDay, mBalance, cFiatBal1, price)}
             </Descriptions.Item>
             <Descriptions.Item label="Paper gains">
-              {pnl ? (pnl / 10 ** 8).toFixed(8) : <Spin />}
+              {pnl ? (pnl / 10 ** 8).toFixed(8) : 'NA'}
             </Descriptions.Item>
             <Descriptions.Item label="Current leverage">
-              {leverage && leverage != Infinity ? (
-                leverage.toFixed(2)
-              ) : (
-                <Spin />
-              )}
+              {leverage && leverage != Infinity ? leverage.toFixed(2) : 0}
             </Descriptions.Item>
-            <Descriptions.Item label="Open position">
-              {qty ? qty : <Spin />}
-            </Descriptions.Item>
+            <Descriptions.Item label="Open position">{qty}</Descriptions.Item>
             <Descriptions.Item label="Nearest liquidation price">
-              {liqPrice + ` (${liqAcc})`}
+              {liqAcc == null ? 'NA' : liqPrice + ` (${liqAcc})`}
             </Descriptions.Item>
             <Descriptions.Item label="Ave. entry price">
-              {entry / entryCount}
+              {entryCount ? entry / entryCount : 'NA'}
             </Descriptions.Item>
             <Descriptions.Item label="Balance(BTC)">
               {(mBalance / 10 ** 8).toFixed(4)}
