@@ -53,6 +53,9 @@ export const AccountsContextProvider: React.FunctionComponent = ({
                   ...(marginBalance && { marginBalance }),
                 }
                 return { ...prevAccs, [id]: updatedAcc }
+              } else {
+                delete prevAccs[id]
+                return { ...prevAccs }
               }
             })
           })
@@ -73,6 +76,9 @@ export const AccountsContextProvider: React.FunctionComponent = ({
                     : { avgEntryPrice: oldAcc.avg_entry_price }),
                 }
                 return { ...prevAccs, [id]: updatedAcc }
+              } else {
+                delete prevAccs[id]
+                return { ...prevAccs }
               }
             })
           })
