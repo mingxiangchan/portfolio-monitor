@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import { Card, Descriptions, Spin, Tag } from 'antd'
 import { AccPropTypes } from '../types'
 import CardChart from './CardChart'
-import { formatEarnings, formatBTC } from '../utils/priceFormat'
+import { formatEarnings } from '../utils/priceFormat'
 import AccUpdateModal from './AccUpdateModal'
 import BitmexContext from '../context/BitmexContext'
 import DashboardContext from '../context/DashboardContext'
@@ -20,7 +20,6 @@ const AccCard: React.FunctionComponent<AccPropTypes> = ({
   const pendingFirstQuery = acc.historical_data.length === 0
   const fiatBalance = (marginBalance / 10 ** 8) * livePrice
   const leverage = Math.abs(acc.currentQty / fiatBalance)
-
   return (
     <Card
       title={acc.name}
@@ -43,7 +42,7 @@ const AccCard: React.FunctionComponent<AccPropTypes> = ({
           {formatEarnings(
             acc.wallet_balance_30_days,
             marginBalance,
-            formatBTC(acc.wallet_balance_30_days) * acc.btc_price_30_days,
+            acc.fiatBal30,
             livePrice,
           )}
         </Descriptions.Item>
@@ -51,7 +50,7 @@ const AccCard: React.FunctionComponent<AccPropTypes> = ({
           {formatEarnings(
             acc.wallet_balance_7_days,
             marginBalance,
-            formatBTC(acc.wallet_balance_7_days) * acc.btc_price_7_days,
+            acc.fiatBal7,
             livePrice,
           )}
         </Descriptions.Item>
@@ -59,7 +58,7 @@ const AccCard: React.FunctionComponent<AccPropTypes> = ({
           {formatEarnings(
             acc.wallet_balance_1_day,
             marginBalance,
-            formatBTC(acc.wallet_balance_1_day) * acc.btc_price_1_day,
+            acc.fiatBal1,
             livePrice,
           )}
         </Descriptions.Item>
