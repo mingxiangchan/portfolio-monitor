@@ -9,7 +9,7 @@ interface PropTypes {
 const AccCardStatisticsItem = ({ stats }: PropTypes) => (
   <>
     <Statistic
-      value={stats.percentValue}
+      value={stats.percentValue.toFixed(2)}
       precision={2}
       suffix="%"
       valueStyle={
@@ -20,7 +20,8 @@ const AccCardStatisticsItem = ({ stats }: PropTypes) => (
       }
     />
     <p>
-      {stats.isPositive} {stats.symbol} {stats.absoluteValue.toFixed(2)}
+      {stats.isPositive} {stats.symbol}{' '}
+      {stats.absoluteValue.toFixed(stats.precision)}
     </p>
   </>
 )

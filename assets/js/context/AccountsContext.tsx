@@ -6,29 +6,38 @@ import { formatBTC } from '../utils/priceFormat'
 
 const AccountsContext = React.createContext(null)
 
-const setFallbackValues = (acc) => {
-  const {wallet_balance_1_day ,wallet_balance_7_days, wallet_balance_30_days, btc_price_1_day, btc_price_7_days, btc_price_30_days, deposit_btc, deposit_usd} = acc
-  if(acc.wallet_balance_1_day){
-    
-    acc.fiatBal1 = formatBTC(wallet_balance_1_day) * btc_price_1_day 
+const setFallbackValues = acc => {
+  const {
+    wallet_balance_1_day,
+    wallet_balance_7_days,
+    wallet_balance_30_days,
+    btc_price_1_day,
+    btc_price_7_days,
+    btc_price_30_days,
+    deposit_btc,
+    deposit_usd,
+  } = acc
+
+  if (acc.wallet_balance_1_day) {
+    acc.fiatBal1 = wallet_balance_1_day * btc_price_1_day
   } else {
     acc.wallet_balance_1_day = deposit_btc
-    acc.fiatBal1 = deposit_usd 
-  }
-  
-  if(acc.wallet_balance_7_days){
-    acc.fiatBal7 = formatBTC(wallet_balance_7_days) * btc_price_7_days 
-  } else {
-    acc.wallet_balance_7_days = deposit_btc
-    acc.fiatBal7 = deposit_usd 
+    acc.fiatBal1 = deposit_usd
   }
 
-  if(acc.wallet_balance_30_days){
-    acc.fiatBal30 = formatBTC(wallet_balance_30_days) * btc_price_30_days 
+  if (acc.wallet_balance_7_days) {
+    acc.fiatBal7 = wallet_balance_7_days * btc_price_7_days
+  } else {
+    acc.wallet_balance_7_days = deposit_btc
+    acc.fiatBal7 = deposit_usd
+  }
+
+  if (acc.wallet_balance_30_days) {
+    acc.fiatBal30 = wallet_balance_30_days * btc_price_30_days
   } else {
     acc.wallet_balance_30_days = deposit_btc
-    acc.fiatBal30 = deposit_usd 
-  }  
+    acc.fiatBal30 = deposit_usd
+  }
   return acc
 }
 
@@ -42,8 +51,8 @@ export const AccountsContextProvider: React.FunctionComponent = ({
       accChannel
         .push('get_accs')
         .receive('ok', ({ accs }: { accs: BitmexAccsState }) => {
-          let completeAccs = {};
-          for(const id in accs){
+          const completeAccs = {}
+          for (const id in accs) {
             completeAccs[id] = setFallbackValues(accs[id])
           }
           setAccs(completeAccs)
@@ -73,15 +82,14 @@ export const AccountsContextProvider: React.FunctionComponent = ({
           accChannel.on('ws_margin', resp => {
             const id = resp.acc_id
             const { unrealisedPnl, marginBalance } = resp.data[0]
-
             setAccs(prevAccs => {
               const oldAcc = prevAccs[id]
               // acc may have just been deleted but ws is not cleared yet
               if (oldAcc) {
                 const updatedAcc = {
                   ...oldAcc,
-                  ...(unrealisedPnl && { unrealisedPnl }),
-                  ...(marginBalance && { marginBalance }),
+                  ...(unrealisedPnl && { formatBTC(unrealisedPnl) }),
+                  ...(marginBalance && { formatBTC(marginBalance) }),
                 }
                 return { ...prevAccs, [id]: updatedAcc }
               } else {
