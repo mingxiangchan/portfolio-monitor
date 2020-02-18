@@ -1,8 +1,8 @@
 defmodule PortfolioMonitorWeb.BitmexAccsChannel do
   use Appsignal.Instrumentation.Decorators
   use PortfolioMonitorWeb, :channel
+  alias PortfolioMonitorWeb.Presence
   alias PortfolioMonitor.Portfolio
-  alias PortfolioMonitor.Sync.Worker
   alias PortfolioMonitor.Sync.LiveSupervisor
   intercept ["acc_update", "acc_deleted"]
 
@@ -12,8 +12,14 @@ defmodule PortfolioMonitorWeb.BitmexAccsChannel do
   end
 
   def join("bitmex_accs:" <> _user_id, _payload, socket) do
+    send(self(), :after_join)
     initialize_ws_workers(socket.assigns[:user])
     {:ok, socket}
+  end
+
+  def handle_info(:after_join, socket) do
+    Presence.track(socket, socket.assigns.user.id, %{logged: true})
+    {:noreply, socket}
   end
 
   @decorate channel_action()
@@ -39,7 +45,23 @@ defmodule PortfolioMonitorWeb.BitmexAccsChannel do
     {:noreply, socket}
   end
 
-  # Endpoint.broadcast("bitmex_accs:#{acc.user_id}", "acc_deleted", %{acc: %{id: acc.id}})
+  def terminate(_, %{topic: "bitmex_accs:" <> id} = socket) do
+    socket
+    |> Presence.list()
+    |> Kernel.get_in([id, :metas])
+    |> case do
+      nil ->
+        nil
+
+      live_ws when is_list(live_ws) and length(live_ws) == 1 ->
+        # when the currently terminating worker is the last one for this user
+        # terminate the bitmex acc ws workers for this user
+        kill_all_ws_workers(socket.assigns.user)
+
+      _ ->
+        nil
+    end
+  end
 
   # PRIVATE APIS
 
@@ -47,6 +69,12 @@ defmodule PortfolioMonitorWeb.BitmexAccsChannel do
     user
     |> Portfolio.list_bitmex_accs()
     |> Enum.map(&start_acc_ws_worker(&1))
+  end
+
+  def kill_all_ws_workers(user) do
+    user
+    |> Portfolio.list_bitmex_accs()
+    |> Enum.map(&kill_ws_worker(&1.id))
   end
 
   defp kill_ws_worker(id) do
