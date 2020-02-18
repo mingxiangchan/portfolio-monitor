@@ -96,7 +96,11 @@ const SideNav: React.FunctionComponent = () => {
       <Divider />
       <AccCreateModal />
       <br />
-      <Button type="danger">Log Out</Button>
+      <form action="/session" method="POST" id="">
+        <input name="_method" type="hidden" value="delete" />
+        <input type="hidden" name="_csrf_token" value={window.csrfToken} />
+        <button className="ant-btn ant-btn-danger" type="submit">Log Out</button>
+      </form>
     </Sider>
   )
 }
