@@ -87,7 +87,8 @@ const MainDashboardTop: React.FunctionComponent<PropTypes> = ({
     entryCount = entryCount + (entryPrice ? 1 : 0)
   }
 
-  const leverage = Math.abs((qty / mBalance) * 10 ** 4)
+  const fiatBalance = (marginBalance / 10 ** 8) * price
+  const leverage = Math.abs(qty / fiatBalance)
 
   return (
     <Row
