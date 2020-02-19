@@ -74,3 +74,10 @@ export interface CummulativeTotal {
 export interface CummulativeTotals {
   [key: string]: CummulativeTotal
 }
+
+export interface StatisticType {
+  percentValue?: number
+  absoluteValue?: number
+  isPositive?: boolean
+  symbol: string
+}

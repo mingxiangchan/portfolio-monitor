@@ -7,6 +7,7 @@ import AccUpdateModal from './AccUpdateModal'
 import BitmexContext from '../context/BitmexContext'
 import DashboardContext from '../context/DashboardContext'
 import AccDeleteButton from './AccDeleteButton'
+import AccCardStatistics from './AccCardStatistics'
 
 const AccCard: React.FunctionComponent<AccPropTypes> = ({
   acc,
@@ -29,6 +30,7 @@ const AccCard: React.FunctionComponent<AccPropTypes> = ({
       {acc.is_testnet ? <Tag>Test</Tag> : <Tag>Live</Tag>}
       {pendingFirstQuery ? <Tag color="blue">Pending First Query</Tag> : null}
       {acc.detected_invalid ? <Tag color="red">Invalid Credentials</Tag> : null}
+      <AccCardStatistics acc={acc} livePrice={livePrice} />
       <Descriptions size="small">
         <Descriptions.Item span={3} label="Return since inception">
           {formatEarnings(
