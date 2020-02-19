@@ -30,6 +30,12 @@ app_name =
     environment variable APP_NAME is missing.
     """
 
+redis_url = 
+  System.get_env("REDIS_URL") ||
+    raise """
+    environment variable REDIS_URL is missing.
+    """
+
 config :portfolio_monitor, PortfolioMonitor.Repo,
   ssl: true,
   url: database_url,
@@ -42,6 +48,8 @@ config :portfolio_monitor, PortfolioMonitorWeb.Endpoint,
   url: [host: System.get_env("APP_NAME") <> ".gigalixirapp.com", port: 80]
 
 # temp
+config :portfolio_monitor, :redis_url, redis_url
+
 config :portfolio_monitor, :aes_key, aes_key
 
 config :portfolio_monitor, :secret_key_base, secret_key_base

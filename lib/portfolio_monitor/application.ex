@@ -18,7 +18,7 @@ defmodule PortfolioMonitor.Application do
       PortfolioMonitor.Sync.LiveSupervisor,
       PortfolioMonitor.Scheduler,
       PortfolioMonitorWeb.Presence,
-      {Redix, name: :redix}
+      {Redix, { Application.get_env(:portfolio_monitor, :redis_url, "redis://localhost:6379"),[name: :redix]}}
     ]
 
     :telemetry.attach(
