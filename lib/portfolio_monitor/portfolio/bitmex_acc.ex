@@ -3,26 +3,6 @@ defmodule PortfolioMonitor.Portfolio.BitmexAcc do
   import Ecto.Changeset
   alias PortfolioMonitor.CustomFields.Encrypted
 
-  @derive {Jason.Encoder,
-           only: [
-             :id,
-             :name,
-             :notes,
-             :detected_invalid,
-             :deposit_usd,
-             :deposit_btc,
-             :margin_balance,
-             :wallet_balance_now,
-             :wallet_balance_1_day,
-             :wallet_balance_7_days,
-             :wallet_balance_30_days,
-             :btc_price_1_day,
-             :btc_price_7_days,
-             :btc_price_30_days,
-             :historical_data,
-             :is_testnet,
-             :avg_entry_price
-           ]}
   schema "bitmex_accs" do
     field :api_key, Encrypted
     field :api_secret, Encrypted
@@ -76,5 +56,47 @@ defmodule PortfolioMonitor.Portfolio.BitmexAcc do
       %{changes: %{api_key: _, api_secret: _}} -> put_change(changeset, :detected_invalid, false)
       _ -> changeset
     end
+  end
+end
+
+defimpl Jason.Encoder, for: PortfolioMonitor.Portfolio.BitmexAcc do
+  alias Decimal, as: D
+
+  @unformatted_fields [
+    :id,
+    :name,
+    :notes,
+    :detected_invalid,
+    :deposit_usd,
+    :btc_price_1_day,
+    :btc_price_7_days,
+    :btc_price_30_days,
+    :historical_data,
+    :is_testnet,
+    :avg_entry_price
+  ]
+
+  @formatted_fields [
+    :deposit_btc,
+    :margin_balance,
+    :wallet_balance_now,
+    :wallet_balance_1_day,
+    :wallet_balance_7_days,
+    :wallet_balance_30_days
+  ]
+
+  def encode(row, opts) do
+    formatted_data =
+      row
+      |> Map.take(@formatted_fields)
+      |> Enum.map(fn {k, v} ->
+        if is_nil(v), do: {k, v}, else: {k, D.div(v, 100_000_000)}
+      end)
+      |> Enum.into(%{})
+
+    row
+    |> Map.take(@unformatted_fields)
+    |> Map.merge(formatted_data)
+    |> Jason.Encode.map(opts)
   end
 end
