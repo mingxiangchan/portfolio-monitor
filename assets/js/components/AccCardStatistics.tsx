@@ -24,6 +24,12 @@ const calcEarnings = (
   stats.absoluteValue = currentVal - pastVal
   stats.percentValue = stats.absoluteValue / pastVal / 100
   stats.isPositive = stats.absoluteValue >= 0
+
+  if (stats.symbol === 'USD') {
+    // handle cents
+    stats.absoluteValue = stats.absoluteValue / 100
+  }
+
   return stats
 }
 
