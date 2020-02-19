@@ -22,7 +22,7 @@ const AccCard: React.FunctionComponent<AccPropTypes> = ({
 
   const btcBalance = acc.marginBalance ? acc.marginBalance : acc.margin_balance
   // livePrice is in USD, convert to cents
-  const usdBalance = btcBalance * livePrice * 100
+  const usdBalance = btcBalance * livePrice
 
   return (
     <Card
