@@ -67,7 +67,8 @@ const MainDashboardTop: React.FunctionComponent<PropTypes> = ({
       ? parseFloat(avg_entry_price)
       : 0
 
-    mBalance = mBalance + (marginBalance ? marginBalance : acc.margin_balance)
+    mBalance =
+      mBalance + parseFloat(marginBalance ? marginBalance : acc.margin_balance)
     pnl = unrealisedPnl ? pnl + unrealisedPnl : pnl
     qty = currentQty ? qty + currentQty : qty
     balance = balance + wallet_balance_now
@@ -140,10 +141,10 @@ const MainDashboardTop: React.FunctionComponent<PropTypes> = ({
               {entryCount ? entry / entryCount : 'NA'}
             </Descriptions.Item>
             <Descriptions.Item label="Balance(BTC)">
-              {(mBalance / 10 ** 8).toFixed(4)}
+              {mBalance.toFixed(4)}
             </Descriptions.Item>
             <Descriptions.Item label="Balance(USD)">
-              {((mBalance / 10 ** 8) * price).toFixed(2)}
+              {(mBalance * price).toFixed(2)}
             </Descriptions.Item>
           </Descriptions>
         </Col>
