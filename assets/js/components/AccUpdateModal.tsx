@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Button } from 'antd'
+import { Icon } from 'antd'
 import AccUpdateForm from './AccUpdateForm'
 import { BitmexAcc } from '../types'
 
@@ -17,7 +17,7 @@ const AccUpdateModal: React.FunctionComponent<PropTypes> = ({
 
   return (
     <>
-      <Button type="primary" shape="circle" icon="edit" onClick={onClick} />
+      <Icon type="edit" onClick={onClick} />
       <AccUpdateForm visible={visible} setVisible={setVisible} acc={acc} />
     </>
   )

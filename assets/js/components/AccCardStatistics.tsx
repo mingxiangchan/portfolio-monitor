@@ -12,7 +12,8 @@ const ranges = [
 
 interface PropTypes {
   acc: BitmexAcc
-  livePrice: number
+  btcBalance: number
+  usdBalance: number
 }
 
 const calcEarnings = (
@@ -26,16 +27,10 @@ const calcEarnings = (
   return stats
 }
 
-const AccCardStatistics = ({ acc, livePrice }: PropTypes) => {
+const AccCardStatistics = ({ acc, btcBalance, usdBalance }: PropTypes) => {
   const [selectedRange, setRange] = useState(ranges[0])
   let btcStats: StatisticType = { symbol: 'BTC', precision: 8 }
   let usdStats: StatisticType = { symbol: 'USD', precision: 2 }
-
-  const marginBalance = acc.marginBalance
-    ? acc.marginBalance
-    : acc.margin_balance
-  const btcBalance = marginBalance
-  const usdBalance = btcBalance * livePrice
 
   if (selectedRange === 'Since Inception') {
     btcStats = calcEarnings(btcStats, btcBalance, acc.deposit_btc)
@@ -69,7 +64,7 @@ const AccCardStatistics = ({ acc, livePrice }: PropTypes) => {
   )
 
   return (
-    <Card>
+    <Card style={{ marginTop: '5px', marginBottom: '5px' }}>
       <Dropdown overlay={menu}>
         <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
           {selectedRange}
