@@ -27,11 +27,11 @@ const AccCardOverview = ({
 
   const leverage =
     isLoaded(acc.currentQty) && isLoaded(usdBalance)
-      ? `${Math.abs(acc.currentQty / usdBalance).toFixed(2)} x`
+      ? `${Math.abs(acc.currentQty / usdBalance).toFixed(2)}x`
       : spinner
 
   const liquidationPrice = isLoaded(acc.liquidationPrice)
-    ? acc.liquidationPrice
+    ? `USD ${acc.liquidationPrice} `
     : spinner
 
   const liquidationDistanceAbs =

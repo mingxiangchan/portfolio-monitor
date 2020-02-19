@@ -20,7 +20,7 @@ const AccUpdateForm = Form.create<UpdateModalFormProps>(formOpts)(
       const { name, deposit_usd, deposit_btc, notes, is_testnet } = acc
       form.setFieldsValue({
         name,
-        deposit_btc: deposit_btc / 100000000,
+        deposit_btc: deposit_btc,
         deposit_usd: deposit_usd / 100,
         notes,
         is_testnet,
