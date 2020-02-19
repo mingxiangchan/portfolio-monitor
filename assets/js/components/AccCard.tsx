@@ -7,6 +7,7 @@ import BitmexContext from '../context/BitmexContext'
 import DashboardContext from '../context/DashboardContext'
 import AccDeleteButton from './AccDeleteButton'
 import AccCardStatistics from './AccCardStatistics'
+import AccCardOverview from './AccCardOverview'
 
 const AccCard: React.FunctionComponent<AccPropTypes> = ({
   acc,
@@ -31,6 +32,7 @@ const AccCard: React.FunctionComponent<AccPropTypes> = ({
       {pendingFirstQuery ? <Tag color="blue">Pending First Query</Tag> : null}
       {acc.detected_invalid ? <Tag color="red">Invalid Credentials</Tag> : null}
       <AccCardStatistics acc={acc} livePrice={livePrice} />
+      <AccCardOverview />
       <Descriptions size="small">
         <Descriptions.Item span={3} label="Paper gains">
           {acc.unrealisedPnl ? acc.unrealisedPnl.toFixed(8) : 'NA'}
