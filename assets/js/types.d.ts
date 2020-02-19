@@ -46,9 +46,9 @@ export interface BitmexAcc {
   btc_price_1_day?: number
   btc_price_7_days?: number
   btc_price_30_days?: number
-  fiatBal1?:number
-  fiatBal7?:number
-  fiatBal30?:number
+  fiatBal1?: number
+  fiatBal7?: number
+  fiatBal30?: number
   // comes from bitmex WS
   unrealisedPnl?: number
   currentQty?: number
@@ -73,4 +73,12 @@ export interface CummulativeTotal {
 
 export interface CummulativeTotals {
   [key: string]: CummulativeTotal
+}
+
+export interface StatisticType {
+  percentValue?: number
+  absoluteValue?: number
+  isPositive?: boolean
+  symbol: string
+  precision: number
 }
