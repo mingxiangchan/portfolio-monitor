@@ -17,6 +17,7 @@ defmodule PortfolioMonitorWeb.UserSocket do
   def id(socket), do: "user_socket:#{socket.assigns.user.id}"
 
   defp find_user(token) do
+    # failure will return {:error, [message: "Invalid token", claim: "exp", claim_val: 1582180485]}
     with {:ok, results} <- Account.Token.verify_and_validate(token),
          %{"user_id" => user_id} <- results do
       {:ok, Account.find_user(user_id)}
