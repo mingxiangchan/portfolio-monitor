@@ -19,21 +19,21 @@ const setFallbackValues = acc => {
   } = acc
 
   if (acc.wallet_balance_1_day) {
-    acc.fiatBal1 = wallet_balance_1_day * btc_price_1_day
+    acc.fiatBal1 = wallet_balance_1_day * btc_price_1_day * 100
   } else {
     acc.wallet_balance_1_day = deposit_btc
     acc.fiatBal1 = deposit_usd
   }
 
   if (acc.wallet_balance_7_days) {
-    acc.fiatBal7 = wallet_balance_7_days * btc_price_7_days
+    acc.fiatBal7 = wallet_balance_7_days * btc_price_7_days * 100
   } else {
     acc.wallet_balance_7_days = deposit_btc
     acc.fiatBal7 = deposit_usd
   }
 
   if (acc.wallet_balance_30_days) {
-    acc.fiatBal30 = wallet_balance_30_days * btc_price_30_days
+    acc.fiatBal30 = wallet_balance_30_days * btc_price_30_days * 100
   } else {
     acc.wallet_balance_30_days = deposit_btc
     acc.fiatBal30 = deposit_usd
