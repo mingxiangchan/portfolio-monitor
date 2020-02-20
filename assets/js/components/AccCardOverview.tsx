@@ -1,5 +1,5 @@
 import React from 'react'
-import { Card, Row, Col, Typography, Descriptions, Icon } from 'antd'
+import { Card, Row, Col, Typography, Descriptions } from 'antd'
 import { BitmexAcc } from '../types'
 
 const { Title, Paragraph, Text } = Typography
@@ -41,7 +41,7 @@ const AccCardOverview = ({
 
   const liquidationDistancePer =
     isLoaded(acc.liquidationPrice) && isLoaded(livePrice)
-      ? ((liquidationDistanceAbs / acc.liquidationPrice) * 100).toFixed(2)
+      ? ((liquidationDistanceAbs / livePrice) * 100).toFixed(2)
       : spinner
 
   const avgEntryPrice = isLoaded(acc.avgEntryPrice)
@@ -54,23 +54,23 @@ const AccCardOverview = ({
     <Card>
       <Row>
         <Col span={24}>
-          <Title level={4} style={{ textAlign: 'center' }}>
+          <Paragraph strong style={{ fontSize: '18px', textAlign: 'center' }}>
             USD {usdBalance.toFixed(2)} / BTC {btcBalance}
-          </Title>
+          </Paragraph>
           <p style={{ textAlign: 'right' }}>Balance</p>
         </Col>
       </Row>
       <Row>
         <Col span={16}>
-          <Title level={4} style={{ textAlign: 'center' }}>
+          <Paragraph strong style={{ fontSize: '18px', textAlign: 'center' }}>
             {openPos}
-          </Title>
+          </Paragraph>
           <p style={{ textAlign: 'right' }}>Open Position</p>
         </Col>
         <Col span={8}>
-          <Title level={4} style={{ textAlign: 'center' }}>
+          <Paragraph strong style={{ fontSize: '18px', textAlign: 'center' }}>
             {leverage}
-          </Title>
+          </Paragraph>
           <p style={{ textAlign: 'right' }}>Leverage</p>
         </Col>
       </Row>
