@@ -1,14 +1,29 @@
-import React, { useEffect, useState } from 'react'
-import { notification, message } from 'antd'
+import React, {useEffect, useState} from 'react'
+import {notification, message} from 'antd'
 import {
   BitmexAccsState,
   BitmexAcc,
   BitmexWsMarginDetails,
   BitmexWsPositionDetails,
+  HistoricalData,
 } from '../types'
-import { afterJoinedAccChannel } from '../socket'
+import {afterJoinedAccChannel} from '../socket'
 
 const AccountsContext = React.createContext(null)
+
+const getPastBalance = (
+  historicalData: HistoricalData[],
+  numPrevDays: number,
+): HistoricalData => {
+  const targetIdx = historicalData.length - 1 - numPrevDays
+  const target = historicalData[targetIdx]
+
+  if (!target) {
+    return historicalData[0]
+  }
+
+  return target
+}
 
 const initializeAccDetails = (acc: BitmexAcc): BitmexAcc => {
   return {
@@ -18,9 +33,9 @@ const initializeAccDetails = (acc: BitmexAcc): BitmexAcc => {
     walletBalance: acc.historical_data[0].wallet_balance_btc,
     fiatBalance: acc.historical_data[0].wallet_balance_usd,
     pendingFirstQuery: acc.historical_data.length === 1,
-    balance1day: null,
-    balance7days: null,
-    balance30days: null,
+    balance1day: getPastBalance(acc.historical_data, 1),
+    balance7days: getPastBalance(acc.historical_data, 1),
+    balance30days: getPastBalance(acc.historical_data, 1),
 
     currentQty: null,
     lastPrice: null,
@@ -29,7 +44,7 @@ const initializeAccDetails = (acc: BitmexAcc): BitmexAcc => {
   }
 }
 
-const onGetAccs = ({ accs }, setAccs) => {
+const onGetAccs = ({accs}, setAccs) => {
   const formatedAccs = {}
   for (const id in accs) {
     const acc = accs[id]
@@ -44,27 +59,25 @@ const onGetAccs = ({ accs }, setAccs) => {
   })
 }
 
-const onAccUpdate = ({ acc }, setAccs) => {
+const onAccUpdate = ({acc}, setAccs) => {
   setAccs((prevAccs: BitmexAccsState) => {
     const oldAcc = prevAccs[acc.id]
 
-    return { ...prevAccs, [acc.id]: { ...oldAcc, ...acc } }
+    return {...prevAccs, [acc.id]: {...oldAcc, ...acc}}
   })
 }
 
-const onAccDeleted = ({ acc }, setAccs) => {
+const onAccDeleted = ({acc}, setAccs) => {
   setAccs((prevAccs: BitmexAccsState) => {
     message.warning(`Deleted account with ID: ${acc.id}`)
     delete prevAccs[acc.id]
-    return { ...prevAccs }
+    return {...prevAccs}
   })
 }
 
 const onWsMargin = (resp: BitmexWsMarginDetails, setAccs) => {
   const id = resp.acc_id
-  const { unrealisedPnl, walletBalance, marginBalance } = resp.data[0]
-
-  console.log(marginBalance)
+  const {unrealisedPnl, walletBalance, marginBalance} = resp.data[0]
 
   setAccs((prevAccs: BitmexAccsState) => {
     const oldAcc = prevAccs[id]
@@ -73,22 +86,22 @@ const onWsMargin = (resp: BitmexWsMarginDetails, setAccs) => {
     if (oldAcc) {
       const updatedAcc = {
         ...oldAcc,
-        ...(unrealisedPnl && { unrealisedPnl }),
-        ...(walletBalance && { walletBalance }),
-        ...(marginBalance && { marginBalance }),
+        ...(unrealisedPnl && {unrealisedPnl}),
+        ...(walletBalance && {walletBalance}),
+        ...(marginBalance && {marginBalance}),
       }
 
-      return { ...prevAccs, [id]: updatedAcc }
+      return {...prevAccs, [id]: updatedAcc}
     } else {
       delete prevAccs[id]
-      return { ...prevAccs }
+      return {...prevAccs}
     }
   })
 }
 
 const onWsPosition = (resp: BitmexWsPositionDetails, setAccs) => {
   const id = resp.acc_id
-  const { currentQty, liquidationPrice, avgEntryPrice } = resp.data[0]
+  const {currentQty, liquidationPrice, avgEntryPrice} = resp.data[0]
 
   setAccs((prevAccs: BitmexAccsState) => {
     const oldAcc = prevAccs[id]
@@ -99,13 +112,13 @@ const onWsPosition = (resp: BitmexWsPositionDetails, setAccs) => {
         ...oldAcc,
         currentQty,
         liquidationPrice: liquidationPrice * 100,
-        avgEntryPrice: avgEntryPrice && { avgEntryPriceCents },
+        avgEntryPrice: avgEntryPrice && {avgEntryPriceCents},
       }
 
-      return { ...prevAccs, [id]: updatedAcc }
+      return {...prevAccs, [id]: updatedAcc}
     } else {
       delete prevAccs[id]
-      return { ...prevAccs }
+      return {...prevAccs}
     }
   })
 }
@@ -115,7 +128,7 @@ export const AccountsContextProvider = ({
 }: React.PropsWithChildren<{}>) => {
   const [accounts, setAccs] = useState<BitmexAccsState>(null)
   useEffect(() => {
-    notification.info({ message: 'Loading Accounts' })
+    notification.info({message: 'Loading Accounts'})
 
     afterJoinedAccChannel(accChannel => {
       accChannel
@@ -130,7 +143,7 @@ export const AccountsContextProvider = ({
   }, [])
 
   return (
-    <AccountsContext.Provider value={{ accounts }}>
+    <AccountsContext.Provider value={{accounts}}>
       {children}
     </AccountsContext.Provider>
   )

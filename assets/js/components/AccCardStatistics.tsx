@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import { Card, Menu, Icon, Dropdown, Row, Col } from 'antd'
-import { BitmexAcc, StatisticType } from '../types'
+import { BitmexAcc, StatisticType, HistoricalData } from '../types'
 import AccCardStatisticsItem from './AccCardStatisticsItem'
+import { satToBtc, centsToFiat } from '../utils/priceFormat'
 
 const ranges = [
   'Since Inception',
@@ -25,11 +26,6 @@ const calcEarnings = (
   stats.percentValue = (stats.absoluteValue / pastVal) * 100
   stats.isPositive = stats.absoluteValue >= 0
 
-  if (stats.symbol === 'USD') {
-    // handle cents
-    stats.absoluteValue = stats.absoluteValue / 100
-  }
-
   return stats
 }
 
@@ -39,19 +35,27 @@ const AccCardStatistics = ({ acc, btcBalance, usdBalance }: PropTypes) => {
   let usdStats: StatisticType = { symbol: 'USD', precision: 2 }
 
   // server side results are in cents
+  let history: HistoricalData
   if (selectedRange === 'Since Inception') {
-    btcStats = calcEarnings(btcStats, btcBalance, acc.deposit_btc)
-    usdStats = calcEarnings(usdStats, usdBalance, acc.deposit_usd)
+    history = acc.historical_data[0]
   } else if (selectedRange === 'Since This Month') {
-    btcStats = calcEarnings(btcStats, btcBalance, 0)
-    usdStats = calcEarnings(usdStats, usdBalance, 0)
+    history = acc.balance30days
   } else if (selectedRange === 'Since This Week') {
-    btcStats = calcEarnings(btcStats, btcBalance, 0)
-    usdStats = calcEarnings(usdStats, usdBalance, 0)
+    history = acc.balance7days
   } else if (selectedRange === 'Since Yesterday') {
-    btcStats = calcEarnings(btcStats, btcBalance, 0)
-    usdStats = calcEarnings(usdStats, usdBalance, 0)
+    history = acc.balance1day
   }
+
+  btcStats = calcEarnings(
+    btcStats,
+    btcBalance,
+    satToBtc(history.wallet_balance_btc),
+  )
+  usdStats = calcEarnings(
+    usdStats,
+    centsToFiat(usdBalance),
+    centsToFiat(history.wallet_balance_usd),
+  )
 
   const menu = (
     <Menu>

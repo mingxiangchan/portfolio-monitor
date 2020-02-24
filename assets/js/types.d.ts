@@ -44,9 +44,9 @@ export interface BitmexAcc {
   // state maintained on FE
   pendingFirstQuery: boolean
   avgEntryPrice: number
-  balance1day: number
-  balance7days: number
-  balance30days: number
+  balance1day: HistoricalData
+  balance7days: HistoricalData
+  balance30days: HistoricalData
   currentQty: number
   fiatBalance: number
   lastPrice: number

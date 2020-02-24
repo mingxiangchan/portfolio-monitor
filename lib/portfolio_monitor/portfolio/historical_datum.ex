@@ -35,7 +35,7 @@ defimpl Jason.Encoder, for: PortfolioMonitor.Portfolio.HistoricalDatum do
       row.wallet_balance
       # convert from satoshis to BTC
       |> D.div(100_000_000)
-      |> D.mult(row.wallet_balance)
+      |> D.mult(row.btc_price)
       # convert from USD to USD cents
       |> D.mult(100)
       |> D.round(0, :down)
