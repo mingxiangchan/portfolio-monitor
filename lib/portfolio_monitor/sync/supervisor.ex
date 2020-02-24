@@ -1,5 +1,4 @@
 defmodule PortfolioMonitor.Sync.Supervisor do
-  alias PortfolioMonitor.Sync.Worker
   alias PortfolioMonitor.Sync.GeneralBtcInfoWorker
 
   use DynamicSupervisor
