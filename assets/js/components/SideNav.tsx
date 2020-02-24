@@ -5,6 +5,7 @@ import AccCreateModal from './AccCreateModal'
 import DashboardContext from '../context/DashboardContext'
 import BitmexContext from '../context/BitmexContext'
 import axios from 'axios'
+import { centsToFiat } from '../utils/priceFormat'
 
 const { Title } = Typography
 const { Sider } = Layout
@@ -66,10 +67,10 @@ const SideNav: React.FunctionComponent = () => {
             {'TESTNET'}
           </Title>
           <p style={{ color: 'white' }}>
-            {testPriceDiffAbs} ({testPriceDiffPer}%)
+            {centsToFiat(testPriceDiffAbs)} ({testPriceDiffPer}%)
           </p>
           <Title level={3} style={{ color: 'white', marginBottom: '20px' }}>
-            {testPrice.toFixed(1)}
+            {centsToFiat(testPrice).toFixed(1)}
           </Title>
         </>
       ) : (
@@ -78,10 +79,10 @@ const SideNav: React.FunctionComponent = () => {
             {'LIVE'}
           </Title>
           <p style={{ color: 'white' }}>
-            {realPriceDiffAbs} ({realPriceDiffPer}%)
+            {centsToFiat(realPriceDiffAbs)} ({realPriceDiffPer}%)
           </p>
           <Title level={3} style={{ color: 'white' }}>
-            {realPrice.toFixed(1)}
+            {centsToFiat(realPrice).toFixed(1)}
           </Title>
         </>
       )}
@@ -99,7 +100,9 @@ const SideNav: React.FunctionComponent = () => {
       <form action="/session" method="POST" id="">
         <input name="_method" type="hidden" value="delete" />
         <input type="hidden" name="_csrf_token" value={window.csrfToken} />
-        <button className="ant-btn ant-btn-danger" type="submit">Log Out</button>
+        <button className="ant-btn ant-btn-danger" type="submit">
+          Log Out
+        </button>
       </form>
     </Sider>
   )

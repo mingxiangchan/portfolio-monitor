@@ -39,20 +39,18 @@ const AccCardStatistics = ({ acc, btcBalance, usdBalance }: PropTypes) => {
   let usdStats: StatisticType = { symbol: 'USD', precision: 2 }
 
   // server side results are in cents
-  const usdBalanceCents = usdBalance * 100
-
   if (selectedRange === 'Since Inception') {
     btcStats = calcEarnings(btcStats, btcBalance, acc.deposit_btc)
-    usdStats = calcEarnings(usdStats, usdBalanceCents, acc.deposit_usd)
+    usdStats = calcEarnings(usdStats, usdBalance, acc.deposit_usd)
   } else if (selectedRange === 'Since This Month') {
-    btcStats = calcEarnings(btcStats, btcBalance, acc.wallet_balance_30_days)
-    usdStats = calcEarnings(usdStats, usdBalanceCents, acc.fiatBal30)
+    btcStats = calcEarnings(btcStats, btcBalance, 0)
+    usdStats = calcEarnings(usdStats, usdBalance, 0)
   } else if (selectedRange === 'Since This Week') {
-    btcStats = calcEarnings(btcStats, btcBalance, acc.wallet_balance_7_days)
-    usdStats = calcEarnings(usdStats, usdBalanceCents, acc.fiatBal7)
+    btcStats = calcEarnings(btcStats, btcBalance, 0)
+    usdStats = calcEarnings(usdStats, usdBalance, 0)
   } else if (selectedRange === 'Since Yesterday') {
-    btcStats = calcEarnings(btcStats, btcBalance, acc.wallet_balance_1_day)
-    usdStats = calcEarnings(usdStats, usdBalanceCents, acc.fiatBal1)
+    btcStats = calcEarnings(btcStats, btcBalance, 0)
+    usdStats = calcEarnings(usdStats, usdBalance, 0)
   }
 
   const menu = (

@@ -1,6 +1,7 @@
 import React from 'react'
 import { Card, Row, Col, Typography, Descriptions } from 'antd'
 import { BitmexAcc } from '../types'
+import { centsToFiat } from '../utils/priceFormat'
 
 const { Title, Paragraph, Text } = Typography
 
@@ -30,22 +31,23 @@ const AccCardOverview = ({
       ? `${Math.abs(acc.currentQty / usdBalance).toFixed(2)}x`
       : spinner
 
-  const liquidationPrice = isLoaded(acc.liquidationPrice)
-    ? `USD ${acc.liquidationPrice} `
-    : spinner
+  const lPrice = centsToFiat(acc.liquidationPrice)
+  const lDistanceAbs = centsToFiat(acc.liquidationPrice - livePrice)
+  const lDistancePer = (lDistanceAbs / centsToFiat(livePrice)) * 100
 
-  const liquidationDistanceAbs =
-    isLoaded(acc.liquidationPrice) && isLoaded(livePrice)
-      ? acc.liquidationPrice - livePrice
-      : spinner
-
-  const liquidationDistancePer =
-    isLoaded(acc.liquidationPrice) && isLoaded(livePrice)
-      ? ((liquidationDistanceAbs / livePrice) * 100).toFixed(2)
-      : spinner
+  const liquidationPriceSection =
+    isLoaded(acc.liquidationPrice) && isLoaded(livePrice) ? (
+      <>
+        USD {lPrice} / {lDistanceAbs} / {lDistancePer.toFixed(2)} %
+      </>
+    ) : (
+      <>
+        {spinner} / {spinner} / {spinner} %
+      </>
+    )
 
   const avgEntryPrice = isLoaded(acc.avgEntryPrice)
-    ? `USD ${acc.avgEntryPrice}`
+    ? `USD ${centsToFiat(acc.avgEntryPrice)}`
     : spinner
 
   const notes = isLoaded(acc.notes) ? acc.notes : spinner
@@ -55,7 +57,7 @@ const AccCardOverview = ({
       <Row>
         <Col span={24}>
           <Paragraph strong style={{ fontSize: '18px', textAlign: 'center' }}>
-            USD {usdBalance.toFixed(2)} / BTC {btcBalance}
+            USD {centsToFiat(usdBalance).toFixed(2)} / BTC {btcBalance}
           </Paragraph>
           <p style={{ textAlign: 'right' }}>Balance</p>
         </Col>
@@ -78,8 +80,7 @@ const AccCardOverview = ({
         <Col span={24}>
           <Descriptions column={1}>
             <Descriptions.Item label="Liquidation">
-              {liquidationPrice} / {liquidationDistanceAbs} /{' '}
-              {liquidationDistancePer} %
+              {liquidationPriceSection}
             </Descriptions.Item>
             <Descriptions.Item label="Avg Entry Price">
               {avgEntryPrice}

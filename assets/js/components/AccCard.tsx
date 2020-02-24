@@ -8,6 +8,7 @@ import DashboardContext from '../context/DashboardContext'
 import AccDeleteButton from './AccDeleteButton'
 import AccCardStatistics from './AccCardStatistics'
 import AccCardOverview from './AccCardOverview'
+import { satToBtc } from '../utils/priceFormat'
 
 const { Title } = Typography
 
@@ -17,12 +18,10 @@ const AccCard: React.FunctionComponent<AccPropTypes> = ({
   const { testPrice, realPrice } = useContext(BitmexContext)
   const { testnet } = useContext(DashboardContext)
 
-  const pendingFirstQuery = acc.historical_data.length === 0
   const livePrice = testnet ? testPrice : realPrice
-
-  const btcBalance = acc.marginBalance ? acc.marginBalance : acc.margin_balance
-  // livePrice is in USD, convert to cents
+  const btcBalance = satToBtc(acc.marginBalance)
   const usdBalance = btcBalance * livePrice
+  console.log(livePrice)
 
   return (
     <Card
@@ -33,7 +32,9 @@ const AccCard: React.FunctionComponent<AccPropTypes> = ({
     >
       <Title level={3}>{acc.name}</Title>
       {acc.is_testnet ? <Tag>Test</Tag> : <Tag>Live</Tag>}
-      {pendingFirstQuery ? <Tag color="blue">Pending First Query</Tag> : null}
+      {acc.pendingFirstQuery ? (
+        <Tag color="blue">Pending First Query</Tag>
+      ) : null}
       {acc.detected_invalid ? <Tag color="red">Invalid Credentials</Tag> : null}
       <AccCardStatistics
         acc={acc}

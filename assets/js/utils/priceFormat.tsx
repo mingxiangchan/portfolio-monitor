@@ -1,6 +1,9 @@
 import React from 'react'
 import { Spin } from 'antd'
 
+export const centsToFiat = (val: number) => val / 100
+export const satToBtc = (val: number) => val / 100000000
+
 export const formatEarnings = (
   btcT0: number,
   btcT1: number,

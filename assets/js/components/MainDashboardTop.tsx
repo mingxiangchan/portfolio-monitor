@@ -38,22 +38,15 @@ const MainDashboardTop: React.FunctionComponent<PropTypes> = ({
 
   for (const acc of accs) {
     const {
-      wallet_balance_30_days,
-      wallet_balance_7_days,
-      wallet_balance_1_day,
-      wallet_balance_now,
       deposit_btc,
       deposit_usd,
+      avgEntryPrice,
       currentQty,
       marginBalance,
+      walletBalance,
       unrealisedPnl,
       liquidationPrice,
-      avgEntryPrice,
-      avg_entry_price,
       name,
-      fiatBal1,
-      fiatBal7,
-      fiatBal30,
     } = acc
 
     const currentLiqPriceGap =
@@ -61,33 +54,27 @@ const MainDashboardTop: React.FunctionComponent<PropTypes> = ({
         ? Math.abs(liquidationPrice - price)
         : liqPriceGap
     const smallerLiqPrice = currentLiqPriceGap < liqPriceGap
-    const entryPrice = avgEntryPrice
-      ? avgEntryPrice
-      : avg_entry_price
-      ? parseFloat(avg_entry_price)
-      : 0
 
-    mBalance =
-      mBalance + parseFloat(marginBalance ? marginBalance : acc.margin_balance)
+    mBalance += marginBalance
+    balance += walletBalance
+    start += deposit_btc
+    startUSD += deposit_usd
+    priceDay += 0
+    price7 += 0
+    price30 += 0
+    cFiatBal1 += 0
+    cFiatBal7 += 0
+    cFiatBal30 += 0
+    entry += avgEntryPrice
+    entryCount += avgEntryPrice ? 1 : 0
     pnl = unrealisedPnl ? pnl + unrealisedPnl : pnl
     qty = currentQty ? qty + currentQty : qty
-    balance = balance + wallet_balance_now
-    start = start + deposit_btc
-    startUSD = startUSD + deposit_usd / 100
     liqPrice = smallerLiqPrice ? liquidationPrice : liqPrice
     liqPriceGap = smallerLiqPrice ? currentLiqPriceGap : liqPriceGap
-    priceDay = priceDay + wallet_balance_1_day
-    price7 = price7 + wallet_balance_7_days
-    price30 = price30 + wallet_balance_30_days
-    cFiatBal1 = cFiatBal1 + fiatBal1
-    cFiatBal7 = cFiatBal7 + fiatBal7
-    cFiatBal30 = cFiatBal30 + fiatBal30
-    entry = entry + entryPrice
     liqAcc = smallerLiqPrice ? name : liqAcc
-    entryCount = entryCount + (entryPrice ? 1 : 0)
   }
 
-  const fiatBalance = (mBalance / 10 ** 8) * price
+  const fiatBalance = mBalance * price
   const leverage = Math.abs(qty / fiatBalance)
 
   return (

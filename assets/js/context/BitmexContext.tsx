@@ -18,21 +18,21 @@ export const BitmexContextProvider: React.FunctionComponent<PropTypes> = ({
   useEffect(() => {
     afterJoinedGeneralChannel(generalChannel => {
       generalChannel.push('get_opening_price').receive('ok', resp => {
-        changeOpenTestPrice(resp.opening_test_price)
-        changeOpenRealPrice(resp.opening_real_price)
+        changeOpenTestPrice(resp.opening_test_price * 100)
+        changeOpenRealPrice(resp.opening_real_price * 100)
         // set testPrice and realPrice one-time
-        changeTestPrice(parseFloat(resp.opening_test_price))
-        changeTestPrice(parseFloat(resp.opening_real_price))
+        changeTestPrice(parseFloat(resp.opening_test_price) * 100)
+        changeTestPrice(parseFloat(resp.opening_real_price) * 100)
       })
 
       generalChannel.on('testnet_price', resp => {
         const newPrice: number = resp.data.data[0].price
-        changeTestPrice(newPrice)
+        changeTestPrice(newPrice * 100)
       })
 
       generalChannel.on('livenet_price', resp => {
         const newPrice: number = resp.data.data[0].price
-        changeRealPrice(newPrice)
+        changeRealPrice(newPrice * 100)
       })
     })
   }, [])
