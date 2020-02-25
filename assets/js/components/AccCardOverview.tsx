@@ -23,7 +23,7 @@ const AccCardOverview = ({ acc }: PropTypes) => {
   } = acc.calculated
 
   return (
-    <Card>
+    <>
       <Row>
         <Col span={24}>
           <Paragraph strong style={{ fontSize: '18px', textAlign: 'center' }}>
@@ -69,7 +69,7 @@ const AccCardOverview = ({ acc }: PropTypes) => {
           </Descriptions>
         </Col>
       </Row>
-    </Card>
+    </>
   )
 }
 

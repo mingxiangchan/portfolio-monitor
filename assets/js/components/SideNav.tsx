@@ -1,18 +1,88 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { Layout, Typography, Switch, Divider, Spin } from 'antd'
+import { Typography, Switch, Divider } from 'antd'
+import styled from 'styled-components'
 import moment from 'moment'
 import AccCreateModal from './AccCreateModal'
 import { DashboardContext } from '../context/DashboardContext'
 import { BitmexContext } from '../context/BitmexContext'
-import axios from 'axios'
 import { centsToFiat } from '../utils/priceFormat'
 
-const { Title } = Typography
-const { Sider } = Layout
+const { Text, Title } = Typography
+
+const StyledSider = styled.div`
+  /* position: relative; */
+  height: 100%;
+
+  .ant-switch {
+    background-color: #d27070;
+  }
+
+  .ant-switch-checked {
+    background-color: #279a27;
+  }
+
+  .ant-typography {
+    &.clock,
+    &.date {
+      color: #c1c1c1;
+      margin-top: 20px;
+      margin-bottom: 15px;
+    }
+
+    &.date {
+      font-weight: 300;
+    }
+
+    &.clock {
+      margin-top: 10px;
+      margin-bottom: 20px;
+      font-weight: 200;
+    }
+  }
+
+  .ant-typography.date {
+  }
+
+  .header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1rem;
+
+    img {
+      height: 50px;
+    }
+
+    .testnet,
+    .live {
+      font-size: 1.5rem;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .testnet {
+      color: #ff9393;
+    }
+
+    .live {
+      color: #87fb87;
+    }
+  }
+`
+
+const PriceDisplay = styled.section`
+  color: ${props => (props.positive ? '#87fb87' : '#ff2929')};
+  p {
+    margin: 0;
+  }
+  .price {
+    color: white;
+    font-size: 2rem;
+  }
+`
 
 const SideNav: React.FunctionComponent = () => {
   const [time, changeTime] = useState(moment())
-  const [email, changeEmail] = useState(null)
   const prices = useContext(BitmexContext)
   const { testPrice, livePrice, openTestPrice, openLivePrice } =
     prices['XBTUSD'] || {}
@@ -23,12 +93,6 @@ const SideNav: React.FunctionComponent = () => {
 
   const livePriceDiffAbs = livePrice - openLivePrice
   const livePriceDiffPer = ((livePriceDiffAbs / openLivePrice) * 100).toFixed(2)
-
-  if (!email) {
-    axios.get('/api/current_user', { withCredentials: true }).then(resp => {
-      changeEmail(resp.data.data.email)
-    })
-  }
 
   useEffect(() => {
     const int = setInterval(() => {
@@ -41,51 +105,15 @@ const SideNav: React.FunctionComponent = () => {
   }, [])
 
   return (
-    <Sider
-      width={200}
-      style={{
-        overflow: 'auto',
-        height: '100vh',
-        position: 'fixed',
-        left: 0,
-        textAlign: 'center',
-        padding: '20px',
-      }}
-    >
-      <Title level={2} style={{ color: 'white' }}>
-        {email ? email : <Spin />}
-      </Title>
-      <Title level={3} style={{ color: 'white' }}>
-        {time.format('h:mm:ss A')}
-      </Title>
-      <Title level={3} style={{ color: 'white', marginBottom: '20px' }}>
-        {time.format('MMM DD, YYYY')}
-      </Title>
-      {testnet ? (
-        <>
-          <Title level={4} style={{ color: 'red' }}>
-            {'TESTNET'}
-          </Title>
-          <p style={{ color: 'white' }}>
-            {centsToFiat(testPriceDiffAbs)} ({testPriceDiffPer}%)
-          </p>
-          <Title level={3} style={{ color: 'white', marginBottom: '20px' }}>
-            {centsToFiat(testPrice).toFixed(1)}
-          </Title>
-        </>
-      ) : (
-        <>
-          <Title level={4} style={{ color: 'green' }}>
-            {'LIVE'}
-          </Title>
-          <p style={{ color: 'white' }}>
-            {centsToFiat(livePriceDiffAbs)} ({livePriceDiffPer}%)
-          </p>
-          <Title level={3} style={{ color: 'white' }}>
-            {centsToFiat(livePrice).toFixed(1)}
-          </Title>
-        </>
-      )}
+    <StyledSider>
+      <div className="header">
+        <img src="/images/bitmex-logo.png" />
+        {testnet ? (
+          <div className="testnet">Testnet</div>
+        ) : (
+          <div className="live">LIVE</div>
+        )}
+      </div>
       <Switch
         defaultChecked={!testnet}
         unCheckedChildren="Test"
@@ -94,17 +122,29 @@ const SideNav: React.FunctionComponent = () => {
           setTestnet(!actual)
         }}
       />
-      <Divider />
+      <Title className="date" level={4}>
+        {time.format('MMM DD, YYYY')}
+      </Title>
+      <Title className="clock" level={4}>
+        {time.format('h:mm:ss A')}
+      </Title>
+      <Divider style={{ background: '#757575' }} />
+      <PriceDisplay
+        positive={testnet ? testPriceDiffAbs >= 0 : realPriceDiffAbs >= 0}
+      >
+        <p className="diff">
+          {testnet
+            ? `${centsToFiat(testPriceDiffAbs)} (${testPriceDiffPer}%)`
+            : `${centsToFiat(realPriceDiffAbs)} (${realPriceDiffPer}%)`}
+        </p>
+        <p className="price">
+          {testnet ? centsToFiat(testPrice).toFixed(1) : centsToFiat(realPrice).toFixed(1)}
+        </p>
+      </PriceDisplay>
+
       <AccCreateModal />
       <br />
-      <form action="/session" method="POST" id="">
-        <input name="_method" type="hidden" value="delete" />
-        <input type="hidden" name="_csrf_token" value={window.csrfToken} />
-        <button className="ant-btn ant-btn-danger" type="submit">
-          Log Out
-        </button>
-      </form>
-    </Sider>
+    </StyledSider>
   )
 }
 

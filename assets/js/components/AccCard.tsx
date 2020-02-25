@@ -11,11 +11,26 @@ const { Title } = Typography
 
 const AccCard = ({ acc }: AccPropTypes) => {
   return (
-    <Card
+    <List.Item
       actions={[
-        <AccDeleteButton acc={acc} key={`delete-${acc.id}`} />,
-        <AccUpdateModal acc={acc} key={`update-${acc.id}`} />,
+        <Icon type="edit" key="edit" />,
+        <Icon type="delete" key="delete" />,
       ]}
+      extra={
+        <Row>
+          <Col span={12}>
+            <AccCardOverview
+              acc={acc}
+              btcBalance={btcBalance}
+              usdBalance={usdBalance}
+              livePrice={livePrice}
+            />
+          </Col>
+          <Col span={12}>
+            <CardChart acc={acc} />
+          </Col>
+        </Row>
+      }
     >
       <Title level={3}>{acc.name}</Title>
       {acc.is_testnet ? <Tag>Test</Tag> : <Tag>Live</Tag>}

@@ -83,26 +83,23 @@ const MainDashboardTop: React.FunctionComponent<PropTypes> = ({
       type="flex"
       style={{
         width: '100%',
-        borderBottom: '1px solid #383838',
         paddingBottom: '5px',
         marginBottom: '5px',
         maxHeight: '45vh',
       }}
     >
-      <Card>
-        <Col span={11}>
+      <Col span={10}>
+        <Card style={{ height: '100%', marginRight: '10px' }}>
           <CummulativeChart
             accs={accs}
             livePrice={price}
             cummulativeBalance={balance}
           />
-        </Col>
-        <Col span={12} offset={1}>
-          <Descriptions
-            column={{ md: 1, lg: 2 }}
-            size="small"
-            title="Cumulative"
-          >
+        </Card>
+      </Col>
+      <Col span={14} offset={0}>
+        <Card title="Cumulative" style={{ height: '100%' }}>
+          <Descriptions column={{ md: 1, lg: 2 }} size="small">
             <Descriptions.Item label="Return since inception">
               {formatEarnings(startBtc, mBalance, startFiat, price)}
             </Descriptions.Item>
@@ -135,8 +132,8 @@ const MainDashboardTop: React.FunctionComponent<PropTypes> = ({
               {centsToFiat(satToBtc(mBalance) * price).toFixed(2)}
             </Descriptions.Item>
           </Descriptions>
-        </Col>
-      </Card>
+        </Card>
+      </Col>
     </Row>
   )
 }
