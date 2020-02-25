@@ -13,14 +13,18 @@ const AccCardStatisticsItem = ({ stats }: PropTypes) => (
       precision={2}
       suffix="%"
       valueStyle={
-        stats.isPositive ? { color: '#3f8600' } : { color: '#cf1322' }
+        stats.absoluteValue >= 0 ? { color: '#3f8600' } : { color: '#cf1322' }
       }
       prefix={
-        stats.isPositive ? <Icon type="arrow-up" /> : <Icon type="arrow-down" />
+        stats.absoluteValue >= 0 ? (
+          <Icon type="arrow-up" />
+        ) : (
+          <Icon type="arrow-down" />
+        )
       }
     />
     <p>
-      {stats.isPositive} {stats.symbol}{' '}
+      {stats.absoluteValue >= 0} {stats.symbol}{' '}
       {stats.absoluteValue.toFixed(stats.precision)}
     </p>
   </>

@@ -2,60 +2,32 @@ import React from 'react'
 import { Card, Row, Col, Typography, Descriptions } from 'antd'
 import { BitmexAcc } from '../types'
 
-const { Title, Paragraph, Text } = Typography
+const { Paragraph, Text } = Typography
 
 interface PropTypes {
   acc: BitmexAcc
-  btcBalance: number
-  usdBalance: number
-  livePrice: number
 }
-
-const isLoaded = (val): boolean => val !== null && val !== undefined
 
 const spinner = <Text disabled>NA</Text>
 
-const AccCardOverview = ({
-  acc,
-  btcBalance,
-  usdBalance,
-  livePrice,
-}: PropTypes) => {
-  const openPos = isLoaded(acc.currentQty)
-    ? `${acc.currentQty} / BTC ${(acc.currentQty / livePrice).toFixed(4)}`
-    : spinner
-
-  const leverage =
-    isLoaded(acc.currentQty) && isLoaded(usdBalance)
-      ? `${Math.abs(acc.currentQty / usdBalance).toFixed(2)}x`
-      : spinner
-
-  const liquidationPrice = isLoaded(acc.liquidationPrice)
-    ? `USD ${acc.liquidationPrice} `
-    : spinner
-
-  const liquidationDistanceAbs =
-    isLoaded(acc.liquidationPrice) && isLoaded(livePrice)
-      ? acc.liquidationPrice - livePrice
-      : spinner
-
-  const liquidationDistancePer =
-    isLoaded(acc.liquidationPrice) && isLoaded(livePrice)
-      ? ((liquidationDistanceAbs / livePrice) * 100).toFixed(2)
-      : spinner
-
-  const avgEntryPrice = isLoaded(acc.avgEntryPrice)
-    ? `USD ${acc.avgEntryPrice}`
-    : spinner
-
-  const notes = isLoaded(acc.notes) ? acc.notes : spinner
+const AccCardOverview = ({ acc }: PropTypes) => {
+  const {
+    fiatBalance,
+    btcBalance,
+    openPos,
+    openPosBtc,
+    leverage,
+    liquidationPrice,
+    liquidationDistanceAbs,
+    liquidationDistancePer,
+  } = acc.calculated
 
   return (
     <Card>
       <Row>
         <Col span={24}>
           <Paragraph strong style={{ fontSize: '18px', textAlign: 'center' }}>
-            USD {usdBalance.toFixed(2)} / BTC {btcBalance}
+            USD {fiatBalance.toFixed(2)} / BTC {btcBalance}
           </Paragraph>
           <p style={{ textAlign: 'right' }}>Balance</p>
         </Col>
@@ -63,13 +35,14 @@ const AccCardOverview = ({
       <Row>
         <Col span={16}>
           <Paragraph strong style={{ fontSize: '18px', textAlign: 'center' }}>
-            {openPos}
+            {openPos ? openPos : spinner} /{' '}
+            {openPosBtc ? `BTC ${openPosBtc.toFixed(4)}` : spinner}
           </Paragraph>
           <p style={{ textAlign: 'right' }}>Open Position</p>
         </Col>
         <Col span={8}>
           <Paragraph strong style={{ fontSize: '18px', textAlign: 'center' }}>
-            {leverage}
+            {leverage ? leverage.toFixed(2) : spinner} x
           </Paragraph>
           <p style={{ textAlign: 'right' }}>Leverage</p>
         </Col>
@@ -78,15 +51,19 @@ const AccCardOverview = ({
         <Col span={24}>
           <Descriptions column={1}>
             <Descriptions.Item label="Liquidation">
-              {liquidationPrice} / {liquidationDistanceAbs} /{' '}
-              {liquidationDistancePer} %
+              {liquidationPrice ? `USD ${liquidationPrice}` : spinner} /{' '}
+              {liquidationDistanceAbs ? liquidationDistanceAbs : spinner} /{' '}
+              {liquidationDistancePer
+                ? liquidationDistancePer.toFixed(2)
+                : spinner}{' '}
+              %
             </Descriptions.Item>
             <Descriptions.Item label="Avg Entry Price">
-              {avgEntryPrice}
+              {acc.avgEntryPrice ? `USD ${acc.avgEntryPrice}` : spinner}
             </Descriptions.Item>
             <Descriptions.Item label="Notes">
               <Paragraph ellipsis={{ rows: 2, expandable: true }}>
-                {notes}
+                {acc.notes ? acc.notes : spinner}
               </Paragraph>
             </Descriptions.Item>
           </Descriptions>

@@ -2,9 +2,10 @@ import React, { useContext } from 'react'
 import { Card, Descriptions, Row, Col } from 'antd'
 import { BitmexAcc } from '../types'
 import { formatEarnings } from '../utils/priceFormat'
-import BitmexContext from '../context/BitmexContext'
-import DashboardContext from '../context/DashboardContext'
+import { BitmexContext } from '../context/BitmexContext'
+import { DashboardContext } from '../context/DashboardContext'
 import CummulativeChart from './CummulativeChart'
+import { satToBtc, centsToFiat } from '../utils/priceFormat'
 
 interface PropTypes {
   accs: BitmexAcc[]
@@ -22,7 +23,7 @@ const MainDashboardTop: React.FunctionComponent<PropTypes> = ({
   let pnl = 0
   let qty = 0
   let balance = 0
-  let start = 0
+  let startBtc = 0
   let mBalance = 0
   let liqPrice = 0
   let liqPriceGap = Infinity
@@ -34,26 +35,19 @@ const MainDashboardTop: React.FunctionComponent<PropTypes> = ({
   let cFiatBal1 = 0
   let cFiatBal7 = 0
   let cFiatBal30 = 0
-  let startUSD = 0
+  let startFiat = 0
 
   for (const acc of accs) {
     const {
-      wallet_balance_30_days,
-      wallet_balance_7_days,
-      wallet_balance_1_day,
-      wallet_balance_now,
       deposit_btc,
       deposit_usd,
+      avgEntryPrice,
       currentQty,
       marginBalance,
+      walletBalance,
       unrealisedPnl,
       liquidationPrice,
-      avgEntryPrice,
-      avg_entry_price,
       name,
-      fiatBal1,
-      fiatBal7,
-      fiatBal30,
     } = acc
 
     const currentLiqPriceGap =
@@ -61,33 +55,27 @@ const MainDashboardTop: React.FunctionComponent<PropTypes> = ({
         ? Math.abs(liquidationPrice - price)
         : liqPriceGap
     const smallerLiqPrice = currentLiqPriceGap < liqPriceGap
-    const entryPrice = avgEntryPrice
-      ? avgEntryPrice
-      : avg_entry_price
-      ? parseFloat(avg_entry_price)
-      : 0
 
-    mBalance =
-      mBalance + parseFloat(marginBalance ? marginBalance : acc.margin_balance)
+    mBalance += marginBalance
+    balance += walletBalance
+    startBtc += deposit_btc
+    startFiat += deposit_usd
+    priceDay += acc.balance1day.wallet_balance_btc
+    price7 += acc.balance7days.wallet_balance_btc
+    price30 += acc.balance30days.wallet_balance_btc
+    cFiatBal1 += acc.balance1day.wallet_balance_usd
+    cFiatBal7 += acc.balance7days.wallet_balance_usd
+    cFiatBal30 += acc.balance30days.wallet_balance_usd
+    entry += avgEntryPrice
+    entryCount += avgEntryPrice ? 1 : 0
     pnl = unrealisedPnl ? pnl + unrealisedPnl : pnl
     qty = currentQty ? qty + currentQty : qty
-    balance = balance + wallet_balance_now
-    start = start + deposit_btc
-    startUSD = startUSD + deposit_usd / 100
     liqPrice = smallerLiqPrice ? liquidationPrice : liqPrice
     liqPriceGap = smallerLiqPrice ? currentLiqPriceGap : liqPriceGap
-    priceDay = priceDay + wallet_balance_1_day
-    price7 = price7 + wallet_balance_7_days
-    price30 = price30 + wallet_balance_30_days
-    cFiatBal1 = cFiatBal1 + fiatBal1
-    cFiatBal7 = cFiatBal7 + fiatBal7
-    cFiatBal30 = cFiatBal30 + fiatBal30
-    entry = entry + entryPrice
     liqAcc = smallerLiqPrice ? name : liqAcc
-    entryCount = entryCount + (entryPrice ? 1 : 0)
   }
 
-  const fiatBalance = (mBalance / 10 ** 8) * price
+  const fiatBalance = mBalance * price
   const leverage = Math.abs(qty / fiatBalance)
 
   return (
@@ -116,7 +104,7 @@ const MainDashboardTop: React.FunctionComponent<PropTypes> = ({
             title="Cumulative"
           >
             <Descriptions.Item label="Return since inception">
-              {formatEarnings(start, mBalance, startUSD, price)}
+              {formatEarnings(startBtc, mBalance, startFiat, price)}
             </Descriptions.Item>
             <Descriptions.Item label="Earned this month">
               {formatEarnings(price30, mBalance, cFiatBal30, price)}
@@ -128,23 +116,23 @@ const MainDashboardTop: React.FunctionComponent<PropTypes> = ({
               {formatEarnings(priceDay, mBalance, cFiatBal1, price)}
             </Descriptions.Item>
             <Descriptions.Item label="Paper gains">
-              {pnl ? (pnl / 10 ** 8).toFixed(8) : 'NA'}
+              {pnl ? satToBtc(pnl).toFixed(8) : 'NA'}
             </Descriptions.Item>
             <Descriptions.Item label="Current leverage">
               {leverage && leverage != Infinity ? leverage.toFixed(2) : 0}
             </Descriptions.Item>
             <Descriptions.Item label="Open position">{qty}</Descriptions.Item>
             <Descriptions.Item label="Nearest liquidation price">
-              {liqAcc == null ? 'NA' : liqPrice + ` (${liqAcc})`}
+              {liqAcc == null ? 'NA' : centsToFiat(liqPrice) + ` (${liqAcc})`}
             </Descriptions.Item>
             <Descriptions.Item label="Ave. entry price">
-              {entryCount ? entry / entryCount : 'NA'}
+              {entryCount ? centsToFiat(entry / entryCount) : 'NA'}
             </Descriptions.Item>
             <Descriptions.Item label="Balance(BTC)">
-              {mBalance.toFixed(4)}
+              {satToBtc(mBalance).toFixed(4)}
             </Descriptions.Item>
             <Descriptions.Item label="Balance(USD)">
-              {(mBalance * price).toFixed(2)}
+              {centsToFiat(satToBtc(mBalance) * price).toFixed(2)}
             </Descriptions.Item>
           </Descriptions>
         </Col>

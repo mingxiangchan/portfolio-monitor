@@ -35,17 +35,18 @@ defimpl Jason.Encoder, for: PortfolioMonitor.Portfolio.HistoricalDatum do
       row.wallet_balance
       # convert from satoshis to BTC
       |> D.div(100_000_000)
-      |> D.mult(row.wallet_balance)
+      |> D.mult(row.btc_price)
       # convert from USD to USD cents
       |> D.mult(100)
       |> D.round(0, :down)
       |> D.to_integer()
 
     historical_datum = %{
-      id: row.id,
+      avg_entry_price: row.avg_entry_price |> D.mult(100) |> D.round(0) |> Decimal.to_integer(),
+      margin_balance: row.margin_balance,
       wallet_balance_btc: row.wallet_balance,
       wallet_balance_usd: wallet_balance_usd,
-      btc_price: row.btc_price,
+      btc_price: row.btc_price |> D.mult(100) |> Decimal.to_integer(),
       inserted_at: row.inserted_at
     }
 

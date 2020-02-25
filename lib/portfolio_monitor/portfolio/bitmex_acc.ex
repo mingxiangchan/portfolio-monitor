@@ -12,15 +12,6 @@ defmodule PortfolioMonitor.Portfolio.BitmexAcc do
     field :notes, :string
     field :detected_invalid, :boolean
     field :is_testnet, :boolean
-    field :margin_balance, :integer, virtual: true
-    field :wallet_balance_now, :integer, virtual: true
-    field :wallet_balance_1_day, :integer, virtual: true
-    field :wallet_balance_7_days, :integer, virtual: true
-    field :wallet_balance_30_days, :integer, virtual: true
-    field :btc_price_1_day, :integer, virtual: true
-    field :btc_price_7_days, :integer, virtual: true
-    field :btc_price_30_days, :integer, virtual: true
-    field :avg_entry_price, :decimal, virtual: true
 
     belongs_to :user, PortfolioMonitor.Account.User
     has_many :historical_data, PortfolioMonitor.Portfolio.HistoricalDatum, on_delete: :delete_all
@@ -61,28 +52,21 @@ end
 
 defimpl Jason.Encoder, for: PortfolioMonitor.Portfolio.BitmexAcc do
   alias Decimal, as: D
+  alias PortfolioMonitor.Portfolio.HistoricalDatum
 
   @unformatted_fields [
     :id,
     :name,
     :notes,
-    :detected_invalid,
     :deposit_usd,
-    :btc_price_1_day,
-    :btc_price_7_days,
-    :btc_price_30_days,
-    :historical_data,
+    :detected_invalid,
     :is_testnet,
     :avg_entry_price
   ]
 
   @formatted_fields [
     :deposit_btc,
-    :margin_balance,
-    :wallet_balance_now,
-    :wallet_balance_1_day,
-    :wallet_balance_7_days,
-    :wallet_balance_30_days
+    :margin_balance
   ]
 
   def encode(row, opts) do
@@ -94,9 +78,45 @@ defimpl Jason.Encoder, for: PortfolioMonitor.Portfolio.BitmexAcc do
       end)
       |> Enum.into(%{})
 
+    historical_data = initial_history(row) ++ row.historical_data
+
     row
     |> Map.take(@unformatted_fields)
     |> Map.merge(formatted_data)
+    |> Map.put(:historical_data, historical_data)
     |> Jason.Encode.map(opts)
+  end
+
+  def initial_history(%{deposit_usd: 0} = row), do: placeholder_initial_history(row)
+  def initial_history(%{deposit_btc: 0} = row), do: placeholder_initial_history(row)
+
+  def initial_history(row) do
+    initial_btc_price =
+      row.deposit_usd
+      |> D.div(row.deposit_btc)
+      |> D.mult(100_000_000)
+      |> D.div(100)
+
+    [
+      %HistoricalDatum{
+        wallet_balance: row.deposit_btc,
+        margin_balance: row.deposit_btc,
+        btc_price: initial_btc_price,
+        avg_entry_price: initial_btc_price,
+        inserted_at: row.inserted_at
+      }
+    ]
+  end
+
+  def placeholder_initial_history(row) do
+    [
+      %HistoricalDatum{
+        wallet_balance: 0,
+        margin_balance: 0,
+        btc_price: 0,
+        avg_entry_price: 0,
+        inserted_at: row.inserted_at
+      }
+    ]
   end
 end

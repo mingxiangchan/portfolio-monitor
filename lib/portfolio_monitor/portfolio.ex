@@ -14,49 +14,18 @@ defmodule PortfolioMonitor.Portfolio do
   alias ExBitmex.Rest.User.Margin
   alias ExBitmex.Rest.Position
 
-  def list_historical_data do
-    Repo.all(HistoricalDatum)
-  end
-
-  def bitmex_acc_historical_data(bitmex_acc) do
-    query =
-      from h in HistoricalDatum,
-        where: h.bitmex_acc_id == ^bitmex_acc.id,
-        order_by: h.inserted_at
-
-    Repo.all(query)
-  end
-
-  def get_last_bitmex_history do
-    query =
-      from h in BitmexHistory,
-        order_by: [desc: h.inserted_at],
-        distinct: h.is_testnet
-
-    Repo.all(query)
-    |> organize_price_type
-  end
-
-  def get_current_opening_price do
-    {:ok, zero_time} = Time.new(0, 0, 0)
-    {:ok, start_datetime} = Date.utc_today() |> NaiveDateTime.new(zero_time)
-    {:ok, end_datetime} = Date.utc_today() |> Date.add(1) |> NaiveDateTime.new(zero_time)
-
-    query =
-      from h in BitmexHistory,
-        where: h.inserted_at >= ^start_datetime,
-        where: h.inserted_at <= ^end_datetime,
-        order_by: [asc: h.inserted_at],
-        distinct: h.is_testnet
-
-    Repo.all(query)
-    |> organize_price_type
-  end
+  # Write Actions
 
   def create_historical_datum(%BitmexAcc{} = acc, attrs \\ %{}) do
     acc
     |> Ecto.build_assoc(:historical_data, %{})
     |> HistoricalDatum.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def create_bitmex_history(changes) do
+    %BitmexHistory{}
+    |> BitmexHistory.changeset(changes)
     |> Repo.insert()
   end
 
@@ -72,12 +41,6 @@ defmodule PortfolioMonitor.Portfolio do
       %{price: price} = hd(trades)
       create_bitmex_history(%{btc_price: price, is_testnet: false})
     end
-  end
-
-  def create_bitmex_history(changes) do
-    %BitmexHistory{}
-    |> BitmexHistory.changeset(changes)
-    |> Repo.insert()
   end
 
   def record_wallet_balances do
@@ -134,60 +97,6 @@ defmodule PortfolioMonitor.Portfolio do
     end
   end
 
-  def with_historical_balance(query) do
-    d1_query = oldest_historical_datum_within_days(1)
-    d7_query = oldest_historical_datum_within_days(7)
-    d30_query = oldest_historical_datum_within_days(30)
-
-    from a in query,
-      left_join: b in subquery(d1_query),
-      on: a.id == b.bitmex_acc_id,
-      left_join: c in subquery(d7_query),
-      on: a.id == c.bitmex_acc_id,
-      left_join: d in subquery(d30_query),
-      on: a.id == d.bitmex_acc_id,
-      select_merge: %{
-        wallet_balance_1_day: b.wallet_balance,
-        wallet_balance_7_days: c.wallet_balance,
-        wallet_balance_30_days: d.wallet_balance,
-        btc_price_1_day: b.btc_price,
-        btc_price_7_days: c.btc_price,
-        btc_price_30_days: d.btc_price
-      }
-  end
-
-  defp oldest_historical_datum_within_days(diff) do
-    {:ok, zero_time} = Time.new(0, 0, 0)
-    {:ok, start_datetime} = Date.utc_today() |> Date.add(-diff) |> NaiveDateTime.new(zero_time)
-    {:ok, end_datetime} = Date.utc_today() |> Date.add(-diff + 1) |> NaiveDateTime.new(zero_time)
-
-    from h in HistoricalDatum,
-      where: h.inserted_at >= ^start_datetime,
-      where: h.inserted_at <= ^end_datetime,
-      order_by: h.inserted_at,
-      distinct: h.bitmex_acc_id
-  end
-
-  def list_bitmex_accs do
-    Repo.all(BitmexAcc)
-  end
-
-  def list_bitmex_accs(%User{} = user, :with_details) do
-    bitmex_acc_with_latest_historical_data_query()
-    |> with_historical_balance()
-    |> where([a], a.user_id == ^user.id)
-    |> Repo.all()
-  end
-
-  def list_bitmex_accs(%User{} = user) do
-    query = from a in BitmexAcc, where: a.user_id == ^user.id
-    Repo.all(query)
-  end
-
-  def get_bitmex_acc(id) do
-    Repo.get(BitmexAcc, id)
-  end
-
   def create_bitmex_acc(%User{} = user, attrs \\ %{}) do
     result =
       user
@@ -199,16 +108,6 @@ defmodule PortfolioMonitor.Portfolio do
       Task.start(fn -> broadcast_acc_update(acc) end)
       result
     end
-  end
-
-  def broadcast_acc_update(%BitmexAcc{} = acc) do
-    acc_data =
-      bitmex_acc_with_latest_historical_data_query()
-      |> with_historical_balance()
-      |> where([a], a.id == ^acc.id)
-      |> Repo.one()
-
-    Endpoint.broadcast("bitmex_accs:#{acc.user_id}", "acc_update", %{acc: acc_data})
   end
 
   def change_bitmex_acc(bitmex_acc, changes \\ %{}) do
@@ -235,21 +134,77 @@ defmodule PortfolioMonitor.Portfolio do
     end
   end
 
-  def ordered_historical_data_query do
-    from h in HistoricalDatum, order_by: [asc: h.inserted_at]
+  # Read Actions
+
+  def list_historical_data do
+    Repo.all(HistoricalDatum)
+  end
+
+  def get_last_bitmex_history do
+    query =
+      from h in BitmexHistory,
+        order_by: [desc: h.inserted_at],
+        distinct: h.is_testnet
+
+    Repo.all(query)
+    |> organize_price_type
+  end
+
+  def get_current_opening_price do
+    {:ok, zero_time} = Time.new(0, 0, 0)
+    {:ok, start_datetime} = Date.utc_today() |> NaiveDateTime.new(zero_time)
+    {:ok, end_datetime} = Date.utc_today() |> Date.add(1) |> NaiveDateTime.new(zero_time)
+
+    query =
+      from h in BitmexHistory,
+        where: h.inserted_at >= ^start_datetime,
+        where: h.inserted_at <= ^end_datetime,
+        order_by: [asc: h.inserted_at],
+        distinct: h.is_testnet
+
+    Repo.all(query)
+    |> organize_price_type
+  end
+
+  def list_bitmex_accs do
+    Repo.all(BitmexAcc)
+  end
+
+  def list_bitmex_accs(%User{} = user, :with_details) do
+    bitmex_acc_with_latest_historical_data_query()
+    |> where([a], a.user_id == ^user.id)
+    |> Repo.all()
+  end
+
+  def list_bitmex_accs(%User{} = user) do
+    query = from a in BitmexAcc, where: a.user_id == ^user.id
+    Repo.all(query)
+  end
+
+  def get_bitmex_acc(id) do
+    Repo.get(BitmexAcc, id)
+  end
+
+  def broadcast_acc_update(%BitmexAcc{} = acc) do
+    acc_data =
+      bitmex_acc_with_latest_historical_data_query()
+      |> where([a], a.id == ^acc.id)
+      |> Repo.one()
+
+    Endpoint.broadcast("bitmex_accs:#{acc.user_id}", "acc_update", %{acc: acc_data})
   end
 
   def bitmex_acc_with_latest_historical_data_query do
+    {:ok, start_datetime} = Date.utc_today() |> Date.add(-30) |> NaiveDateTime.new(~T[00:00:00])
+
+    query =
+      from h in HistoricalDatum,
+        where: h.inserted_at >= ^start_datetime,
+        order_by: h.inserted_at,
+        distinct: fragment("date(?)", h.inserted_at)
+
     from a in BitmexAcc,
-      left_join: h in assoc(a, :historical_data),
-      order_by: [desc: h.inserted_at],
-      preload: [historical_data: ^ordered_historical_data_query()],
-      distinct: [a.id],
-      select_merge: %{
-        margin_balance: h.margin_balance,
-        wallet_balance_now: h.wallet_balance,
-        avg_entry_price: h.avg_entry_price
-      }
+      preload: [historical_data: ^query]
   end
 
   defp organize_price_type(bitmex_history) do
