@@ -7,9 +7,7 @@ interface PropTypes {
   accs: BitmexAcc[]
 }
 
-const MainDashboardBottom: React.FunctionComponent<PropTypes> = ({
-  accs,
-}: PropTypes) => {
+const MainDashboardBottom = ({ accs }: PropTypes) => {
   return (
     <Row>
       <Card style={{ minHeight: '50vh' }}>
@@ -19,7 +17,7 @@ const MainDashboardBottom: React.FunctionComponent<PropTypes> = ({
             itemLayout="horizontal"
             pagination={{ pageSize: 3 }}
             dataSource={accs}
-            renderItem={(acc): React.ReactNode => (
+            renderItem={acc => (
               <List.Item>
                 <AccCard acc={acc} />
               </List.Item>

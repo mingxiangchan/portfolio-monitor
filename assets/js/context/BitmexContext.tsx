@@ -3,13 +3,7 @@ import { afterJoinedGeneralChannel } from '../socket'
 
 const BitmexContext = React.createContext(null)
 
-interface PropTypes {
-  children: React.ReactNode | React.ReactNodeArray
-}
-
-export const BitmexContextProvider: React.FunctionComponent<PropTypes> = ({
-  children,
-}: PropTypes) => {
+const BitmexContextProvider = ({ children }: React.PropsWithChildren<{}>) => {
   const [testPrice, changeTestPrice] = useState(0)
   const [realPrice, changeRealPrice] = useState(0)
   const [openTestPrice, changeOpenTestPrice] = useState(1)
@@ -18,6 +12,7 @@ export const BitmexContextProvider: React.FunctionComponent<PropTypes> = ({
   useEffect(() => {
     afterJoinedGeneralChannel(generalChannel => {
       generalChannel.push('get_opening_price').receive('ok', resp => {
+        // change all received valeues from bitmex into cents
         changeOpenTestPrice(resp.opening_test_price * 100)
         changeOpenRealPrice(resp.opening_real_price * 100)
         // set testPrice and realPrice one-time
@@ -51,4 +46,4 @@ export const BitmexContextProvider: React.FunctionComponent<PropTypes> = ({
   )
 }
 
-export default BitmexContext
+export { BitmexContext, BitmexContextProvider }

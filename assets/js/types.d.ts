@@ -30,6 +30,18 @@ export interface HistoricalData {
   inserted_at: string
 }
 
+export interface StatisticType {
+  percentValue?: number
+  absoluteValue?: number
+  symbol: string
+  precision: number
+}
+
+export interface Earnings {
+  btc: StatisticType
+  fiat: StatisticType
+}
+
 export interface BitmexAcc {
   id: number
   name: string
@@ -54,6 +66,22 @@ export interface BitmexAcc {
   marginBalance: number
   unrealisedPnl: number
   walletBalance: number
+
+  // state calculated from FE
+  calculated: {
+    btcBalance: number
+    fiatBalance: number
+    openPos: number
+    openPosBtc: number
+    leverage: number
+    liquidationPrice: number
+    liquidationDistanceAbs: number
+    liquidationDistancePer: number
+    earningsInception: Earnings
+    earnings1day: Earnings
+    earnings7days: Earnings
+    earnings30days: Earnings
+  }
 }
 
 export interface BitmexAccsState {
@@ -71,14 +99,6 @@ export interface CummulativeTotal {
 
 export interface CummulativeTotals {
   [key: string]: CummulativeTotal
-}
-
-export interface StatisticType {
-  percentValue?: number
-  absoluteValue?: number
-  isPositive?: boolean
-  symbol: string
-  precision: number
 }
 
 export interface BitmexWsMarginDetails {

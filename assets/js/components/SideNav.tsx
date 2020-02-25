@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { Layout, Typography, Button, Switch, Divider, Spin } from 'antd'
+import { Layout, Typography, Switch, Divider, Spin } from 'antd'
 import moment from 'moment'
 import AccCreateModal from './AccCreateModal'
-import DashboardContext from '../context/DashboardContext'
-import BitmexContext from '../context/BitmexContext'
+import { DashboardContext } from '../context/DashboardContext'
+import { BitmexContext } from '../context/BitmexContext'
 import axios from 'axios'
 import { centsToFiat } from '../utils/priceFormat'
 

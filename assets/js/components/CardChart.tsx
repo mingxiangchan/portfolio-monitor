@@ -1,8 +1,8 @@
 import React, { useContext } from 'react'
 import { BitmexAcc } from '../types'
 import Chart from './Chart'
-import BitmexContext from '../context/BitmexContext'
-import DashboardContext from '../context/DashboardContext'
+import { BitmexContext } from '../context/BitmexContext'
+import { DashboardContext } from '../context/DashboardContext'
 import * as moment from 'moment'
 
 const opt = {
@@ -102,7 +102,7 @@ const CardChart: React.FunctionComponent<PropTypes> = ({ acc }: PropTypes) => {
 
   const data = {
     labels: acc.historical_data
-      .map(item => moment(history.inserted_at).format('YYY-MM-DD hhA'))
+      .map(() => moment(history.inserted_at).format('YYY-MM-DD hhA'))
       .concat(['Now']),
     datasets,
   }

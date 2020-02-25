@@ -1,65 +1,29 @@
 import React, { useState } from 'react'
 import { Card, Menu, Icon, Dropdown, Row, Col } from 'antd'
-import { BitmexAcc, StatisticType, HistoricalData } from '../types'
+import { Earnings, BitmexAcc } from '../types'
 import AccCardStatisticsItem from './AccCardStatisticsItem'
-import { satToBtc, centsToFiat } from '../utils/priceFormat'
 
-const ranges = [
-  'Since Inception',
-  'Since This Month',
-  'Since This Week',
-  'Since Yesterday',
-]
+const ranges = {
+  'Since Inception': 'earningsInception',
+  'Since This Month': 'earnings1day',
+  'Since This Week': 'earnings7days',
+  'Since Yesterday': 'earnings30days',
+}
 
 interface PropTypes {
   acc: BitmexAcc
-  btcBalance: number
-  usdBalance: number
 }
 
-const calcEarnings = (
-  stats: StatisticType,
-  currentVal: number,
-  pastVal: number,
-) => {
-  stats.absoluteValue = currentVal - pastVal
-  stats.percentValue = (stats.absoluteValue / pastVal) * 100
-  stats.isPositive = stats.absoluteValue >= 0
+const AccCardStatistics = ({ acc }: PropTypes) => {
+  const initialRange = Object.keys(ranges)[0]
+  const [selectedRange, setRange] = useState(initialRange)
 
-  return stats
-}
-
-const AccCardStatistics = ({ acc, btcBalance, usdBalance }: PropTypes) => {
-  const [selectedRange, setRange] = useState(ranges[0])
-  let btcStats: StatisticType = { symbol: 'BTC', precision: 8 }
-  let usdStats: StatisticType = { symbol: 'USD', precision: 2 }
-
-  // server side results are in cents
-  let history: HistoricalData
-  if (selectedRange === 'Since Inception') {
-    history = acc.historical_data[0]
-  } else if (selectedRange === 'Since This Month') {
-    history = acc.balance30days
-  } else if (selectedRange === 'Since This Week') {
-    history = acc.balance7days
-  } else if (selectedRange === 'Since Yesterday') {
-    history = acc.balance1day
-  }
-
-  btcStats = calcEarnings(
-    btcStats,
-    btcBalance,
-    satToBtc(history.wallet_balance_btc),
-  )
-  usdStats = calcEarnings(
-    usdStats,
-    centsToFiat(usdBalance),
-    centsToFiat(history.wallet_balance_usd),
-  )
+  const propertyName = ranges[selectedRange]
+  const stats: Earnings = acc.calculated[propertyName]
 
   const menu = (
     <Menu>
-      {ranges.map(range => (
+      {Object.keys(ranges).map(range => (
         <Menu.Item key={range}>
           <a
             onClick={e => {
@@ -84,10 +48,10 @@ const AccCardStatistics = ({ acc, btcBalance, usdBalance }: PropTypes) => {
       </Dropdown>
       <Row gutter={16}>
         <Col span={12}>
-          <AccCardStatisticsItem stats={usdStats} />
+          <AccCardStatisticsItem stats={stats.fiat} />
         </Col>
         <Col span={12}>
-          <AccCardStatisticsItem stats={btcStats} />
+          <AccCardStatisticsItem stats={stats.btc} />
         </Col>
       </Row>
     </Card>

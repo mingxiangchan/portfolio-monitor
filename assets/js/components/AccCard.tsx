@@ -1,27 +1,15 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { Card, Tag, Typography } from 'antd'
 import { AccPropTypes } from '../types'
 import CardChart from './CardChart'
 import AccUpdateModal from './AccUpdateModal'
-import BitmexContext from '../context/BitmexContext'
-import DashboardContext from '../context/DashboardContext'
 import AccDeleteButton from './AccDeleteButton'
 import AccCardStatistics from './AccCardStatistics'
 import AccCardOverview from './AccCardOverview'
-import { satToBtc } from '../utils/priceFormat'
 
 const { Title } = Typography
 
-const AccCard: React.FunctionComponent<AccPropTypes> = ({
-  acc,
-}: AccPropTypes) => {
-  const { testPrice, realPrice } = useContext(BitmexContext)
-  const { testnet } = useContext(DashboardContext)
-
-  const livePrice = testnet ? testPrice : realPrice
-  const btcBalance = satToBtc(acc.marginBalance)
-  const usdBalance = btcBalance * livePrice
-
+const AccCard = ({ acc }: AccPropTypes) => {
   return (
     <Card
       actions={[
@@ -35,17 +23,8 @@ const AccCard: React.FunctionComponent<AccPropTypes> = ({
         <Tag color="blue">Pending First Query</Tag>
       ) : null}
       {acc.detected_invalid ? <Tag color="red">Invalid Credentials</Tag> : null}
-      <AccCardStatistics
-        acc={acc}
-        btcBalance={btcBalance}
-        usdBalance={usdBalance}
-      />
-      <AccCardOverview
-        acc={acc}
-        btcBalance={btcBalance}
-        usdBalance={usdBalance}
-        livePrice={livePrice}
-      />
+      <AccCardStatistics acc={acc} />
+      <AccCardOverview acc={acc} />
       <CardChart acc={acc} />
     </Card>
   )
