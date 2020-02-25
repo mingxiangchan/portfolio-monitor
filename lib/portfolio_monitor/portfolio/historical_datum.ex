@@ -46,7 +46,7 @@ defimpl Jason.Encoder, for: PortfolioMonitor.Portfolio.HistoricalDatum do
       margin_balance: row.margin_balance,
       wallet_balance_btc: row.wallet_balance,
       wallet_balance_usd: wallet_balance_usd,
-      btc_price: row.btc_price |> D.mult(100) |> Decimal.to_integer(),
+      btc_price: row.btc_price |> D.mult(100) |> D.round(0) |> Decimal.to_integer(),
       inserted_at: row.inserted_at
     }
 
