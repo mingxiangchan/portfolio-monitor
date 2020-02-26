@@ -78,6 +78,11 @@ const PriceDisplay = styled.section`
   .price {
     color: white;
     font-size: 2rem;
+
+    sup {
+      font-size: 0.55em;
+      margin-right: 3px;
+    }
   }
 `
 
@@ -138,7 +143,12 @@ const SideNav: React.FunctionComponent = () => {
             : `${centsToFiat(realPriceDiffAbs)} (${realPriceDiffPer}%)`}
         </p>
         <p className="price">
-          {testnet ? centsToFiat(testPrice).toFixed(1) : centsToFiat(realPrice).toFixed(1)}
+          <sup>$</sup>
+          <span>
+            {testnet
+              ? centsToFiat(testPrice).toFixed(1)
+              : centsToFiat(testPrice).toFixed(1)}
+          </span>
         </p>
       </PriceDisplay>
 
