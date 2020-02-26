@@ -1,4 +1,4 @@
-defmodule PortfolioMonitor.Sync.GeneralBtcInfoWorker do
+defmodule PortfolioMonitor.Sync.GeneralExchangeInfoWorker do
   alias PortfolioMonitorWeb.Endpoint
   use ExBitmex.WebSocketOverride
   require Logger

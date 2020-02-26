@@ -1,5 +1,5 @@
 defmodule PortfolioMonitor.Sync.Supervisor do
-  alias PortfolioMonitor.Sync.GeneralBtcInfoWorker
+  alias PortfolioMonitor.Sync.GeneralExchangeInfoWorker
 
   use DynamicSupervisor
 
@@ -22,14 +22,14 @@ defmodule PortfolioMonitor.Sync.Supervisor do
   def start_general_btc_info_worker(is_testnet) do
     name =
       case is_testnet do
-        true -> String.to_atom("GeneralBtcInfoWorker.TestNet")
-        false -> String.to_atom("GeneralBtcInfoWorker.LiveNet")
+        true -> String.to_atom("GeneralExchangeInfoWorker.Bitmex.TestNet")
+        false -> String.to_atom("GeneralExchangeInfoWorker.Bitmex.LiveNet")
       end
 
     child_spec =
-      {GeneralBtcInfoWorker,
+      {GeneralExchangeInfoWorker,
        %{
-         subscribe: ["trade:XBTUSD"],
+         subscribe: ["trade"],
          is_testnet: is_testnet,
          name: name
        }}

@@ -43,9 +43,10 @@ export interface Earnings {
 }
 
 export interface BitmexAcc {
+  // comes from server
   id: number
   name: string
-  // comes from server
+  symbol: string
   deposit_btc: number
   deposit_usd: number
   notes: string
@@ -117,4 +118,23 @@ export interface BitmexWsPositionDetails {
     liquidationPrice: number
     avgEntryPrice: number
   }[]
+}
+
+export interface BitmexContextValue {
+  [key: string]: {
+    openTestPrice: number
+    openLivePrice: number
+    testPrice: number
+    livePrice: number
+  }
+}
+
+export interface BitmexTradeWS {
+  data: {
+    data: {
+      price: number
+      symbol: string
+      timestamp: string
+    }[]
+  }
 }

@@ -13,16 +13,16 @@ const { Sider } = Layout
 const SideNav: React.FunctionComponent = () => {
   const [time, changeTime] = useState(moment())
   const [email, changeEmail] = useState(null)
-  const { testPrice, realPrice, openTestPrice, openRealPrice } = useContext(
-    BitmexContext,
-  )
+  const prices = useContext(BitmexContext)
+  const { testPrice, livePrice, openTestPrice, openLivePrice } =
+    prices['XBTUSD'] || {}
   const { testnet, setTestnet } = useContext(DashboardContext)
 
   const testPriceDiffAbs = testPrice - openTestPrice
   const testPriceDiffPer = ((testPriceDiffAbs / openTestPrice) * 100).toFixed(2)
 
-  const realPriceDiffAbs = realPrice - openRealPrice
-  const realPriceDiffPer = ((realPriceDiffAbs / openRealPrice) * 100).toFixed(2)
+  const livePriceDiffAbs = livePrice - openLivePrice
+  const livePriceDiffPer = ((livePriceDiffAbs / openLivePrice) * 100).toFixed(2)
 
   if (!email) {
     axios.get('/api/current_user', { withCredentials: true }).then(resp => {
@@ -79,10 +79,10 @@ const SideNav: React.FunctionComponent = () => {
             {'LIVE'}
           </Title>
           <p style={{ color: 'white' }}>
-            {centsToFiat(realPriceDiffAbs)} ({realPriceDiffPer}%)
+            {centsToFiat(livePriceDiffAbs)} ({livePriceDiffPer}%)
           </p>
           <Title level={3} style={{ color: 'white' }}>
-            {centsToFiat(realPrice).toFixed(1)}
+            {centsToFiat(livePrice).toFixed(1)}
           </Title>
         </>
       )}

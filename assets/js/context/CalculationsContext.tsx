@@ -84,14 +84,14 @@ const CalculationsContextProvider = ({
 }: React.PropsWithChildren<{}>) => {
   const { accounts } = useContext(AccountsContext)
   const { testnet } = useContext(DashboardContext)
-  const { testPrice, realPrice } = useContext(BitmexContext)
-
-  const livePrice = testnet ? testPrice : realPrice
+  const prices = useContext(BitmexContext)
 
   const calculatedAccounts: BitmexAcc[] = []
 
   for (const id in accounts) {
     const account = accounts[id]
+    const pairPrices = prices['XBTUSD']
+    const livePrice = testnet ? pairPrices.testPrice : pairPrices.livePrice
     calculatedAccounts.push({
       ...account,
       calculated: {
