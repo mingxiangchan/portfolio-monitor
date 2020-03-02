@@ -152,11 +152,11 @@ defmodule ExBitmex.WebSocketOverride do
         {:reply, frame, state}
       end
 
-      @impl true
-      def handle_info(error, state) do
-        output_error(error, state, "received unexpected message")
-        {:ok, state}
-      end
+      # @impl true
+      # def handle_info(error, state) do
+      # output_error(error, state, "received unexpected message")
+      # {:ok, state}
+      # end
 
       @impl true
       def terminate(info, %{name: name} = _state) do

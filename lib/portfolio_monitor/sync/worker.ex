@@ -8,6 +8,8 @@ defmodule PortfolioMonitor.Sync.Worker do
     Task.start(fn ->
       persist_response(json, Map.take(state, [:acc_id, :user_id]))
     end)
+
+    {:ok, state}
   end
 
   def persist_response(%{"action" => "partial"}, _), do: Logger.warn("ignoring partial")

@@ -29,20 +29,6 @@ defmodule PortfolioMonitor.Portfolio do
     |> Repo.insert()
   end
 
-  def record_current_btc_price do
-    params = %{symbol: "XBTUSD", count: 1, reverse: true}
-
-    with {:ok, trades, _rate_limit} <- ExBitmex.Rest.Trade.Index.get(params, true) do
-      %{price: price} = hd(trades)
-      create_bitmex_history(%{btc_price: price, is_testnet: true})
-    end
-
-    with {:ok, trades, _rate_limit} <- ExBitmex.Rest.Trade.Index.get(params, false) do
-      %{price: price} = hd(trades)
-      create_bitmex_history(%{btc_price: price, is_testnet: false})
-    end
-  end
-
   def record_wallet_balances do
     prices = get_last_bitmex_history()
 

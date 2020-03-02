@@ -37,4 +37,12 @@ defmodule PortfolioMonitor.Sync.Supervisor do
 
     DynamicSupervisor.start_child(__MODULE__, child_spec)
   end
+
+  def record_prices do
+    __MODULE__
+    |> DynamicSupervisor.which_children()
+    |> Enum.each(fn {_, pid, _, _} ->
+      send(pid, :record_prices)
+    end)
+  end
 end

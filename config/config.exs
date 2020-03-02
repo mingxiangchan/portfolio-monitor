@@ -34,11 +34,11 @@ config :portfolio_monitor, :pow,
   repo: PortfolioMonitor.Repo,
   web_module: PortfolioMonitorWeb,
   cache_store_backend: PortfolioMonitorWeb.PowRedisCache
-  
+
 config :portfolio_monitor, PortfolioMonitor.Scheduler,
   jobs: [
     # Record current btc price every 1 hr
-    {"0 * * * *", {PortfolioMonitor.Portfolio, :record_current_btc_price, []}},
+    {"0 * * * *", {PortfolioMonitor.Sync.Supervisor, :record_prices, []}},
     # Record each bitmex acc's balance every 1 hr at :05
     # Perform the update after btc price update
     {"5 * * * *", {PortfolioMonitor.Portfolio, :record_wallet_balances, []}}
