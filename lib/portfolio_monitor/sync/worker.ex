@@ -16,6 +16,7 @@ defmodule PortfolioMonitor.Sync.Worker do
 
   def persist_response(%{"table" => table, "data" => data}, state) do
     %{user_id: user_id, acc_id: acc_id} = state
+    IO.inspect(data)
 
     Endpoint.broadcast("bitmex_accs:#{user_id}", "ws_#{table}", %{
       "data" => data,

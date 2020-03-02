@@ -30,7 +30,8 @@ defmodule PortfolioMonitor.Portfolio do
   end
 
   def record_wallet_balances do
-    prices = get_last_bitmex_history()
+    prices = 0
+    # prices = get_last_bitmex_history()
 
     Task.Supervisor.start_link(name: :record_wallet_balances_supervisor)
 
@@ -126,30 +127,28 @@ defmodule PortfolioMonitor.Portfolio do
     Repo.all(HistoricalDatum)
   end
 
-  def get_last_bitmex_history do
-    query =
-      from h in BitmexHistory,
-        order_by: [desc: h.inserted_at],
-        distinct: h.is_testnet
-
-    Repo.all(query)
-    |> organize_price_type
-  end
-
-  def get_current_opening_price do
+  def get_opening_prices do
     {:ok, zero_time} = Time.new(0, 0, 0)
     {:ok, start_datetime} = Date.utc_today() |> NaiveDateTime.new(zero_time)
     {:ok, end_datetime} = Date.utc_today() |> Date.add(1) |> NaiveDateTime.new(zero_time)
 
     query =
       from h in BitmexHistory,
+        join: i in BitmexHistory,
+        on: h.symbol == i.symbol,
         where: h.inserted_at >= ^start_datetime,
         where: h.inserted_at <= ^end_datetime,
-        order_by: [asc: h.inserted_at],
-        distinct: h.is_testnet
+        where: h.is_testnet == true,
+        where: i.is_testnet == false,
+        order_by: [asc: [h.inserted_at, i.inserted_at]],
+        distinct: [h.symbol],
+        select: %{
+          symbol: h.symbol,
+          opening_test_price: h.price,
+          opening_live_price: i.price
+        }
 
     Repo.all(query)
-    |> organize_price_type
   end
 
   def list_bitmex_accs do
@@ -191,14 +190,5 @@ defmodule PortfolioMonitor.Portfolio do
 
     from a in BitmexAcc,
       preload: [historical_data: ^query]
-  end
-
-  defp organize_price_type(bitmex_history) do
-    [first, second] = bitmex_history
-
-    test_price = if first.is_testnet == true, do: first.btc_price, else: second.btc_price
-    real_price = if first.is_testnet == false, do: first.btc_price, else: second.btc_price
-
-    {real_price, test_price}
   end
 end

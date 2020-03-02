@@ -10,7 +10,7 @@ defmodule PortfolioMonitor.Sync.GeneralExchangeInfoWorker do
 
     event = if is_test, do: "testnet_price", else: "livenet_price"
 
-    Endpoint.broadcast("general_btc_info", event, %{"data" => data})
+    Endpoint.broadcast("general_btc_info", event, %{"data" => hd(data)})
 
     case hd(data) do
       %{"symbol" => symbol, "price" => price} ->
