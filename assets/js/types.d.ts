@@ -131,10 +131,16 @@ export interface BitmexContextValue {
 
 export interface BitmexTradeWS {
   data: {
-    data: {
-      price: number
-      symbol: string
-      timestamp: string
-    }[]
+    price: number
+    symbol: string
+    timestamp: string
   }
+}
+
+export interface BitmexOpeningPrices {
+  data: {
+    symbol: string
+    opening_test_price: number
+    opening_live_price: number
+  }[]
 }

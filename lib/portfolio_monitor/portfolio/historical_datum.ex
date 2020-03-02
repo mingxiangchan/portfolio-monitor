@@ -16,13 +16,13 @@ defmodule PortfolioMonitor.Portfolio.HistoricalDatum do
     :wallet_balance,
     :margin_balance,
     :btc_price,
-    :avg_entry_price
+    :bitmex_acc_id
   ]
 
   @doc false
   def changeset(historical_datum, attrs) do
     historical_datum
-    |> cast(attrs, @required_fields)
+    |> cast(attrs, @required_fields ++ [:avg_entry_price])
     |> validate_required(@required_fields)
   end
 end
