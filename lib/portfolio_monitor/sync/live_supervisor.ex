@@ -14,7 +14,18 @@ defmodule PortfolioMonitor.Sync.LiveSupervisor do
   @impl true
   def init(_init_arg) do
     # do not restart dead websocket connections
-    DynamicSupervisor.init(strategy: :one_for_one, max_restarts: 0)
+    {:ok, pid} = DynamicSupervisor.init(strategy: :one_for_one, max_restarts: 0)
+
+    Task.start(fn ->
+      start_ws_for_all_accs()
+    end)
+
+    {:ok, pid}
+  end
+
+  def start_ws_for_all_accs do
+    PortfolioMonitor.Portfolio.list_bitmex_accs()
+    |> Enum.each(&start_child/1)
   end
 
   def start_child(%{detected_invalid: true}), do: {:error, :invalid}
