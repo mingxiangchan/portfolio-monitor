@@ -11,14 +11,11 @@ defmodule PortfolioMonitor.Portfolio do
   alias PortfolioMonitor.Portfolio.BitmexHistory
   alias PortfolioMonitor.Portfolio.BitmexAcc
   alias PortfolioMonitorWeb.Endpoint
-  alias ExBitmex.Rest.User.Margin
-  alias ExBitmex.Rest.Position
 
   # Write Actions
 
-  def create_historical_datum(%BitmexAcc{} = acc, attrs \\ %{}) do
-    acc
-    |> Ecto.build_assoc(:historical_data, %{})
+  def create_historical_datum(attrs \\ %{}) do
+    %HistoricalDatum{}
     |> HistoricalDatum.changeset(attrs)
     |> Repo.insert()
   end
@@ -27,61 +24,6 @@ defmodule PortfolioMonitor.Portfolio do
     %BitmexHistory{}
     |> BitmexHistory.changeset(changes)
     |> Repo.insert()
-  end
-
-  def record_wallet_balances do
-    prices = 0
-    # prices = get_last_bitmex_history()
-
-    Task.Supervisor.start_link(name: :record_wallet_balances_supervisor)
-
-    Task.Supervisor.async_stream_nolink(
-      :record_wallet_balances_supervisor,
-      list_bitmex_accs(),
-      &record_wallet_balance(&1, prices),
-      max_concurrency: 5
-    )
-    |> Enum.to_list()
-  end
-
-  def record_wallet_balance(%BitmexAcc{id: id, detected_invalid: true}, _) do
-    Logger.warn("Skipping hourly update for acc:#{id} due to invalid credentials")
-  end
-
-  def record_wallet_balance(%BitmexAcc{} = acc, {real_price, test_price}) do
-    btc_price =
-      case acc.is_testnet do
-        true -> test_price
-        false -> real_price
-      end
-
-    credentials = %ExBitmex.Credentials{
-      api_key: acc.api_key,
-      api_secret: acc.api_secret
-    }
-
-    params = %{currency: "XBt"}
-
-    with {:ok, margin_resp, _} <- Margin.get(credentials, params, acc.is_testnet),
-         {:ok, position_resp, _} <- Position.Index.get(credentials, params, acc.is_testnet) do
-      avg_entry_price =
-        case Enum.at(position_resp, 0) do
-          nil -> 0
-          position_data -> Map.get(position_data, :avg_entry_price)
-        end
-
-      changes =
-        margin_resp
-        |> Map.take([:wallet_balance, :margin_balance])
-        |> Map.put(:btc_price, btc_price)
-        |> Map.put(:avg_entry_price, avg_entry_price)
-
-      create_historical_datum(acc, changes)
-      broadcast_acc_update(acc)
-    else
-      {:error, {:unauthorized, _}, _} ->
-        update_bitmex_acc(acc, %{detected_invalid: true})
-    end
   end
 
   def create_bitmex_acc(%User{} = user, attrs \\ %{}) do
@@ -123,8 +65,15 @@ defmodule PortfolioMonitor.Portfolio do
 
   # Read Actions
 
-  def list_historical_data do
-    Repo.all(HistoricalDatum)
+  def get_latest_price(is_testnet) do
+    query =
+      from h in BitmexHistory,
+        where: h.is_testnet == ^is_testnet,
+        where: h.symbol == "XBTUSD",
+        order_by: [desc: h.inserted_at],
+        limit: 1
+
+    Repo.one(query)
   end
 
   def get_opening_prices do

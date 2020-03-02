@@ -41,5 +41,5 @@ config :portfolio_monitor, PortfolioMonitor.Scheduler,
     {"0 * * * *", {PortfolioMonitor.Sync.Supervisor, :record_prices, []}},
     # Record each bitmex acc's balance every 1 hr at :05
     # Perform the update after btc price update
-    {"5 * * * *", {PortfolioMonitor.Portfolio, :record_wallet_balances, []}}
+    {"5 * * * *", {PortfolioMonitor.Sync.LiveSupervisor, :record_accs_info, []}}
   ]

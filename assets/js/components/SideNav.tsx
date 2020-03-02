@@ -18,8 +18,6 @@ const SideNav: React.FunctionComponent = () => {
     prices['XBTUSD'] || {}
   const { testnet, setTestnet } = useContext(DashboardContext)
 
-  console.log(prices)
-
   const testPriceDiffAbs = testPrice - openTestPrice
   const testPriceDiffPer = ((testPriceDiffAbs / openTestPrice) * 100).toFixed(2)
 

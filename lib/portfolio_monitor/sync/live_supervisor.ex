@@ -27,13 +27,24 @@ defmodule PortfolioMonitor.Sync.LiveSupervisor do
       %{
         acc_id: bitmex_acc.id,
         user_id: bitmex_acc.user_id,
-        auth_subscribe: ["order", "margin", "position", "trade"],
+        auth_subscribe: ["margin", "position"],
         config: auth_config,
         name: :"BitMexAccWorker.#{bitmex_acc.id}",
-        is_testnet: bitmex_acc.is_testnet
+        is_testnet: bitmex_acc.is_testnet,
+        walletBalance: nil,
+        marginBalance: nil,
+        avgEntryPrice: nil
       }
     }
 
     DynamicSupervisor.start_child(__MODULE__, child_spec)
+  end
+
+  def record_accs_info do
+    __MODULE__
+    |> DynamicSupervisor.which_children()
+    |> Enum.each(fn {_, pid, _, _} ->
+      send(pid, :record_acc_info)
+    end)
   end
 end
