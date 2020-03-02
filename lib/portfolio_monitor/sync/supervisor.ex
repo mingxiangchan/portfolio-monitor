@@ -30,8 +30,9 @@ defmodule PortfolioMonitor.Sync.Supervisor do
       {GeneralExchangeInfoWorker,
        %{
          subscribe: ["trade"],
+         name: name,
          is_testnet: is_testnet,
-         name: name
+         recorded_prices: %{}
        }}
 
     DynamicSupervisor.start_child(__MODULE__, child_spec)

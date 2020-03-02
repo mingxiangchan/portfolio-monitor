@@ -15,10 +15,13 @@ defmodule ExBitmex.WebSocketOverride do
       def start_link(args \\ %{}) do
         subscription = args[:subscribe] || []
         auth_subscription = args[:auth_subscribe] || []
-        is_testnet = case args[:is_testnet] do
-          false -> false
-          _ -> true
-        end
+
+        is_testnet =
+          case args[:is_testnet] do
+            false -> false
+            _ -> true
+          end
+
         opts = consturct_opts(args)
 
         state =
@@ -68,16 +71,17 @@ defmodule ExBitmex.WebSocketOverride do
 
       @impl true
       def handle_frame({:text, text}, state) do
-        case Jason.decode(text) do
-          {:ok, %{"request" => %{"op" => "authKey"}, "success" => true} = payload} ->
-            subscribe(self(), state[:auth_subscribe])
-            handle_response(payload, state)
+        {:ok, updated_state} =
+          case Jason.decode(text) do
+            {:ok, %{"request" => %{"op" => "authKey"}, "success" => true} = payload} ->
+              subscribe(self(), state[:auth_subscribe])
+              handle_response(payload, state)
 
-          {:ok, payload} ->
-            handle_response(payload, state)
-        end
+            {:ok, payload} ->
+              handle_response(payload, state)
+          end
 
-        {:ok, inc_heartbeat(state)}
+        {:ok, inc_heartbeat(updated_state)}
       end
 
       @impl true
