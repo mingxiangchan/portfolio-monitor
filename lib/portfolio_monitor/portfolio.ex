@@ -11,6 +11,7 @@ defmodule PortfolioMonitor.Portfolio do
   alias PortfolioMonitor.Portfolio.BitmexHistory
   alias PortfolioMonitor.Portfolio.BitmexAcc
   alias PortfolioMonitorWeb.Endpoint
+  alias PortfolioMonitor.Sync.LiveSupervisor
 
   # Write Actions
 
@@ -34,7 +35,11 @@ defmodule PortfolioMonitor.Portfolio do
       |> Repo.insert()
 
     with {:ok, acc} <- result do
-      Task.start(fn -> broadcast_acc_update(acc) end)
+      Task.start(fn ->
+        LiveSupervisor.start_child(acc)
+        broadcast_acc_update(acc)
+      end)
+
       result
     end
   end
@@ -58,6 +63,9 @@ defmodule PortfolioMonitor.Portfolio do
 
   def delete_bitmex_acc(%BitmexAcc{} = bitmex_acc) do
     with {:ok, acc} <- Repo.delete(bitmex_acc) do
+      pid = Process.whereis(:"BitMexAccWorker.#{acc.id}")
+      DynamicSupervisor.terminate_child(LiveSupervisor, pid)
+
       Endpoint.broadcast("bitmex_accs:#{acc.user_id}", "acc_deleted", %{acc: %{id: acc.id}})
       {:ok, acc}
     end
@@ -87,6 +95,8 @@ defmodule PortfolioMonitor.Portfolio do
         on: h.symbol == i.symbol,
         where: h.inserted_at >= ^start_datetime,
         where: h.inserted_at <= ^end_datetime,
+        where: i.inserted_at >= ^start_datetime,
+        where: i.inserted_at <= ^end_datetime,
         where: h.is_testnet == true,
         where: i.is_testnet == false,
         order_by: [asc: [h.inserted_at, i.inserted_at]],
@@ -105,9 +115,10 @@ defmodule PortfolioMonitor.Portfolio do
   end
 
   def list_bitmex_accs(%User{} = user, :with_details) do
-    bitmex_acc_with_latest_historical_data_query()
+    BitmexAcc
     |> where([a], a.user_id == ^user.id)
     |> Repo.all()
+    |> Repo.preload(historical_data: historical_last_30_days())
   end
 
   def list_bitmex_accs(%User{} = user) do
@@ -121,23 +132,20 @@ defmodule PortfolioMonitor.Portfolio do
 
   def broadcast_acc_update(%BitmexAcc{} = acc) do
     acc_data =
-      bitmex_acc_with_latest_historical_data_query()
+      BitmexAcc
       |> where([a], a.id == ^acc.id)
       |> Repo.one()
+      |> Repo.preload(historical_data: historical_last_30_days())
 
     Endpoint.broadcast("bitmex_accs:#{acc.user_id}", "acc_update", %{acc: acc_data})
   end
 
-  def bitmex_acc_with_latest_historical_data_query do
+  def historical_last_30_days do
     {:ok, start_datetime} = Date.utc_today() |> Date.add(-30) |> NaiveDateTime.new(~T[00:00:00])
 
-    query =
-      from h in HistoricalDatum,
-        where: h.inserted_at >= ^start_datetime,
-        order_by: [h.inserted_at],
-        distinct: [h.bitmex_acc_id, fragment("date(?)", h.inserted_at)]
-
-    from a in BitmexAcc,
-      preload: [historical_data: ^query]
+    from h in HistoricalDatum,
+      where: h.inserted_at >= ^start_datetime,
+      order_by: [h.inserted_at],
+      distinct: [h.bitmex_acc_id, fragment("date(?)", h.inserted_at)]
   end
 end
