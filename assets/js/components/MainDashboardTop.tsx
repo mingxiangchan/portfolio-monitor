@@ -6,6 +6,7 @@ import { BitmexContext } from '../context/BitmexContext'
 import { DashboardContext } from '../context/DashboardContext'
 import CummulativeChart from './CummulativeChart'
 import { satToBtc, centsToFiat } from '../utils/priceFormat'
+import ValueWithLabel from './ValueWithLabel'
 
 interface PropTypes {
   accs: BitmexAcc[]
@@ -88,7 +89,7 @@ const MainDashboardTop: React.FunctionComponent<PropTypes> = ({
         marginBottom: '5px',
       }}
     >
-      <Col md={10}>
+      <Col md={10} style={{ flexGrow: 1 }}>
         <Card style={{ height: '100%', width: '100%' }}>
           <CummulativeChart
             accs={accs}
@@ -97,41 +98,87 @@ const MainDashboardTop: React.FunctionComponent<PropTypes> = ({
           />
         </Card>
       </Col>
-      <Col md={14} offset={0}>
+      <Col md={14} style={{ flexGrow: 1 }}>
         <Card type="inner" title="Cumulative" style={{ height: '100%' }}>
-          <Descriptions column={{ md: 1, lg: 2 }} size="small">
-            <Descriptions.Item label="Return since inception">
-              {formatEarnings(startBtc, mBalance, startFiat, price)}
-            </Descriptions.Item>
-            <Descriptions.Item label="Earned this month">
-              {formatEarnings(price30, mBalance, cFiatBal30, price)}
-            </Descriptions.Item>
-            <Descriptions.Item label="Earned past 7-days">
-              {formatEarnings(price7, mBalance, cFiatBal7, price)}
-            </Descriptions.Item>
-            <Descriptions.Item label="Earned past 24-hours">
-              {formatEarnings(priceDay, mBalance, cFiatBal1, price)}
-            </Descriptions.Item>
-            <Descriptions.Item label="Paper gains">
-              {pnl ? satToBtc(pnl).toFixed(8) : 'NA'}
-            </Descriptions.Item>
-            <Descriptions.Item label="Current leverage">
-              {leverage && leverage != Infinity ? leverage.toFixed(2) : 0}
-            </Descriptions.Item>
-            <Descriptions.Item label="Open position">{qty}</Descriptions.Item>
-            <Descriptions.Item label="Nearest liquidation price">
-              {liqAcc == null ? 'NA' : centsToFiat(liqPrice) + ` (${liqAcc})`}
-            </Descriptions.Item>
-            <Descriptions.Item label="Ave. entry price">
-              {entryCount ? centsToFiat(entry / entryCount) : 'NA'}
-            </Descriptions.Item>
-            <Descriptions.Item label="Balance(BTC)">
-              {satToBtc(mBalance).toFixed(4)}
-            </Descriptions.Item>
-            <Descriptions.Item label="Balance(USD)">
-              {centsToFiat(satToBtc(mBalance) * price).toFixed(2)}
-            </Descriptions.Item>
-          </Descriptions>
+          <Row gutter={[0, 0]}>
+            <Col md={8} lg={6}>
+              <ValueWithLabel
+                small
+                value={satToBtc(pnl).toFixed(8)}
+                title="Paper gains"
+              />
+            </Col>
+            <Col md={8} lg={6}>
+              <ValueWithLabel
+                small
+                value={
+                  leverage && leverage != Infinity ? leverage.toFixed(2) : 0
+                }
+                title="Current leverage"
+              />
+            </Col>
+            <Col md={8} lg={6}>
+              <ValueWithLabel value={qty} title="Open position" />
+            </Col>
+            <Col md={8} lg={6}>
+              <ValueWithLabel
+                value={
+                  liqAcc == null
+                    ? 'NaN'
+                    : centsToFiat(liqPrice) + ` (${liqAcc})`
+                }
+                title="Nearest liquidation price"
+              />
+            </Col>
+            <Col md={8} lg={6}>
+              <ValueWithLabel
+                value={entryCount ? centsToFiat(entry / entryCount) : 'NaN'}
+                title="Ave. entry price"
+              />
+            </Col>
+            <Col md={8} lg={6}>
+              <ValueWithLabel
+                value={satToBtc(mBalance).toFixed(4)}
+                title="Balance(BTC)"
+              />
+            </Col>
+            <Col md={8} lg={6}>
+              <ValueWithLabel
+                value={centsToFiat(satToBtc(mBalance) * price).toFixed(2)}
+                title="Balance(USD)"
+              />
+            </Col>
+          </Row>
+          <Row gutter={[0, 0]}>
+            <Col lg={12}>
+              <ValueWithLabel
+                small
+                value={formatEarnings(startBtc, mBalance, startFiat, price)}
+                title="Return since inception"
+              />
+            </Col>
+            <Col lg={12}>
+              <ValueWithLabel
+                small
+                value={formatEarnings(price30, mBalance, cFiatBal30, price)}
+                title="Earned this month"
+              />
+            </Col>
+            <Col lg={12}>
+              <ValueWithLabel
+                small
+                value={formatEarnings(price7, mBalance, cFiatBal7, price)}
+                title="Earned past 7-days"
+              />
+            </Col>
+            <Col lg={12}>
+              <ValueWithLabel
+                small
+                value={formatEarnings(priceDay, mBalance, cFiatBal1, price)}
+                title="Earned past 24-hours"
+              />
+            </Col>
+          </Row>
         </Card>
       </Col>
     </Row>

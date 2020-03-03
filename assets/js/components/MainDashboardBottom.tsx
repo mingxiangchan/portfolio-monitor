@@ -1,16 +1,16 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Row, Col, Card, Badge, Empty, Skeleton, Typography } from 'antd'
+import { Row, Col, Card, Badge, Empty, Skeleton, Tag } from 'antd'
 
 import { BitmexAcc } from '../types'
 import ListSort from './ListSort'
 import AccCardStatistics from './AccCardStatistics'
 import AccCardOverview from './AccCardOverview'
-import CardChart from './CardChart'
+import AccCardHeader from './AccCardHeader'
 import AccDeleteForm from './AccDeleteButton'
 import AccUpdateModal from './AccUpdateModal'
+import CardChart from './CardChart'
 
-const { Text } = Typography
 interface PropTypes {
   accs: BitmexAcc[]
   loadingAcc: boolean
@@ -21,29 +21,8 @@ interface CardOrder {
 }
 
 const ListSortContainer = styled.div`
-  cursor: url('http://gtms02.alicdn.com/tps/i2/T1_PMSFLBaXXcu5FDa-20-20.png') 10
-      10,
-    pointer !important;
   position: relative;
   overflow: hidden;
-
-  .acc-heading {
-    padding-top: 8px;
-    padding-left: 10px;
-
-    h2 {
-      font-size: 1.4rem;
-      margin-bottom: 0;
-      font-weight: 300;
-    }
-  }
-
-  span.na {
-    color: #7d7d7d;
-    font-weight: 300;
-    font-size: 0.8em;
-    letter-spacing: 2px;
-  }
 
   .card {
     margin-bottom: 15px;
@@ -65,13 +44,10 @@ const ListSortContainer = styled.div`
     }
   }
 
-  .overview-items {
-    .ant-statistic {
-      margin-bottom: 12px;
-
-      .ant-statistic-content {
-        font-size: 18px;
-      }
+  .tags {
+    margin-bottom: 1em;
+    .ant-tag {
+      margin-bottom: 5px;
     }
   }
 
@@ -130,21 +106,26 @@ const MainDashboardBottom = ({ accs, loadingAcc }: PropTypes) => {
                   <AccUpdateModal acc={acc} />
                   <AccDeleteForm acc={acc} />
                 </div>
+
                 <Row gutter={[16, 16]}>
                   <Col lg={8}>
-                    <div className="acc-heading">
-                      <h2>{acc.name}</h2>
-                      <h4>
-                        <Text type="secondary">{acc.notes}</Text>
-                      </h4>
-                      <br />
-                    </div>
+                    <AccCardHeader acc={acc} />
                     <AccCardStatistics acc={acc} />
                   </Col>
                   <Col lg={10}>
                     <AccCardOverview acc={acc} />
                   </Col>
+
                   <Col lg={6}>
+                    <div className="tags">
+                      {acc.is_testnet ? <Tag>Test</Tag> : <Tag>Live</Tag>}
+                      {acc.pendingFirstQuery ? (
+                        <Tag color="blue">Pending First Query</Tag>
+                      ) : null}
+                      {acc.detected_invalid ? (
+                        <Tag color="red">Invalid Credentials</Tag>
+                      ) : null}
+                    </div>
                     <CardChart acc={acc} />
                   </Col>
                 </Row>
