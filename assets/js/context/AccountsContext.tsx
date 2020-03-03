@@ -26,12 +26,13 @@ const getPastBalance = (
 }
 
 const initializeAccDetails = (acc: BitmexAcc): BitmexAcc => {
+  const recentHistory = acc.historical_data[acc.historical_data.length - 1]
   return {
     ...acc,
-    avgEntryPrice: acc.historical_data[0].avg_entry_price,
-    marginBalance: acc.historical_data[0].margin_balance,
-    walletBalance: acc.historical_data[0].wallet_balance_btc,
-    fiatBalance: acc.historical_data[0].wallet_balance_usd,
+    avgEntryPrice: recentHistory.avg_entry_price,
+    marginBalance: recentHistory.margin_balance,
+    walletBalance: recentHistory.wallet_balance_btc,
+    fiatBalance: recentHistory.wallet_balance_usd,
     pendingFirstQuery: acc.historical_data.length === 1,
     balance1day: getPastBalance(acc.historical_data, 1),
     balance7days: getPastBalance(acc.historical_data, 7),
