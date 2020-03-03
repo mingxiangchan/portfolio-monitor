@@ -37,7 +37,7 @@ const StyledMainLayout = styled(Layout)`
   }
 
   .ant-layout-content {
-    padding: 1.5em 2em;
+    padding: 12px;
     margin-top: 64px;
   }
 `
@@ -55,7 +55,7 @@ const App: React.FunctionComponent = () => {
         <Layout
           style={{
             marginLeft: showSider ? SIDER_WIDTH : 0,
-            position: 'relative'
+            position: 'relative',
           }}
         >
           <Header>

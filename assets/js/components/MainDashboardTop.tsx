@@ -80,16 +80,16 @@ const MainDashboardTop: React.FunctionComponent<PropTypes> = ({
 
   return (
     <Row
+      gutter={[8, 8]}
       type="flex"
       style={{
         width: '100%',
         paddingBottom: '5px',
         marginBottom: '5px',
-        maxHeight: '45vh',
       }}
     >
-      <Col span={10}>
-        <Card style={{ height: '100%', marginRight: '10px' }}>
+      <Col md={10}>
+        <Card style={{ height: '100%', width: '100%' }}>
           <CummulativeChart
             accs={accs}
             livePrice={price}
@@ -97,8 +97,8 @@ const MainDashboardTop: React.FunctionComponent<PropTypes> = ({
           />
         </Card>
       </Col>
-      <Col span={14} offset={0}>
-        <Card title="Cumulative" style={{ height: '100%' }}>
+      <Col md={14} offset={0}>
+        <Card type="inner" title="Cumulative" style={{ height: '100%' }}>
           <Descriptions column={{ md: 1, lg: 2 }} size="small">
             <Descriptions.Item label="Return since inception">
               {formatEarnings(startBtc, mBalance, startFiat, price)}

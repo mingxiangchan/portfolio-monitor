@@ -23,7 +23,7 @@ const AccCardStatisticsItem = ({ stats }: PropTypes) => (
         )
       }
     />
-    <p>
+    <p className="stat-subtitle">
       {stats.absoluteValue >= 0} {stats.symbol}{' '}
       {stats.absoluteValue.toFixed(stats.precision)}
     </p>

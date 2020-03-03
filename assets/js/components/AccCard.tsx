@@ -1,13 +1,10 @@
+/* not in use */
 import React from 'react'
-import { Typography, List, Icon, Row, Col, Card, Tag } from 'antd'
+import { List, Icon, Row, Col, Tag } from 'antd'
 import { AccPropTypes } from '../types'
 import CardChart from './CardChart'
-import AccUpdateModal from './AccUpdateModal'
-import AccDeleteButton from './AccDeleteButton'
 import AccCardStatistics from './AccCardStatistics'
 import AccCardOverview from './AccCardOverview'
-
-const { Title } = Typography
 
 const AccCard = ({ acc }: AccPropTypes) => {
   return (
