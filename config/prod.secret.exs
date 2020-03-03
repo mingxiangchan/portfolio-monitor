@@ -30,7 +30,7 @@ app_name =
     environment variable APP_NAME is missing.
     """
 
-redis_url = 
+redis_url =
   System.get_env("REDIS_URL") ||
     raise """
     environment variable REDIS_URL is missing.
@@ -45,7 +45,7 @@ config :portfolio_monitor, PortfolioMonitor.Repo,
 config :portfolio_monitor, PortfolioMonitorWeb.Endpoint,
   http: [:inet6, port: String.to_integer(System.get_env("PORT") || "4000")],
   secret_key_base: secret_key_base,
-  url: [host: System.get_env("APP_NAME") <> ".gigalixirapp.com", port: 80]
+  url: [host: System.get_env("APP_NAME") <> ".herokuapp.com", port: 80]
 
 # temp
 config :portfolio_monitor, :redis_url, redis_url
