@@ -19,40 +19,42 @@ const AccCardOverview = ({ acc }: PropTypes) => {
   } = acc.calculated
 
   return (
-    <Card className="overview-items">
-      <ValueWithLabel
-        title="Balance"
-        value={`USD ${fiatBalance.toFixed(2)} / BTC ${btcBalance}`}
-      />
-      <Row>
-        <Col span={9}>
-          <ValueWithLabel title="Leverage" value={leverage.toFixed(2)} />
-        </Col>
-        <Col span={15}>
-          <ValueWithLabel
-            title="Open Position"
-            value={`${openPos} / BTC ${openPosBtc.toFixed(4)}`}
-          />
-        </Col>
-      </Row>
-      <Row>
-        <Col span={9}>
-          <ValueWithLabel
-            title="Average Entry Price"
-            prefix="USD"
-            value={acc.avgEntryPrice}
-          />
-        </Col>
-        <Col span={15}>
-          <ValueWithLabel
-            title="Liquidation"
-            value={`USD ${liquidationPrice} / ${liquidationDistanceAbs} / ${liquidationDistancePer.toFixed(
-              2,
-            )}%`}
-          />
-        </Col>
-      </Row>
-    </Card>
+    <>
+      <Card className="overview-items">
+        <ValueWithLabel
+          title="Balance"
+          value={`USD ${fiatBalance.toFixed(2)} / BTC ${btcBalance}`}
+        />
+        <Row>
+          <Col span={9}>
+            <ValueWithLabel title="Leverage" value={leverage.toFixed(2)} />
+          </Col>
+          <Col span={15}>
+            <ValueWithLabel
+              title="Open Position"
+              value={`${openPos} / BTC ${openPosBtc.toFixed(4)}`}
+            />
+          </Col>
+        </Row>
+        <Row>
+          <Col span={9}>
+            <ValueWithLabel
+              title="Average Entry Price"
+              prefix="USD"
+              value={acc.avgEntryPrice}
+            />
+          </Col>
+          <Col span={15}>
+            <ValueWithLabel
+              title="Liquidation"
+              value={`USD ${liquidationPrice} / ${liquidationDistanceAbs} / ${liquidationDistancePer.toFixed(
+                2,
+              )}%`}
+            />
+          </Col>
+        </Row>
+      </Card>
+    </>
   )
 }
 

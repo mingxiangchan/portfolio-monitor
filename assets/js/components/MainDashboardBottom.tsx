@@ -10,6 +10,7 @@ import AccCardHeader from './AccCardHeader'
 import AccDeleteForm from './AccDeleteButton'
 import AccUpdateModal from './AccUpdateModal'
 import CardChart from './CardChart'
+import { COLORS } from '../constants/styles'
 
 interface PropTypes {
   accs: BitmexAcc[]
@@ -24,20 +25,23 @@ const ListSortContainer = styled.div`
   position: relative;
   overflow: hidden;
 
+  .mid-col {
+    .ant-card,
+    .ant-card-body {
+      height: 100%;
+    }
+  }
+
   .card {
     margin-bottom: 15px;
     min-height: 200px;
-    background: #fafafa;
+    background: ${COLORS.lightBg};
     border-radius: 4px;
   }
 
   .stat-items {
     .ant-statistic .ant-statistic-content {
       font-size: 24px;
-
-      .ant-dropdown-link {
-        margin-bottom: 30px;
-      }
     }
     .stat-subtitle {
       font-size: 15px;
@@ -107,12 +111,12 @@ const MainDashboardBottom = ({ accs, loadingAcc }: PropTypes) => {
                   <AccDeleteForm acc={acc} />
                 </div>
 
-                <Row gutter={[16, 16]}>
+                <Row style={{ display: 'flex' }} gutter={[16, 16]}>
                   <Col lg={8}>
                     <AccCardHeader acc={acc} />
                     <AccCardStatistics acc={acc} />
                   </Col>
-                  <Col lg={10}>
+                  <Col className="mid-col" lg={10}>
                     <AccCardOverview acc={acc} />
                   </Col>
 

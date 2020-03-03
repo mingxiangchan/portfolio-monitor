@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { Card } from 'antd'
 import ListSort from './ListSort'
+import { COLORS } from '../constants/styles'
 
 const dataArray = [
   {
@@ -35,7 +36,7 @@ const Wrapper = styled.div`
   .card {
     margin-bottom: 10px;
     min-height: 200px;
-    background: #fafafa;
+    background: ${COLORS.lightBg};
     border-radius: 4px;
   }
 `

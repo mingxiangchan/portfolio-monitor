@@ -2,6 +2,7 @@ import React, { FunctionComponent } from 'react'
 import styled from 'styled-components'
 import { Statistic } from 'antd'
 import { StatisticProps } from 'antd/lib/statistic/Statistic'
+import { COLORS } from '../constants/styles'
 
 const NA = '<span class="na">NA</span>'
 
@@ -14,7 +15,7 @@ const StyledStatistic = styled(Statistic)`
     margin-bottom: 12px;
 
     span.na {
-      color: #7d7d7d;
+      color: ${COLORS.textGrayDark};
       font-weight: 300;
       font-size: 0.8em;
       letter-spacing: 2px;
@@ -25,7 +26,7 @@ const StyledStatistic = styled(Statistic)`
     }
 
     .ant-statistic-content {
-      font-size: ${props => (props.small ? '15px' : '18px')};
+      font-size: ${props => (props.small ? '14px' : '16px')};
     }
   }
 `

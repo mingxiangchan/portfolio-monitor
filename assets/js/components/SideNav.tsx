@@ -6,6 +6,7 @@ import AccCreateModal from './AccCreateModal'
 import { DashboardContext } from '../context/DashboardContext'
 import { BitmexContext } from '../context/BitmexContext'
 import { centsToFiat } from '../utils/priceFormat'
+import { COLORS } from '../constants/styles'
 
 const { Text, Title } = Typography
 
@@ -14,17 +15,17 @@ const StyledSider = styled.div`
   height: 100%;
 
   .ant-switch {
-    background-color: #d27070;
+    background-color: ${COLORS.danger};
   }
 
   .ant-switch-checked {
-    background-color: #279a27;
+    background-color: ${COLORS.success};
   }
 
   .ant-typography {
     &.clock,
     &.date {
-      color: #c1c1c1;
+      color: ${COLORS.textGrayLight};
       margin-top: 20px;
       margin-bottom: 15px;
     }
@@ -61,11 +62,11 @@ const StyledSider = styled.div`
     }
 
     .testnet {
-      color: #ff9393;
+      color: ${COLORS.dangerBright};
     }
 
     .live {
-      color: #87fb87;
+      color: ${COLORS.successBright};
     }
   }
 `
