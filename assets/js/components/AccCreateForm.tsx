@@ -53,6 +53,7 @@ const AccCreateForm: React.FunctionComponent = Form.create<ModalFormProps>(
       onOk={handleSubmit}
       onCancel={handleCancel}
       width={720}
+      style={{ top: 20 }}
     >
       <Form {...formItemlayout}>
         <Form.Item label="Account Name">

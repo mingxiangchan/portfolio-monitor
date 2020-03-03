@@ -126,14 +126,16 @@ const onWsPosition = (resp: BitmexWsPositionDetails, setAccs) => {
 export const AccountsContextProvider = ({
   children,
 }: React.PropsWithChildren<{}>) => {
+  const [loadingAcc, setLoadingAcc] = useState(true)
   const [accounts, setAccs] = useState<BitmexAccsState>(null)
   useEffect(() => {
     notification.info({ message: 'Loading Accounts' })
 
     afterJoinedAccChannel(accChannel => {
-      accChannel
-        .push('get_accs')
-        .receive('ok', resp => onGetAccs(resp, setAccs))
+      accChannel.push('get_accs').receive('ok', resp => {
+        setLoadingAcc(false)
+        onGetAccs(resp, setAccs)
+      })
 
       accChannel.on('acc_update', resp => onAccUpdate(resp, setAccs))
       accChannel.on('acc_deleted', resp => onAccDeleted(resp, setAccs))
@@ -143,7 +145,7 @@ export const AccountsContextProvider = ({
   }, [])
 
   return (
-    <AccountsContext.Provider value={{ accounts }}>
+    <AccountsContext.Provider value={{ accounts, loadingAcc }}>
       {children}
     </AccountsContext.Provider>
   )

@@ -39,7 +39,7 @@ const AccCardStatistics = ({ acc }: PropTypes) => {
   )
 
   return (
-    <Card style={{ marginTop: '5px', marginBottom: '5px' }}>
+    <Card className="stat-items">
       <Dropdown overlay={menu}>
         <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
           {selectedRange}

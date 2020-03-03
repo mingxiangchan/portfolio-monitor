@@ -17,7 +17,7 @@ const AccUpdateModal: React.FunctionComponent<PropTypes> = ({
 
   return (
     <>
-      <Icon type="edit" onClick={onClick} />
+      <Icon theme="twoTone" type="edit" onClick={onClick} />
       <AccUpdateForm visible={visible} setVisible={setVisible} acc={acc} />
     </>
   )

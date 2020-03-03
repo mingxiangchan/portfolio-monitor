@@ -10,12 +10,14 @@ const BitmexContext = React.createContext<BitmexContextValue>({})
 
 const BitmexContextProvider = ({ children }: React.PropsWithChildren<{}>) => {
   const [prices, setPrices] = useState<BitmexContextValue>({})
+  const [loadingChannel, setLoadingChannel] = useState(true)
 
   useEffect(() => {
     afterJoinedGeneralChannel(generalChannel => {
       generalChannel
         .push('get_opening_price')
         .receive('ok', (resp: BitmexOpeningPrices) => {
+          setLoadingChannel(false)
           setPrices({
             ...resp.data.reduce(
               (acc, pair) => ({

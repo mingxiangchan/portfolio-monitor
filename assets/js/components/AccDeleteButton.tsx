@@ -19,7 +19,7 @@ const AccDeleteForm: React.FunctionComponent<PropTypes> = ({
       title="Are you sure you want to delete this account"
       onConfirm={onConfirm}
     >
-      <Icon type="delete" />
+      <Icon theme="twoTone" type="delete" />
     </Popconfirm>
   )
 }
