@@ -135,7 +135,7 @@ defmodule PortfolioMonitor.Portfolio do
       from h in HistoricalDatum,
         where: h.inserted_at >= ^start_datetime,
         order_by: h.inserted_at,
-        distinct: fragment("date(?)", h.inserted_at)
+        distinct: [fragment("date(?)", h.inserted_at), h.bitmex_acc_id]
 
     from a in BitmexAcc,
       preload: [historical_data: ^query]

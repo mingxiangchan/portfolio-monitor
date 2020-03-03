@@ -38,7 +38,7 @@ const calculateFields = (acc: BitmexAcc, livePrice: number) => {
   const openPos = acc.currentQty
   const openPosBtc =
     acc.currentQty / (acc.lastPrice ? acc.lastPrice : livePrice)
-  const leverage = Math.abs(acc.currentQty / fiatBalance)
+  const leverage = Math.abs((acc.currentQty / fiatBalance) * 100)
 
   const earningsInception = calculateEarnings(
     btcBalance,
