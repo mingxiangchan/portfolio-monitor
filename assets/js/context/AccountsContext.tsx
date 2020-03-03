@@ -105,14 +105,14 @@ const onWsPosition = (resp: BitmexWsPositionDetails, setAccs) => {
 
   setAccs((prevAccs: BitmexAccsState) => {
     const oldAcc = prevAccs[id]
-    // acc may have just been deleted but ws is not cleared yet
     if (oldAcc) {
       const avgEntryPriceCents = avgEntryPrice * 100
+      // acc may have just been deleted but ws is not cleared yet
       const updatedAcc = {
         ...oldAcc,
+        ...(avgEntryPrice && { avgEntryPriceCents }),
         currentQty,
         liquidationPrice: liquidationPrice * 100,
-        avgEntryPrice: avgEntryPrice && { avgEntryPriceCents },
       }
 
       return { ...prevAccs, [id]: updatedAcc }

@@ -94,6 +94,7 @@ const CalculationsContextProvider = ({
     const livePrice = testnet ? pairPrices.testPrice : pairPrices.livePrice
     calculatedAccounts.push({
       ...account,
+      avgEntryPrice: centsToFiat(account.avgEntryPrice),
       calculated: {
         ...calculateFields(account, livePrice),
       },
