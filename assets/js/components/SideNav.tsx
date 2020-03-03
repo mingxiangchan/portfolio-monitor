@@ -135,12 +135,12 @@ const SideNav: React.FunctionComponent = () => {
       </Title>
       <Divider style={{ background: '#757575' }} />
       <PriceDisplay
-        positive={testnet ? testPriceDiffAbs >= 0 : realPriceDiffAbs >= 0}
+        positive={testnet ? testPriceDiffAbs >= 0 : livePriceDiffAbs >= 0}
       >
         <p className="diff">
           {testnet
             ? `${centsToFiat(testPriceDiffAbs)} (${testPriceDiffPer}%)`
-            : `${centsToFiat(realPriceDiffAbs)} (${realPriceDiffPer}%)`}
+            : `${centsToFiat(livePriceDiffAbs)} (${livePriceDiffPer}%)`}
         </p>
         <p className="price">
           <sup>$</sup>
