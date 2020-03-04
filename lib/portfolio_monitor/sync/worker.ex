@@ -34,12 +34,6 @@ defmodule PortfolioMonitor.Sync.Worker do
 
   def persist_response(_, state), do: state
 
-  def handle_disconnect(disconnect_map, state) do
-    :ok = Logger.warn("#{__MODULE__} disconnected: #{inspect(disconnect_map)}")
-    :timer.sleep(3000)
-    {:reconnect, state}
-  end
-
   # pid = Process.whereis(:"BitMexAccWorker.1")
   # send(pid, :record_acc_info)
   @impl true
@@ -69,5 +63,22 @@ defmodule PortfolioMonitor.Sync.Worker do
   def handle_info(error, state) do
     output_error(error, state, "received unexpected message")
     {:ok, state}
+  end
+
+  @impl true
+  def handle_disconnect(disconnect_map, state) do
+    :ok = Logger.warn("#{__MODULE__} disconnected: #{inspect(disconnect_map)}")
+
+    case Map.get(state, :prevent_reconnect) do
+      true ->
+        Logger.info("Terminating WS due to invalid credentials")
+        acc = Portfolio.get_bitmex_acc(state[:acc_id])
+        Portfolio.update_bitmex_acc(acc, %{detected_invalid: true})
+        {:ok, state}
+
+      nil ->
+        :timer.sleep(3000)
+        {:reconnect, state}
+    end
   end
 end

@@ -73,6 +73,10 @@ defmodule PortfolioMonitor.Portfolio do
 
   # Read Actions
 
+  def get_bitmex_acc(id) do
+    Repo.get(BitmexAcc, id)
+  end
+
   def get_latest_price(is_testnet) do
     query =
       from h in BitmexHistory,
