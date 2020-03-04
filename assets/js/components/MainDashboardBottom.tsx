@@ -111,16 +111,16 @@ const MainDashboardBottom = ({ accs, loadingAcc }: PropTypes) => {
                   <AccDeleteForm acc={acc} />
                 </div>
 
-                <Row style={{ display: 'flex' }} gutter={[16, 16]}>
-                  <Col lg={8}>
+                <Row gutter={[16, 16]}>
+                  <Col xs={24} sm={12} md={8}>
                     <AccCardHeader acc={acc} />
                     <AccCardStatistics acc={acc} />
                   </Col>
-                  <Col className="mid-col" lg={10}>
+                  <Col className="mid-col" xs={24} sm={12} md={10}>
                     <AccCardOverview acc={acc} />
                   </Col>
 
-                  <Col lg={6}>
+                  <Col xs={24} sm={24} md={6}>
                     <div className="tags">
                       {acc.is_testnet ? <Tag>Test</Tag> : <Tag>Live</Tag>}
                       {acc.pendingFirstQuery ? (
