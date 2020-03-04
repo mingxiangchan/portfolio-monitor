@@ -57,6 +57,12 @@ defmodule PortfolioMonitor.Portfolio do
 
     with {:ok, updated_acc} <- result do
       broadcast_acc_update(updated_acc)
+
+      case Process.whereis(:"BitMexAccWorker.#{updated_acc.id}") do
+        nil -> LiveSupervisor.start_child(updated_acc)
+        _ -> nil
+      end
+
       {:ok, updated_acc}
     end
   end
