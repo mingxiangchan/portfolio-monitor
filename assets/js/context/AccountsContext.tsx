@@ -64,7 +64,11 @@ const onAccUpdate = ({ acc }, setAccs) => {
   setAccs((prevAccs: BitmexAccsState) => {
     const oldAcc = prevAccs[acc.id]
 
-    return { ...prevAccs, [acc.id]: { ...oldAcc, ...acc } }
+    if (oldAcc) {
+      return { ...prevAccs, [acc.id]: { ...oldAcc, ...acc } }
+    } else {
+      return { ...prevAccs, [acc.id]: initializeAccDetails(acc) }
+    }
   })
 }
 

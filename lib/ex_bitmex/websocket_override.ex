@@ -192,7 +192,7 @@ defmodule ExBitmex.WebSocketOverride do
       end
 
       def handle_invalid(state) do
-        IO.inspect(state)
+        :ok = Logger.error("BitmexAcc#{state[:acc_id]}: Invalid Bitmex API credentials")
       end
 
       def handle_response(resp, _state) do

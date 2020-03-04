@@ -72,13 +72,17 @@ defmodule PortfolioMonitor.Sync.Worker do
     case Map.get(state, :prevent_reconnect) do
       true ->
         Logger.info("Terminating WS due to invalid credentials")
-        acc = Portfolio.get_bitmex_acc(state[:acc_id])
-        Portfolio.update_bitmex_acc(acc, %{detected_invalid: true})
         {:ok, state}
 
       nil ->
         :timer.sleep(3000)
         {:reconnect, state}
     end
+  end
+
+  def handle_invalid(state) do
+    :ok = Logger.error("BitmexAcc#{state[:acc_id]}: Invalid Bitmex API credentials")
+    acc = Portfolio.get_bitmex_acc(state[:acc_id])
+    Portfolio.update_bitmex_acc(acc, %{detected_invalid: true})
   end
 end

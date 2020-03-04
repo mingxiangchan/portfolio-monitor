@@ -69,8 +69,10 @@ defmodule PortfolioMonitor.Portfolio do
 
   def delete_bitmex_acc(%BitmexAcc{} = bitmex_acc) do
     with {:ok, acc} <- Repo.delete(bitmex_acc) do
-      pid = Process.whereis(:"BitMexAccWorker.#{acc.id}")
-      DynamicSupervisor.terminate_child(LiveSupervisor, pid)
+      case Process.whereis(:"BitMexAccWorker.#{acc.id}") do
+        nil -> nil
+        pid -> DynamicSupervisor.terminate_child(LiveSupervisor, pid)
+      end
 
       Endpoint.broadcast("bitmex_accs:#{acc.user_id}", "acc_deleted", %{acc: %{id: acc.id}})
       {:ok, acc}
