@@ -87,18 +87,21 @@ const CalculationsContextProvider = ({
   const prices = useContext(BitmexContext)
 
   const calculatedAccounts: BitmexAcc[] = []
+  const pairPrices = prices['XBTUSD']
 
-  for (const id in accounts) {
-    const account = accounts[id]
-    const pairPrices = prices['XBTUSD']
+  if (pairPrices) {
     const livePrice = testnet ? pairPrices.testPrice : pairPrices.livePrice
-    calculatedAccounts.push({
-      ...account,
-      avgEntryPrice: centsToFiat(account.avgEntryPrice),
-      calculated: {
-        ...calculateFields(account, livePrice),
-      },
-    })
+
+    for (const id in accounts) {
+      const account = accounts[id]
+      calculatedAccounts.push({
+        ...account,
+        avgEntryPrice: centsToFiat(account.avgEntryPrice),
+        calculated: {
+          ...calculateFields(account, livePrice),
+        },
+      })
+    }
   }
 
   return (

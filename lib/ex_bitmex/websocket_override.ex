@@ -60,7 +60,7 @@ defmodule ExBitmex.WebSocketOverride do
       @impl true
       def handle_disconnect(disconnect_map, state) do
         :ok = Logger.warn("#{__MODULE__} disconnected: #{inspect(disconnect_map)}")
-        :timer.sleep(3000)
+
         {:reconnect, state}
       end
 
@@ -76,6 +76,10 @@ defmodule ExBitmex.WebSocketOverride do
             {:ok, %{"request" => %{"op" => "authKey"}, "success" => true} = payload} ->
               subscribe(self(), state[:auth_subscribe])
               handle_response(payload, state)
+
+            {:ok, %{"status" => 401, "error" => "Invalid API Key."}} ->
+              handle_invalid(state)
+              {:ok, Map.put(state, :prevent_reconnect, true)}
 
             {:ok, payload} ->
               handle_response(payload, state)
@@ -187,6 +191,10 @@ defmodule ExBitmex.WebSocketOverride do
         end
       end
 
+      def handle_invalid(state) do
+        :ok = Logger.error("BitmexAcc#{state[:acc_id]}: Invalid Bitmex API credentials")
+      end
+
       def handle_response(resp, _state) do
         :ok = Logger.debug("#{__MODULE__} received response: #{inspect(resp)}")
       end
@@ -212,7 +220,7 @@ defmodule ExBitmex.WebSocketOverride do
         "wss://" <> ((is_testnet && "testnet") || "www") <> ".bitmex.com/realtime"
       end
 
-      defoverridable handle_response: 2, handle_disconnect: 2
+      defoverridable handle_response: 2, handle_disconnect: 2, handle_invalid: 1
     end
   end
 end

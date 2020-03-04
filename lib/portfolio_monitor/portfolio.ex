@@ -57,14 +57,22 @@ defmodule PortfolioMonitor.Portfolio do
 
     with {:ok, updated_acc} <- result do
       broadcast_acc_update(updated_acc)
+
+      case Process.whereis(:"BitMexAccWorker.#{updated_acc.id}") do
+        nil -> LiveSupervisor.start_child(updated_acc)
+        _ -> nil
+      end
+
       {:ok, updated_acc}
     end
   end
 
   def delete_bitmex_acc(%BitmexAcc{} = bitmex_acc) do
     with {:ok, acc} <- Repo.delete(bitmex_acc) do
-      pid = Process.whereis(:"BitMexAccWorker.#{acc.id}")
-      DynamicSupervisor.terminate_child(LiveSupervisor, pid)
+      case Process.whereis(:"BitMexAccWorker.#{acc.id}") do
+        nil -> nil
+        pid -> DynamicSupervisor.terminate_child(LiveSupervisor, pid)
+      end
 
       Endpoint.broadcast("bitmex_accs:#{acc.user_id}", "acc_deleted", %{acc: %{id: acc.id}})
       {:ok, acc}
@@ -72,6 +80,10 @@ defmodule PortfolioMonitor.Portfolio do
   end
 
   # Read Actions
+
+  def get_bitmex_acc(id) do
+    Repo.get(BitmexAcc, id)
+  end
 
   def get_latest_price(is_testnet) do
     query =
