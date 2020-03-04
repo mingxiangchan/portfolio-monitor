@@ -43,7 +43,7 @@ const StyledMainLayout = styled(Layout)`
 `
 
 const App: React.FunctionComponent = () => {
-  const [showSider, setShowSider] = useState(true)
+  const [showSider, setShowSider] = useState(window.screen.width >= 768)
 
   const toggleSider = (): void => setShowSider(!showSider)
   return (
