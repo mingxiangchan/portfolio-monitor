@@ -15,17 +15,24 @@ interface PropTypes {
 const MainDashboardTop: React.FunctionComponent<PropTypes> = ({
   accs,
 }: PropTypes) => {
-  const { testPrice, realPrice } = useContext(BitmexContext)
+  const prices = useContext(BitmexContext)
   const { testnet } = useContext(DashboardContext)
 
-  const price = testnet ? testPrice : realPrice
+  const pairPrices = prices['XBTUSD']
+
+  let price = 0
+
+  if (pairPrices) {
+    price = testnet ? pairPrices.testPrice : pairPrices.livePrice
+  }
 
   let entryCount = 0
   let pnl = 0
   let qty = 0
   let balance = 0
   let startBtc = 0
-  let mBalance = 0
+  let totalMarginBalance = 0
+  let totalFiatBalance = 0
   let liqPrice = 0
   let liqPriceGap = Infinity
   let liqAcc = null
@@ -45,6 +52,7 @@ const MainDashboardTop: React.FunctionComponent<PropTypes> = ({
       avgEntryPrice,
       currentQty,
       marginBalance,
+      fiatBalance,
       walletBalance,
       unrealisedPnl,
       liquidationPrice,
@@ -57,7 +65,8 @@ const MainDashboardTop: React.FunctionComponent<PropTypes> = ({
         : liqPriceGap
     const smallerLiqPrice = currentLiqPriceGap < liqPriceGap
 
-    mBalance += marginBalance
+    totalMarginBalance += marginBalance
+    totalFiatBalance += fiatBalance
     balance += walletBalance
     startBtc += deposit_btc
     startFiat += deposit_usd
@@ -76,8 +85,7 @@ const MainDashboardTop: React.FunctionComponent<PropTypes> = ({
     liqAcc = smallerLiqPrice ? name : liqAcc
   }
 
-  const fiatBalance = mBalance * price
-  const leverage = Math.abs(qty / fiatBalance)
+  const leverage = Math.abs(qty / totalFiatBalance)
 
   return (
     <Row
@@ -132,19 +140,21 @@ const MainDashboardTop: React.FunctionComponent<PropTypes> = ({
             </Col>
             <Col md={8} lg={6}>
               <ValueWithLabel
-                value={entryCount ? centsToFiat(entry / entryCount) : 'NaN'}
+                value={entryCount ? entry / entryCount : 'NaN'}
                 title="Ave. entry price"
               />
             </Col>
             <Col md={8} lg={6}>
               <ValueWithLabel
-                value={satToBtc(mBalance).toFixed(4)}
+                value={satToBtc(totalMarginBalance).toFixed(4)}
                 title="Balance(BTC)"
               />
             </Col>
             <Col md={8} lg={6}>
               <ValueWithLabel
-                value={centsToFiat(satToBtc(mBalance) * price).toFixed(2)}
+                value={centsToFiat(
+                  satToBtc(totalMarginBalance) * price,
+                ).toFixed(2)}
                 title="Balance(USD)"
               />
             </Col>
@@ -153,28 +163,48 @@ const MainDashboardTop: React.FunctionComponent<PropTypes> = ({
             <Col lg={12}>
               <ValueWithLabel
                 small
-                value={formatEarnings(startBtc, mBalance, startFiat, price)}
+                value={formatEarnings(
+                  startBtc,
+                  totalMarginBalance,
+                  startFiat,
+                  price,
+                )}
                 title="Return since inception"
               />
             </Col>
             <Col lg={12}>
               <ValueWithLabel
                 small
-                value={formatEarnings(price30, mBalance, cFiatBal30, price)}
+                value={formatEarnings(
+                  price30,
+                  totalMarginBalance,
+                  cFiatBal30,
+                  price,
+                )}
                 title="Earned this month"
               />
             </Col>
             <Col lg={12}>
               <ValueWithLabel
                 small
-                value={formatEarnings(price7, mBalance, cFiatBal7, price)}
+                value={formatEarnings(
+                  price7,
+                  totalMarginBalance,
+                  cFiatBal7,
+                  price,
+                )}
                 title="Earned past 7-days"
               />
             </Col>
             <Col lg={12}>
               <ValueWithLabel
                 small
-                value={formatEarnings(priceDay, mBalance, cFiatBal1, price)}
+                value={formatEarnings(
+                  priceDay,
+                  totalMarginBalance,
+                  cFiatBal1,
+                  price,
+                )}
                 title="Earned past 24-hours"
               />
             </Col>
