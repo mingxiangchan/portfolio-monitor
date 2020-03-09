@@ -148,7 +148,7 @@ const SideNav: React.FunctionComponent = () => {
           <span>
             {testnet
               ? centsToFiat(testPrice).toFixed(1)
-              : centsToFiat(testPrice).toFixed(1)}
+              : centsToFiat(livePrice).toFixed(1)}
           </span>
         </p>
       </PriceDisplay>
