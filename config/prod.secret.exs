@@ -36,6 +36,8 @@ redis_url =
     environment variable REDIS_URL is missing.
     """
 
+base_url = System.get_env("APP_NAME") <> ".herokuapp.com"
+
 config :portfolio_monitor, PortfolioMonitor.Repo,
   ssl: true,
   url: database_url,
@@ -45,7 +47,8 @@ config :portfolio_monitor, PortfolioMonitor.Repo,
 config :portfolio_monitor, PortfolioMonitorWeb.Endpoint,
   http: [:inet6, port: String.to_integer(System.get_env("PORT") || "4000")],
   secret_key_base: secret_key_base,
-  url: [host: System.get_env("APP_NAME") <> ".herokuapp.com", port: 80]
+  url: [scheme: "https", host: base_url, port: 443],
+  force_ssl: [rewrite_on: [:x_forwarded_proto]]
 
 # temp
 config :portfolio_monitor, :redis_url, redis_url

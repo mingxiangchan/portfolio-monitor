@@ -2,7 +2,9 @@ defmodule PortfolioMonitorWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :portfolio_monitor
   use Appsignal.Phoenix
 
-  socket "/socket", PortfolioMonitorWeb.UserSocket, longpoll: false
+  socket "/socket", PortfolioMonitorWeb.UserSocket,
+    websocket: [timeout: 45_000],
+    longpoll: false
 
   # Serve at "/" the static files from "priv/static" directory.
   #
@@ -11,7 +13,7 @@ defmodule PortfolioMonitorWeb.Endpoint do
   plug Plug.Static,
     at: "/",
     from: :portfolio_monitor,
-    gzip: false,
+    gzip: true,
     only: ~w(css fonts images js favicon.ico robots.txt)
 
   # Code reloading can be explicitly enabled under the
@@ -41,7 +43,11 @@ defmodule PortfolioMonitorWeb.Endpoint do
     key: "_portfolio_monitor_key",
     signing_salt: "Zyvl07zf"
 
-  plug Pow.Plug.Session, otp_app: :portfolio_monitor
+  plug Pow.Plug.Session,
+    otp_app: :portfolio_monitor,
+    session_ttl_renewal: :timer.minutes(2),
+    credentials_cache_store: {Pow.Store.CredentialsCache, ttl: :timer.hours(168)}
+
   plug PowPersistentSession.Plug.Cookie
 
   plug CORSPlug
