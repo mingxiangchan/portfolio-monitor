@@ -60,7 +60,7 @@
     "imagemin-webpack-plugin": "^2.4.2",
     "lint-staged": "^10.0.7",
     "mini-css-extract-plugin": "^0.4.0",
-    "node-sass": "^4.13.1",
+    "node-sass": "^7.0.0",
     "optimize-css-assets-webpack-plugin": "^5.0.1",
     "prettier": "^1.19.1",
     "resolve-url-loader": "^3.1.1",
